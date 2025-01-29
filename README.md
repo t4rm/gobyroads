@@ -9,7 +9,7 @@ L'objectif de ce projet est de concevoir et de développer une application perme
 L'application devra permettre à un joueur humain (dans un premier temps pui à une IA) de jouer une partie. 
 Les élèves devront réaliser une application complète en langage C suivant deux réalisations:
 - Une version intégralement textuelle avec une interaction avec le joueur par ligne de commande et
-- UNe version graphique utilisant la librairie libSDL (https://www.libsdl.org/)
+- Une version graphique utilisant la librairie libSDL (https://www.libsdl.org/)
 
 ![Crossy Roads](crossy-road-revenue.webp)
 
