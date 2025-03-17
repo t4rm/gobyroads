@@ -10,20 +10,34 @@ SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
 OBJ_FILES_NO_MAIN = $(filter-out $(OBJ_DIR)/main.o, $(OBJ_FILES))
 
+# Create necessary directories
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+
+# Ensure directories exist before compilation
+$(OBJ_DIR)/%.o: | $(OBJ_DIR)
+$(BIN_DIR)/main: | $(BIN_DIR)
+$(BIN_DIR)/test: | $(BIN_DIR)
+
 all: main
 
-# Execute the main.c file, compiling every other C files in src.
-main: $(OBJ_FILES)
-	$(CC) -o $(BIN_DIR)/main $(OBJ_FILES); bin/main.exe
+# Execute the main.c file, compiling every other C file in src.
+main: $(OBJ_FILES) | $(BIN_DIR)
+	$(CC) -o $(BIN_DIR)/main $(OBJ_FILES)
+	$(BIN_DIR)/main.exe
 
-# Execute the test_main.c file, compiling every other C files in src. Note: We might need to compile every file in the tests folder, in case we need other files (e.g. for testing function definition)
-test: $(OBJ_FILES_NO_MAIN) $(OBJ_DIR)/test_main.o
-	$(CC) -o $(BIN_DIR)/test $(OBJ_FILES_NO_MAIN) $(OBJ_DIR)/test_main.o; bin/test.exe
+# Execute the test_main.c file, compiling every other C file in src.
+test: $(OBJ_FILES_NO_MAIN) $(OBJ_DIR)/test_main.o | $(BIN_DIR)
+	$(CC) -o $(BIN_DIR)/test $(OBJ_FILES_NO_MAIN) $(OBJ_DIR)/test_main.o
+	$(BIN_DIR)/test.exe
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS)
 
-$(OBJ_DIR)/test_main.o: $(TEST_DIR)/test_main.c
+$(OBJ_DIR)/test_main.o: $(TEST_DIR)/test_main.c | $(OBJ_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 clean:
