@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include "map.h"
 
 int main()
 {
-    printf("Main program");
+    Row *grid = createGrid(8, 10);
+
+    displayGrid(grid,8);
     return 0;
 }

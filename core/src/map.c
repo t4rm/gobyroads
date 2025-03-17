@@ -2,41 +2,60 @@
 #include <stdlib.h>
 #include "map.h"
 
-Grid initializeGrid(int rows, int columns)
-{
-    Grid g;
-    g.rows = rows;
-    g.cols = columns;
-    g.values = malloc(sizeof(int) * rows * columns);
+Row *createGrid(int length, int height){
+    Row *head = NULL;
+    Row *tail = NULL;
 
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < columns; j++)
-        {
-            SET(&g, i, j, ROAD);
+    for(int i = 0; i < height; i++){
+        Row *row = (Row*) malloc(sizeof(Row));
+
+        row->next = NULL;
+        row->cases = createRow(length);
+
+        if (head == NULL) {
+            head = row;
+            tail = row;
+        } else {
+            tail->next = row;
+            tail = row;
         }
     }
-    return g;
+
+
+    
+    return head;
+
 }
 
-void freeGrid(Grid *g) { free(g->values); }
+Occupation *createRow(int length){
 
-void printGrid(Grid *g)
-{
-    printf("[\n");
-    for (int i = 0; i < g->rows; i++)
-    {
-        printf("    [");
-        for (int j = 0; j < g->cols; j++)
-        {
-            printf("%d", GET(g, i, j));
-            if (j < g->cols - 1)
-                printf(", ");
-        }
-        printf("]");
-        if (i < g->rows - 1)
-            printf(",");
-        printf("\n");
+    Occupation *row = (Occupation*) malloc(length*sizeof(Occupation));
+
+    for(int i = 0; i < length; i++){
+        row[i] = SAFE;
     }
-    printf("]\n");
+
+    return row;
 }
+
+void displayGrid(Row *row, int length){
+
+
+    while(row != NULL){
+        for(int i = 0; i < length; i++){
+            switch (row->cases[i])
+            {
+            case SAFE:
+                printf("_");
+                break;
+            
+            default:
+                break;
+            }
+        }
+        printf("\n\r");
+        row = row->next;
+    }
+}
+
+
