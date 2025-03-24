@@ -10,10 +10,11 @@
 #define starting_position_x 13
 #define starting_position_y 8
 #define mouvement_cooldown 10
-#define mouvement_cooldown 10
+#define car_cooldown 10
 
 typedef struct _car {     
-  int position_x, position_y;
+  int position_y, position_x;
+  int size;
 }Car;
 
 typedef struct _state {                    //contiend toutes les infos sur l'etat du jeu
@@ -29,10 +30,10 @@ typedef struct _state {                    //contiend toutes les infos sur l'eta
 State init_gameState();            //declarations des fonctions
 void init_game();
 void mapPrint(State gameState);
-bool playerMove(State* p_gameState);
+void playerMove(State* p_gameState);
 void scrolling(State* gameState);
-void update_game(State *gameState);
-
+void update_cars(State *gameState);
+bool check_collision(State *gameState);
 
 int main()
 {
@@ -44,10 +45,11 @@ int main()
   system ("/bin/stty raw");           //change le mode d'input
   while(collision==false){
     mapPrint(gameState);
-    collision=playerMove(&gameState); 
-    update_game(&gameState);
-    // Attendre environ 16 ms pour obtenir 60 FPS
-    usleep(16667);
+    playerMove(&gameState); 
+    collision=check_collision(&gameState);
+    update_cars(&gameState);
+    collision=check_collision(&gameState);
+    usleep(16667);                  // on attend environ 16 ms pour obtenir 60 FPS
   }
   system ("/bin/stty cooked");
 
@@ -69,7 +71,7 @@ void mapPrint(State gameState)
         printed=true;
       }
       for (int i=0;i<gameState.cars_amount;i++){
-        if (x==gameState.cars[i].position_x && y==gameState.cars[i].position_y){
+        if (x==gameState.cars[i].position_y && y<=gameState.cars[i].position_x && y>gameState.cars[i].position_x-gameState.cars[i].size && printed==false){
           printf("%c",'>');
           printed=true;
         }
@@ -82,7 +84,7 @@ void mapPrint(State gameState)
   refresh();
 }
 
-bool playerMove(State* p_gameState)
+void playerMove(State* p_gameState)
 {
   int input;
     // Vérifier si une touche est pressée
@@ -110,7 +112,7 @@ bool playerMove(State* p_gameState)
           p_gameState->player_mouv_cooldown=mouvement_cooldown;
           break;
         case 'f':
-          return true;
+          p_gameState->player_x=0;    //pour tuer le joueur... a modifier
           break;
         case 'h':
           printw("Press f to quit\n");
@@ -124,11 +126,6 @@ bool playerMove(State* p_gameState)
     }
     if (p_gameState->player_mouv_cooldown>0)
       p_gameState->player_mouv_cooldown-=1;
-
-  if((*p_gameState).map[(*p_gameState).player_y][(*p_gameState).player_x]==' ')   //check collision (should be a separate function ?)
-    return false;
-  printf("You died !\n\r");
-  return true;  
 }
 
 void init_game(){
@@ -177,18 +174,38 @@ void scrolling(State* p_gameState){
   for(int i=1;i<size_x-1;i++)
     p_gameState->map[1][i]=' ';
   p_gameState->cars_amount+=1;
-  p_gameState->cars[p_gameState->cars_amount-1].position_y=1+rand()%(size_x-2);
-  p_gameState->cars[p_gameState->cars_amount-1].position_x=0;
+  p_gameState->cars[p_gameState->cars_amount-1].size =5;
+  p_gameState->cars[p_gameState->cars_amount-1].position_x=1+rand()%(size_x-2);
+  p_gameState->cars[p_gameState->cars_amount-1].position_y=0;
   for (int i=0;i<p_gameState->cars_amount;i++)
-    p_gameState->cars[i].position_x+=1;
+    p_gameState->cars[i].position_y+=1;
 }
 
-void update_game(State *gameState){
+void update_cars(State *gameState){
   if(gameState->cars_cooldown==0){
-    gameState->cars_cooldown=30;
+    gameState->cars_cooldown=car_cooldown;
     for(int i=0;i<gameState->cars_amount;i++)
-      gameState->cars[i].position_y+=1;
+      gameState->cars[i].position_x+=1;
   }
   else
     gameState->cars_cooldown-=1;
+}
+
+bool check_collision(State *gameState){
+  if(gameState->map[gameState->player_y][gameState->player_x]!=' '){
+    printf("You died !\n\r");
+    return true;  
+  }
+  else{
+    for(int i=0;i<gameState->cars_amount;i++) {
+      if (gameState->cars[i].position_y==gameState->player_y
+      && gameState->player_x<=gameState->cars[i].position_x 
+      && gameState->player_x>gameState->cars[i].position_x-gameState->cars[i].size
+      ){
+        printf("You died !\n\r");
+        return true;
+      }
+    }
+    return false;
+  }
 }
