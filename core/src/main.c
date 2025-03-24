@@ -1,10 +1,18 @@
 #include <stdio.h>
-#include "map.h"
+#include <stdlib.h>
+#include "gameState.h"
 
 int main()
 {
-    Row *grid = createGrid(8, 10);
 
-    displayGrid(grid,8);
+    
+    GameState *gs = init_gameState();
+
+    while (true)
+    {
+        update_gameState(gs);
+    }
+    
+
     return 0;
 }

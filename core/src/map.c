@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "gameState.h"
 #include "map.h"
 
 Row *createGrid(int length, int height){
@@ -20,11 +21,8 @@ Row *createGrid(int length, int height){
             tail = row;
         }
     }
-
-
     
     return head;
-
 }
 
 Occupation *createRow(int length){
@@ -38,11 +36,14 @@ Occupation *createRow(int length){
     return row;
 }
 
-void displayGrid(Row *row, int length){
-
-
+void displayGrid(Row *row, int length, Player *player){
+    int y = 0;
     while(row != NULL){
         for(int i = 0; i < length; i++){
+            if(y == player->posY && i ==  player->posX){
+                printf("P");
+            }
+
             switch (row->cases[i])
             {
             case SAFE:
@@ -55,6 +56,7 @@ void displayGrid(Row *row, int length){
         }
         printf("\n\r");
         row = row->next;
+        y++;
     }
 }
 
