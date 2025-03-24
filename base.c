@@ -10,6 +10,7 @@
 #define starting_position_x 13
 #define starting_position_y 8
 #define mouvement_cooldown 10
+#define mouvement_cooldown 10
 
 typedef struct _state {                    //contiend toutes les infos sur l'etat du jeu
   int player_x, player_y;
@@ -24,13 +25,19 @@ void mapPrint(State gameState);
 bool playerMove(State* p_gameState);
 void scrolling(State* gameState);
 
-
 int main()
 {
   init_game();
+  initscr();
+  cbreak();
+  noecho();
+  nodelay(stdscr, TRUE);
+
+  srand(time(NULL));
   bool collision=false;
   State gameState=init_gameState();
 
+  system ("/bin/stty raw");           //change le mode d'input
   while(collision==false){
     mapPrint(gameState);
     collision=playerMove(&gameState); 
@@ -83,7 +90,6 @@ bool playerMove(State* p_gameState)
           (*p_gameState).player_x--; 
           p_gameState->player_mouv_cooldown=mouvement_cooldown;
           break;
-          
         case 's': 
           (*p_gameState).player_y++; 
           p_gameState->player_mouv_cooldown=mouvement_cooldown;
