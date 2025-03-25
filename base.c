@@ -15,6 +15,7 @@
 typedef struct _car {     
   int position_y, position_x;
   int size;
+  int direction;
 }Car;
 
 typedef struct _state {                    //contiend toutes les infos sur l'etat du jeu
@@ -34,6 +35,7 @@ void playerMove(State* p_gameState);
 void scrolling(State* gameState);
 void update_cars(State *gameState);
 bool check_collision(State *gameState);
+void add_car(State *gameState);
 
 int main()
 {
@@ -71,8 +73,12 @@ void mapPrint(State gameState)
         printed=true;
       }
       for (int i=0;i<gameState.cars_amount;i++){
-        if (x==gameState.cars[i].position_y && y<=gameState.cars[i].position_x && y>gameState.cars[i].position_x-gameState.cars[i].size && printed==false){
-          printf("%c",'>');
+        Car car=gameState.cars[i];
+        if (x==car.position_y && y<=car.position_x && y>car.position_x-car.size && printed==false){
+          if (car.direction==1)
+            printf("%c",'>');
+          else
+            printf("%c",'<');
           printed=true;
         }
       }
@@ -115,10 +121,10 @@ void playerMove(State* p_gameState)
           p_gameState->player_x=0;    //pour tuer le joueur... a modifier
           break;
         case 'h':
-          printw("Press f to quit\n");
+          printf("Use ZQSD to move\n\rPress f to quit\n\r");
           break;
         default:
-          printw("Use ZQSD to move !\n");
+          printf("Use ZQSD to move !\n\r");
           break;
       }
 
@@ -173,10 +179,7 @@ void scrolling(State* p_gameState){
   }
   for(int i=1;i<size_x-1;i++)
     p_gameState->map[1][i]=' ';
-  p_gameState->cars_amount+=1;
-  p_gameState->cars[p_gameState->cars_amount-1].size =5;
-  p_gameState->cars[p_gameState->cars_amount-1].position_x=1+rand()%(size_x-2);
-  p_gameState->cars[p_gameState->cars_amount-1].position_y=0;
+  add_car(p_gameState);
   for (int i=0;i<p_gameState->cars_amount;i++)
     p_gameState->cars[i].position_y+=1;
 }
@@ -185,7 +188,7 @@ void update_cars(State *gameState){
   if(gameState->cars_cooldown==0){
     gameState->cars_cooldown=car_cooldown;
     for(int i=0;i<gameState->cars_amount;i++)
-      gameState->cars[i].position_x+=1;
+      gameState->cars[i].position_x+=1*gameState->cars[i].direction;
   }
   else
     gameState->cars_cooldown-=1;
@@ -193,7 +196,7 @@ void update_cars(State *gameState){
 
 bool check_collision(State *gameState){
   if(gameState->map[gameState->player_y][gameState->player_x]!=' '){
-    printf("You died !\n\r");
+    printw("You died !\n");
     return true;  
   }
   else{
@@ -202,10 +205,22 @@ bool check_collision(State *gameState){
       && gameState->player_x<=gameState->cars[i].position_x 
       && gameState->player_x>gameState->cars[i].position_x-gameState->cars[i].size
       ){
-        printf("You died !\n\r");
+        printw("You died !\n");
         return true;
       }
     }
     return false;
   }
+}
+
+void add_car(State *gameState){
+  gameState->cars_amount+=1;
+  Car new_car;
+  new_car.size = 4;
+  new_car.position_x = 1+rand()%(size_x-2);
+  new_car.position_y = 0;
+  new_car.direction = rand()%2;
+  if (new_car.direction == 0)
+    new_car.direction = -1;
+  gameState->cars[gameState->cars_amount-1]=new_car;
 }
