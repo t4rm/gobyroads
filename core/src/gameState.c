@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define car_cooldown 10
+
 GameState *init_gameState(){
     Row *grid = createGrid(8, 10);
     GameState *gs = (GameState*) malloc(sizeof(GameState));
@@ -12,7 +14,9 @@ GameState *init_gameState(){
     player->posY = 5;
 
 
-
+    gs->score = 0;
+    gs->cars_amount = 0;
+    gs->cars_cooldown = car_cooldown;
     gs->grid = grid;
     gs->player = player;
     gs->time = 0;

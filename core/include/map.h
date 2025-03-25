@@ -18,8 +18,8 @@ typedef struct _Row
     struct _Row *next;
 } Row;
 
-typedef struct GameState GameState;
-typedef struct  Player Player;
+typedef struct _GameState GameState;
+typedef struct  _Player Player;
 
 
 
