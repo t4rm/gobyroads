@@ -1,22 +1,12 @@
-#define GET(matrix, row, col) (matrix)->values[(row) * (matrix)->cols + (col)]
-#define SET(matrix, row, col, value) ((matrix)->values[(row) * (matrix)->cols + (col)] = (value))
+#ifndef MAP_H
+#define MAP_H
+#include "gameState.h" 
 
-typedef struct grid
-{
-    int *values;
-    int rows;
-    int cols;
-} Grid;
+typedef enum { ROAD, USER, CAR, SAFE } Occupation;
+typedef struct _Row { Occupation *cases; struct _Row *next;} Row;
 
-enum Occupation
-{
-    ROAD,
-    USER,
-    CAR,
-    SAFE
-    // TREE can be added if we want. It should imply that the zone beneath it is a safe zone though.
-};
+Row * createGrid(int length, int height);
+Occupation * createRow(int length);
+void displayGrid(Row *row, int length, Player *player);
 
-Grid initializeGrid(int rows, int columns);
-void freeGrid(Grid *g);
-void printGrid(Grid *g);
+#endif 
