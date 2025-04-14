@@ -1,16 +1,18 @@
-#ifndef CAR_H
-#define CAR_H
+#ifndef DEF_CAR
+#define DEF_CAR
 
-typedef struct _GameState GameState;
+#include "gameState.h"
+#include "stdbool.h"
 
-typedef struct _Car
-{
+typedef struct _Car {     
     int position_y, position_x;
     int size;
     int direction;
-} Car;
+  }Car;
 
-void add_car(struct _GameState *gameState);
-void update_cars(struct _GameState *gameState);
+typedef struct _GameState GameState;
 
-#endif
+void add_car(GameState *gameState);
+void update_cars(GameState *gameState);
+
+#endif 

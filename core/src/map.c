@@ -3,55 +3,44 @@
 #include "gameState.h"
 #include "map.h"
 
-Row *createGrid(int length, int height)
-{
+Row *createGrid(int length, int height){
     Row *head = NULL;
     Row *tail = NULL;
 
-    for (int i = 0; i < height; i++)
-    {
-        Row *row = (Row *)malloc(sizeof(Row));
+    for(int i = 0; i < height; i++){
+        Row *row = (Row*) malloc(sizeof(Row));
 
         row->next = NULL;
         row->cases = createRow(length);
 
-        if (head == NULL)
-        {
+        if (head == NULL) {
             head = row;
             tail = row;
-        }
-        else
-        {
+        } else {
             tail->next = row;
             tail = row;
         }
     }
-
+    
     return head;
 }
 
-Occupation *createRow(int length)
-{
+Occupation *createRow(int length){
 
-    Occupation *row = (Occupation *)malloc(length * sizeof(Occupation));
+    Occupation *row = (Occupation*) malloc(length*sizeof(Occupation));
 
-    for (int i = 0; i < length; i++)
-    {
+    for(int i = 0; i < length; i++){
         row[i] = SAFE;
     }
 
     return row;
 }
 
-void displayGrid(Row *row, int length, Player *player)
-{
+void displayGrid(Row *row, int length, Player *player){
     int y = 0;
-    while (row != NULL)
-    {
-        for (int i = 0; i < length; i++)
-        {
-            if (y == player->posY && i == player->posX)
-            {
+    while(row != NULL){
+        for(int i = 0; i < length; i++){
+            if(y == player->posY && i ==  player->posX){
                 printf("P");
             }
 
@@ -60,7 +49,7 @@ void displayGrid(Row *row, int length, Player *player)
             case SAFE:
                 printf("_");
                 break;
-
+            
             default:
                 break;
             }
@@ -70,3 +59,4 @@ void displayGrid(Row *row, int length, Player *player)
         y++;
     }
 }
+
