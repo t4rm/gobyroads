@@ -60,4 +60,3 @@ void displayGrid(Row *row, int length, Player *player){
     }
 }
 
-
