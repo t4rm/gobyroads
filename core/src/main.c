@@ -1,7 +1,13 @@
-#include <stdio.h>
+#include "gameState.h"
 
 int main()
 {
-    printf("Main program");
+    GameState *gs = init_gameState();
+
+    while (true)
+    {
+        update_gameState(gs);
+    }
+
     return 0;
 }

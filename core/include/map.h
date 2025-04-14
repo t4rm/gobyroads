@@ -1,6 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
-#include "gameState.h" 
+
+typedef struct _Player Player;
 
 typedef enum { ROAD, USER, CAR, SAFE } Occupation;
 typedef struct _Row { Occupation *cases; struct _Row *next;} Row;
