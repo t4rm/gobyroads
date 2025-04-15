@@ -15,7 +15,7 @@ typedef struct _GameState
 {
     Player* player;
     int time;
-    Row *grid;
+    Grid *grid;
     int score;
     Car cars[100];              // A voir
     int cars_amount;

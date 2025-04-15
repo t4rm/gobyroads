@@ -3,32 +3,25 @@
 #include "gameState.h"
 #include "map.h"
 
-Row *createGrid(int length, int height){
-    Row *head = NULL;
-    Row *tail = NULL;
-
-    for(int i = 0; i < height; i++){
-        Row *row = (Row*) malloc(sizeof(Row));
-
-        row->next = NULL;
-        row->cases = createRow(length);
-
-        if (head == NULL) {
-            head = row;
-            tail = row;
-        } else {
-            tail->next = row;
-            tail = row;
-        }
-    }
+Grid *createGrid(int height, int length) {
+    Grid *grid = (Grid *) malloc(sizeof(Grid));
+    grid->height = height;
+    grid->length = length;
+    grid->cases = malloc(sizeof(Occupation*) * height);
     
-    return head;
+    for (int i = 0; i < height; i++) {
+        grid->cases[i] = createRow(length);
+    }
+
+
+    return grid;
 }
+
 
 Occupation *createRow(int length){
 
     Occupation *row = (Occupation*) malloc(length*sizeof(Occupation));
-
+    
     for(int i = 0; i < length; i++){
         row[i] = SAFE;
     }
@@ -36,27 +29,32 @@ Occupation *createRow(int length){
     return row;
 }
 
-void displayGrid(Row *row, int length, Player *player){
-    int y = 0;
-    while(row != NULL){
-        for(int i = 0; i < length; i++){
-            if(y == player->posY && i ==  player->posX){
+void displayGrid(Grid *grid, Player *player){
+    for(int i  = 0; i < grid->height; i++){
+        for(int j = 0; j < grid->length; j++){
+            if(j == player->posY && i ==  player->posX){
                 printf("P");
             }
 
-            switch (row->cases[i])
-            {
-            case SAFE:
-                printf("_");
-                break;
-            
-            default:
-                break;
+            switch (grid->cases[i][j]) {
+                case SAFE:
+                    printf("_");
+                    break;
+                case ROAD:
+                    printf(".");
+                    break;
+                case CAR:
+                    printf("C");
+                    break;
+                case USER:
+                    printf("U");
+                    break;
+                default:
+                    printf("?");
+                    break;
             }
         }
         printf("\n\r");
-        row = row->next;
-        y++;
     }
 }
 

@@ -6,7 +6,7 @@
 #define car_cooldown 10
 
 GameState *init_gameState(){
-    Row *grid = createGrid(8, 10);
+    Grid *grid = createGrid(8, 10);
     GameState *gs = (GameState*) malloc(sizeof(GameState));
 
     Player *player = (Player*) malloc(sizeof(Player));
@@ -26,7 +26,7 @@ GameState *init_gameState(){
 
 void update_gameState(GameState *gs){
    
-   displayGrid(gs->grid, 8, gs->player);
+   displayGrid(gs->grid, gs->player);
 
 }
 

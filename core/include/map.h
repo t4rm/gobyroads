@@ -12,19 +12,23 @@ typedef enum
     SAFE
 } Occupation;
 
-typedef struct _Row
+
+typedef struct _Grid
 {
-    Occupation *cases;
-    struct _Row *next;
-} Row;
+    Occupation **cases;
+    int height;
+    int length;
+} Grid;
+
+
 
 typedef struct _GameState GameState;
 typedef struct  _Player Player;
 
 
 
-Row *createGrid(int length, int height);
+Grid *createGrid(int heigth, int length);
 Occupation *createRow(int length);
-void displayGrid(Row *row, int length, Player *player);
+void displayGrid(Grid *grid, Player *player);
 
 #endif 
