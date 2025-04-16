@@ -1,17 +1,15 @@
-#ifndef MAP
-#define MAP
+#ifndef MAP_H
+#define MAP_H
 
-#include "gameState.h" 
+#include "gamestate.h"
 
-
-typedef enum 
+typedef enum
 {
     ROAD,
-    USER,
     CAR,
-    SAFE
+    SAFE,
+    TREE
 } Occupation;
-
 
 typedef struct _Grid
 {
@@ -20,15 +18,12 @@ typedef struct _Grid
     int length;
 } Grid;
 
-
-
 typedef struct _GameState GameState;
-typedef struct  _Player Player;
-
-
+typedef struct _Player Player;
 
 Grid *createGrid(int heigth, int length);
-Occupation *createRow(int length);
-void displayGrid(Grid *grid, Player *player);
+Occupation *createRow(int length, Occupation type);
+void applyOccupationToRow(Occupation *row, int length, Occupation type);
+void displayGrid(Grid *grid, int playerX, int playerY);
 
-#endif 
+#endif

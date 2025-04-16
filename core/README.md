@@ -10,5 +10,5 @@
 
 ## Commandes :
 
-Ce jeu se joue exclusivement avec les "touches fléchées" du clavier. 
+Ce jeu se joue exclusivement avec les touches ZQSD du clavier. 
 

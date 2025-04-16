@@ -1,31 +1,30 @@
-#ifndef GAME_STATE
-#define GAME_STATE
+#ifndef GAMESTATE_H
+#define GAMESTATE_H
 
-#include "car.h"
-#include "map.h" 
+// #include "car.h"
+#include "map.h"
 #include "stdbool.h"
 
-typedef struct _Player{
-    int posX;
-    int posY;
-    int mouvement_cooldown;
-}Player;
+typedef struct _Player
+{
+    int x, y, mouvementCooldown;
+} Player;
 
 typedef struct _GameState
 {
-    Player* player;
-    int time;
     Grid *grid;
+    Player *player;
     int score;
-    Car cars[100];              // A voir
-    int cars_amount;
-    int cars_cooldown;
-}GameState;
+    int backwardMovements;
+    int nextSafeZone;
+    bool gameOver;
+} GameState;
 
-bool playerMove(GameState* p_gameState);
-GameState *init_gameState(); 
-void update_gameState();
-void scrolling(GameState* gameState);
-bool check_collision(GameState *gameState);
+GameState *initGameState();
 
-#endif 
+void playerMove(GameState *gs);
+void scrolling(GameState *gs);
+void updateGameState();
+bool handleCollision(GameState *gameState);
+
+#endif
