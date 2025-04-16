@@ -10,6 +10,8 @@ typedef struct _Player
     int x, y, mouvementCooldown;
 } Player;
 
+typedef struct _Grid Grid;
+
 typedef struct _GameState
 {
     Grid *grid;

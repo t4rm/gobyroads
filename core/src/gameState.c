@@ -41,35 +41,52 @@ void playerMove(GameState *gs)
     if (_kbhit())
     {
         char key = _getch();
-
-        switch (key)
-        {
-        case 'z':
-            if (gs->player->y < gs->grid->height - 1) {
-                gs->player->y++;
-                gs->score++;
+        bool hasMoved = false;
+        if (gs->player->mouvementCooldown == 0) {
+            switch (key)
+            {
+            case 'z':
+                if (gs->player->y < gs->grid->height - 1)
+                {
+                    gs->player->y++;
+                    gs->score++;
+                    hasMoved = true;
+                }
+                break;
+            case 's': // Move down
+                if (gs->player->y > 0)
+                {
+                    gs->player->y--;
+                    gs->score--;
+                    hasMoved = true;
+                }
+                else
+                    gs->gameOver = true; // 3 pas en arrière.
+                break;
+            case 'q': // Move left
+                if (gs->player->x > 0)
+                {
+                    gs->player->x--;
+                    hasMoved = true;
+                }
+                break;
+            case 'd': // Move right
+                if (gs->player->x < gs->grid->length - 1)
+                {
+                    gs->player->x++;
+                    hasMoved = true;
+                }
+                break;
+            case 'f':
+                gs->gameOver = true;
+                break;
             }
-            break;
-        case 's': // Move down
-            if (gs->player->y > 0) {
-                gs->player->y--;
-                gs->score--;
-            }
-            else gs->gameOver = true; // 3 pas en arrière.
-            break;
-        case 'q': // Move left
-            if (gs->player->x > 0)
-                gs->player->x--;
-            break;
-        case 'd': // Move right
-            if (gs->player->x < gs->grid->length - 1)
-                gs->player->x++;
-            break;
-        case 'f':
-            gs->gameOver = true;
-            break;
         }
+
+        if (hasMoved) gs->player->mouvementCooldown = 6; // 2 mouvements par seconde autorisé : À confirmer
     }
+    
+    gs->player->mouvementCooldown = gs->player->mouvementCooldown <= 1 ? 0 : gs->player->mouvementCooldown - 1;
 }
 
 void scrolling(GameState *gs)
@@ -97,7 +114,7 @@ void scrolling(GameState *gs)
             applyOccupationToRow(gs->grid->cases[gs->grid->height-1], gs->grid->length, SAFE);
             gs->nextSafeZone = 4 + (gs->score / 10);
         }
-    }
+    } // En résulte une sorte de tapis roulant
 }
 
 // handleCollision(GameState *gs) {
