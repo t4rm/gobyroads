@@ -15,7 +15,7 @@ int main()
         updateGameState(gs);
         playerMove(gs);
         scrolling(gs);
-        // handleCollision(gs);
+        handleCollision(gs);
         
         int frameTime = GetTickCount() - frameStart;
 

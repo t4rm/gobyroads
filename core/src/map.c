@@ -26,7 +26,7 @@ Occupation *createRow(int length, Occupation type)
 }
 
 void applyOccupationToRow(Occupation *row, int length, Occupation type) {
-    for (int i = 0; i < length; i++) row[i] = type;
+    for (int i = 0; i < length; i++) row[i] = type == SAFE ? rand() % 5 ? SAFE : TREE : type;
 }
 
 void displayGrid(Grid *grid, int playerX, int playerY)
