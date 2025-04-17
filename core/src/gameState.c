@@ -32,6 +32,9 @@ GameState *initGameState(int h, int l)
 
     gs->grid->cases[gs->player->y][gs->player->x] = SAFE; // On spawn sur une safe zone, pas un arbre.
 
+    printf("\e[1;1H\e[2J"); // Nettoyage de l'écran
+    printf("\e[?25l"); // Cacher le curseur
+
     return gs;
 }
 
@@ -214,8 +217,6 @@ void decrementCarsOnY(GameState *gs)
 void updateGameState(GameState *gs)
 {
     updateCars(gs);
-    printf("\e[1;1H\e[2J");
-    printf("\nScore: %d\n", gs->score);
-    displayGrid(gs->grid, gs->player->x, gs->player->y);
+    displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y);
     // print_deque(gs->cars); // For debug purposes
 }

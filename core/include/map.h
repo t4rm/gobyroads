@@ -24,6 +24,6 @@ typedef struct _Player Player;
 Grid *createGrid(int heigth, int length);
 Occupation *createRow(int length, Occupation type);
 void applyOccupationToRow(Occupation *row, int length, Occupation type);
-void displayGrid(Grid *grid, int playerX, int playerY);
+void displayGrid(Grid *grid, int score, int playerX, int playerY);
 
 #endif

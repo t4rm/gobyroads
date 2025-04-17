@@ -10,6 +10,8 @@
 - Gestion des collisions qui entrainent la fin de jeu ✅
 - Gestion du score
 - Gestion de l'abandon (pas bouger pendant trop longtemps)
+- Correction du scintillement de l'écran (clignottage) ✅
+- Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant
 
 
 ## Bonus :
