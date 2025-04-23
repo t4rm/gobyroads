@@ -279,8 +279,10 @@ void updateCars(GameState *gs)
 
             int newX = c->x + c->direction;
 
-            if (newX < 0 || newX >= gs->grid->length)
-                c->x = (newX < 0) ? 0 : (newX >= gs->grid->length) ? gs->grid->length - 1 : newX;
+            if (newX < 0)
+                c->x = gs->grid->length - 1;
+            else if (newX >= gs->grid->length)
+                c->x = 0;
             else
                 c->x = newX;
 
@@ -348,8 +350,8 @@ void updateGameState(GameState *gs)
     updateCars(gs);
     displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y, gs->carMaxSize);
 
-    // print_deque(gs->cars); // Pour faire de la debug
-    // printQue(gs->effects);
+    print_deque(gs->cars); // Pour faire de la debug
+    printQue(gs->effects);
     // printf("%d, %d", gs->player->x, gs->player->y);
 }
 
