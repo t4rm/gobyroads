@@ -12,11 +12,12 @@ int main()
     {
         int frameStart = GetTickCount();
         
-        // if (gs->player->afk >= FPS * 2) gs->gameOver = true;
+        if (gs->player->afk >= FPS * 4) gs->gameOver = true;
 
         updateGameState(gs);
         playerMove(gs);
         scrolling(gs);
+        updateEffects(gs);
         handleCollision(gs);
         
         int frameTime = GetTickCount() - frameStart;

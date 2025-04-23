@@ -10,6 +10,7 @@ GameState *initGameState(int h, int l)
     GameState *gs = (GameState *)malloc(sizeof(GameState));
     gs->carMaxSize = 6;
     gs->cars = createDeque();
+    gs->effects = createQue();
     gs->grid = createGrid(h, l, gs->carMaxSize);
     gs->player = (Player *)malloc(sizeof(Player));
     gs->player->x = (l + 2 * gs->carMaxSize) / 2;
@@ -30,7 +31,7 @@ GameState *initGameState(int h, int l)
     gs->nextSafeZone = 3 + (gs->score / 10);
 
     for (int i = 0; i < gs->grid->height; i++)
-        addCar(gs, i, 0);
+        addCar(gs, i, 0, gs->grid->length/2);
 
     gs->grid->cases[gs->player->y][gs->player->x] = SAFE; // On spawn sur une safe zone, pas un arbre.
 
@@ -111,8 +112,10 @@ void scrolling(GameState *gs)
 {
     if (gs->player->y == 3)
     {
-        if (gs->grid->cases[0][0] != SAFE && gs->grid->cases[0][0] != TREE)
-            remove_first(gs->cars);
+        if (gs->grid->cases[0][0] != SAFE && gs->grid->cases[0][0] != TREE) {
+            removeRow(gs->cars, 0);
+            removeRowEffect(gs->effects, 0);
+        }
 
         for (int i = 0; i < gs->grid->height - 1; i++)
             gs->grid->cases[i] = gs->grid->cases[i + 1];
@@ -122,6 +125,7 @@ void scrolling(GameState *gs)
         gs->player->y -= 1;
 
         decrementCarsOnY(gs);
+        decrementEffectsOnY(gs);
 
         gs->nextSafeZone--;
 
@@ -131,7 +135,7 @@ void scrolling(GameState *gs)
             gs->nextSafeZone = 4 + (gs->score / 10);
         }
         else
-            addCar(gs, gs->grid->height - 1, 0);
+            addCar(gs, gs->grid->height - 1, 0, gs->grid->length/2);
     }
 }
 
@@ -156,7 +160,7 @@ bool handleCollision(GameState *gs)
             
             if (gs->player->x >= startingX && gs->player->x <= endingX)
             {
-                printf("Collision sur l'intervalle [%d,%d] en Y = %d avec un joueur en %d,%d", startingX, endingX, c->y, gs->player->x, gs->player->y);
+                // printf("Collision sur l'intervalle [%d,%d] en Y = %d avec un joueur en %d,%d", startingX, endingX, c->y, gs->player->x, gs->player->y);
                 gs->gameOver = true;
                 return true;
             }
@@ -166,29 +170,90 @@ bool handleCollision(GameState *gs)
     return false;
 }
 
-void addCar(GameState *gs, int y, int forcedDirection)
+void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
 {
-    if (y < 0 || y >= gs->grid->height)
-        return;
-    if (gs->grid->cases[y][0] == SAFE || gs->grid->cases[y][0] == TREE)
-        return;
+    if (y < 0 || y >= gs->grid->height) return;
+    if (gs->grid->cases[y][0] == SAFE || gs->grid->cases[y][0] == TREE) return;
 
-    Car *newCar = (Car *)malloc(sizeof(Car));
-    if (!newCar)
-        return;
+    Car *baseCar = (Car *)malloc(sizeof(Car));
+    if (!baseCar) return;
 
     int direction = forcedDirection == 0 ? (rand() % 2 ? 1 : -1) : forcedDirection;
     int startingX = (direction == 1) ? 0 : gs->grid->length - 1;
+
     int maxSize = (gs->score / 20 + 3 >= 6) ? 6 : gs->score / 20 + 3;
-    int size = 1 + rand() % maxSize;
+    int size = 1 + rand() % (maxSize < availableSize ? maxSize : availableSize);
+
     int maxSpeed = (gs->score / 20 + 1 >= 5) ? 5 : gs->score / 20 + 1;
     int speed = 1 + rand() % maxSpeed;
 
-    *newCar = (Car){.x = startingX, .y = y, .size = size, .direction = direction, .speed = speed, .accumulator = 0};
+    int maxCars = (gs->score >= 100) ? 4 : 2 + gs->score / 20;
+    int desiredCars = 1 + rand() % maxCars;
+
+    int loopTime = gs->grid->length * speed;
+
+    *baseCar = (Car){.x = startingX, .y = y, .size = size, .direction = direction, .speed = speed, .accumulator = 0};
     gs->grid->cases[y][startingX] = CAR;
-    add_last(gs->cars, newCar);
+    add_last(gs->cars, baseCar);
+
+    availableSize -= size;
+    desiredCars--;
+
+    int cumulativeCooldown = 0; 
+    int lastSize = size;
+
+    while (desiredCars > 0 && availableSize > 0)
+    {
+        int nextSize = 1 + rand() % (maxSize < availableSize ? maxSize : availableSize);
+        int spacing = 5 + rand() % 3; // 3 à 6
+
+        int safeCooldown = (lastSize + spacing) * speed;
+
+        cumulativeCooldown += safeCooldown;
+
+        if (cumulativeCooldown >= loopTime)
+            break;
+
+        Car *nextCar = (Car *)malloc(sizeof(Car));
+        if (!nextCar) return;
+
+        *nextCar = (Car){.x = startingX, .y = y, .size = nextSize, .direction = direction, .speed = speed, .accumulator = 0};
+
+        Effect *e = (Effect *)malloc(sizeof(Effect));
+        if (!e) return;
+
+        e->function = &add_last;
+        e->car = nextCar;
+        e->cooldown = cumulativeCooldown;
+
+        addLastEffectToQue(gs->effects, e);
+
+        lastSize = nextSize;
+        availableSize -= nextSize;
+        desiredCars--;
+    }
 }
 
+void updateEffects(GameState *gs)
+{
+    EffectElement *cursor = gs->effects->head;
+    if (cursor == NULL)
+        return;
+
+    if (cursor->effect->car->y >= 0 && cursor->effect->cooldown <= 0)
+    {
+        cursor->effect->function(gs->cars, cursor->effect->car);
+        removeFirstEffect(gs->effects);
+    }
+    else
+    {
+        while (cursor != NULL)
+        {
+            cursor->effect->cooldown--;
+            cursor = cursor->next;
+        }
+    }
+}
 
 void updateCars(GameState *gs)
 {
@@ -236,10 +301,47 @@ void decrementCarsOnY(GameState *gs)
     }
 }
 
+void decrementEffectsOnY(GameState *gs)
+{
+    EffectElement *cursor = gs->effects->head;
+    EffectElement *prev = NULL;
+
+    while (cursor != NULL)
+    {
+        Car *c = cursor->effect->car;
+        c->y--;
+
+        // Supprime les effets avec y < 0
+        if (c->y < 0)
+        {
+            EffectElement *toDelete = cursor;
+            if (prev == NULL) {
+                gs->effects->head = cursor->next;
+            } else {
+                prev->next = cursor->next;
+            }
+
+            cursor = cursor->next;
+
+            free(toDelete->effect);
+            free(toDelete);
+            gs->effects->size--;
+
+            continue;
+        }
+
+        prev = cursor;
+        cursor = cursor->next;
+    }
+}
+
 void updateGameState(GameState *gs)
 {
     updateCars(gs);
     displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y, gs->carMaxSize);
+
     // print_deque(gs->cars); // Pour faire de la debug
+    // printQue(gs->effects);
     // printf("%d, %d", gs->player->x, gs->player->y);
 }
+

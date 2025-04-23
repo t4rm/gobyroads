@@ -122,3 +122,46 @@ Car *remove_last(Deque *deque)
 
     return s;
 }
+
+void removeRow(Deque *deque, int y)
+{
+    if (deque->size == 0)
+        return; 
+    
+    Element *cursor = deque->head;
+
+    while (cursor != NULL)
+    {
+        Car *c = cursor->car;
+
+        if (c->y == y)
+        {
+            if (cursor == deque->head)
+            {
+                deque->head = cursor->next;
+                if (deque->head != NULL) 
+                    deque->head->previous = NULL;
+            }
+            else if (cursor == deque->tail)  // Si c'est le dernier élément
+            {
+                deque->tail = cursor->previous;
+                if (deque->tail != NULL)  // Si la deque n'est pas vide après la suppression
+                    deque->tail->next = NULL;
+            }
+            else  // Si c'est un élément intermédiaire
+            {
+                cursor->previous->next = cursor->next;
+                cursor->next->previous = cursor->previous;
+            }
+            
+            // Libération de la mémoire de l'élément
+            free(cursor->car);  // Libérer la mémoire allouée pour la voiture
+            free(cursor);       // Libérer la mémoire de l'élément de la deque
+            
+            deque->size--;  // Réduire la taille de la deque
+        }
+        
+        // On passe à l'élément suivant
+        cursor = cursor->next;
+    }
+}
