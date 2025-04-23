@@ -25,7 +25,11 @@ int main()
         if (frameDelay > frameTime) Sleep(frameDelay - frameTime);
     }
 
+    printf("\e[1;1H\e[2J"); // Nettoyage de l'écran
+
     if (gs->gameOver) printf("\n\nPerdu, score final: %d\n", gs->score);
+
+    destroyGameState(gs);
 
     return 0;
 }

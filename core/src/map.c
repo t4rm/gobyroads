@@ -18,6 +18,15 @@ Grid *createGrid(int height, int length, int carMaxSize)
     return grid;
 }
 
+void destroyGrid(Grid * g)
+{
+    for (int i = 0; i < g->height; i++)
+    {
+        free(g->cases[i]);
+    }
+    free(g);
+}
+
 Occupation *createRow(int length, Occupation type)
 {
     Occupation *row = (Occupation *)malloc(length * sizeof(Occupation));
@@ -31,7 +40,7 @@ void applyOccupationToRow(Occupation *row, int length, Occupation type) {
 
 void displayGrid(Grid *grid, int score, int playerX, int playerY, int carMaxSize) {
     printf("\033[1;1H");
-    printf("Crossy Roads | Score : %d | L = %d | H = %d\n\n", score, grid->length, grid->height); 
+    printf("Crossy Roads | Score : %d | Appuyer sur \"f\" pour quitter. \n\n", score); 
     printf("\033[3;1H"); 
 
     for (int i = 0; i < grid->height; i++) {
@@ -46,7 +55,8 @@ void displayGrid(Grid *grid, int score, int playerX, int playerY, int carMaxSize
             } else {
                 switch (grid->cases[row][j]) {
                     case SAFE: printf("="); break;
-                    case CAR: printf("V"); break;
+                    case CAR_LEFT: printf("<"); break;
+                    case CAR_RIGHT: printf(">"); break;
                     case ROAD: printf("_"); break;
                     case TREE: printf("T"); break;
                     default: printf("?"); break;

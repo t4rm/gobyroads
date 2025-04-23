@@ -41,6 +41,14 @@ GameState *initGameState(int h, int l)
     return gs;
 }
 
+void destroyGameState(GameState * gs) {
+    destroy_deque(gs->cars);
+    destroyQue(gs->effects);
+    destroyGrid(gs->grid);
+    free(gs->player);
+    free(gs);
+}
+
 void playerMove(GameState *gs)
 {
     if (_kbhit())
@@ -193,7 +201,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
     int loopTime = gs->grid->length * speed;
 
     *baseCar = (Car){.x = startingX, .y = y, .size = size, .direction = direction, .speed = speed, .accumulator = 0};
-    gs->grid->cases[y][startingX] = CAR;
+    gs->grid->cases[y][startingX] = direction == 1 ? CAR_RIGHT : CAR_LEFT;
     add_last(gs->cars, baseCar);
 
     availableSize -= size;
@@ -206,7 +214,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
     {
         int nextSize = 1 + rand() % (maxSize < availableSize ? maxSize : availableSize);
         int spacing = 5 + rand() % 3; 
-        
+
         int safeCooldown = (lastSize + spacing) * speed;
 
         cumulativeCooldown += safeCooldown;
@@ -272,7 +280,7 @@ void updateCars(GameState *gs)
             int newX = c->x + c->direction;
 
             if (newX < 0 || newX >= gs->grid->length)
-                c->x = newX < 0 ? gs->grid->length : 0;
+                c->x = (newX < 0) ? 0 : (newX >= gs->grid->length) ? gs->grid->length - 1 : newX;
             else
                 c->x = newX;
 
@@ -280,7 +288,7 @@ void updateCars(GameState *gs)
 
             for (int i = 0; i < c->size; i++)
                 if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
-                    gs->grid->cases[c->y][c->x + i * c->direction] = CAR;
+                    gs->grid->cases[c->y][c->x + i * c->direction] = c->direction == 1 ? CAR_RIGHT : CAR_LEFT;
             
         }
         else

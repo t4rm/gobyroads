@@ -25,12 +25,12 @@ typedef struct _Que {
 
 Que* createQue(void);
 Effect* getFirstEffect(Que* Que);
-void* removeFirstEffect(Que* Que);
+void removeFirstEffect(Que* Que);
 bool isEmptyQue(Que* Que);
 int getQueSize(Que* Que);
 void addLastEffectToQue(Que* queue, Effect* effect);
 void destroyQue(Que* queue);
 void printQue(Que* queue);
-void *removeRowEffect(Que *queue, int y);
+void removeRowEffect(Que *queue, int y);
 
 #endif

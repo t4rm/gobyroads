@@ -46,5 +46,6 @@ void decrementEffectsOnY(GameState *gs);
 void updateGameState();
 bool handleCollision(GameState *gs);
 void updateEffects(GameState *gs);
+void destroyGameState(GameState * gs);
 
 #endif

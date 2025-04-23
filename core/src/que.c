@@ -43,8 +43,12 @@ void destroyQue(Que *queue)
     while (cursor != NULL)
     {
         EffectElement *next = cursor->next;
-        if (cursor->effect)
-            free(cursor->effect);
+        if (cursor->effect) {
+            if(cursor->effect->car) {
+                    free(cursor->effect->car);
+                }
+                free(cursor->effect);
+            }
         free(cursor);
         cursor = next;
     }
@@ -71,10 +75,10 @@ void printQue(Que *queue)
     printf("]\n");
 }
 
-void *removeFirstEffect(Que *que)
+void removeFirstEffect(Que *que)
 {
     if (que->size == 0)
-        return NULL;
+        return;
 
     EffectElement *tmp = que->head;
     que->head = tmp->next;
@@ -82,8 +86,8 @@ void *removeFirstEffect(Que *que)
     free(tmp);
 }
 
-void *removeRowEffect(Que *queue, int y) {
-    if (queue->head == NULL) return NULL;
+void removeRowEffect(Que *queue, int y) {
+    if (queue->head == NULL) return;
 
     EffectElement *cursor = queue->head;
     EffectElement *prev = NULL;
