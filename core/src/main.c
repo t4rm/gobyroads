@@ -5,13 +5,15 @@
 int main()
 {
     GameState *gs = initGameState(15, 30);
-    const int FPS = 12; 
+    const int FPS = 60; 
     const int frameDelay = 1000 / FPS;
 
     while (!gs->gameOver)
     {
         int frameStart = GetTickCount();
         
+        // if (gs->player->afk >= FPS * 2) gs->gameOver = true;
+
         updateGameState(gs);
         playerMove(gs);
         scrolling(gs);
@@ -19,10 +21,7 @@ int main()
         
         int frameTime = GetTickCount() - frameStart;
 
-        if (frameDelay > frameTime)
-        {
-            Sleep(frameDelay - frameTime);
-        }
+        if (frameDelay > frameTime) Sleep(frameDelay - frameTime);
     }
 
     if (gs->gameOver) printf("\n\nPerdu, score final: %d\n", gs->score);

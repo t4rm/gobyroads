@@ -8,12 +8,14 @@
 GameState *initGameState(int h, int l)
 {
     GameState *gs = (GameState *)malloc(sizeof(GameState));
+    gs->carMaxSize = 6;
     gs->cars = createDeque();
-    gs->grid = createGrid(h, l);
+    gs->grid = createGrid(h, l, gs->carMaxSize);
     gs->player = (Player *)malloc(sizeof(Player));
-    gs->player->x = l / 2;
+    gs->player->x = (l + 2 * gs->carMaxSize) / 2;
     gs->player->y = 0;
     gs->player->mouvementCooldown = 0;
+    gs->player->afk = 0;
     gs->score = 0;
     gs->backwardMovements = 0;
     gs->gameOver = false;
@@ -21,7 +23,7 @@ GameState *initGameState(int h, int l)
 
     while (gs->nextSafeZone < h)
     {
-        applyOccupationToRow(gs->grid->cases[gs->nextSafeZone], l, SAFE);
+        applyOccupationToRow(gs->grid->cases[gs->nextSafeZone], l + 2 * gs->carMaxSize, SAFE);
         gs->nextSafeZone += 4 + (gs->score / 10);
     }
 
@@ -58,7 +60,7 @@ void playerMove(GameState *gs)
                     hasMoved = true;
                 }
                 break;
-            case 's': // Move down
+            case 's': 
                 if (gs->player->y > 0)
                 {
                     gs->player->y--;
@@ -68,15 +70,15 @@ void playerMove(GameState *gs)
                 else
                     gs->gameOver = true; // 3 pas en arrière.
                 break;
-            case 'q': // Move left
-                if (gs->player->x > 0)
+            case 'q': 
+                if (gs->player->x > gs->carMaxSize)
                 {
                     gs->player->x--;
                     hasMoved = true;
                 }
                 break;
-            case 'd': // Move right
-                if (gs->player->x < gs->grid->length - 1)
+            case 'd': 
+                if (gs->player->x < gs->grid->length - 1 - gs->carMaxSize)
                 {
                     gs->player->x++;
                     hasMoved = true;
@@ -92,14 +94,17 @@ void playerMove(GameState *gs)
         if (gs->grid->cases[gs->player->y][gs->player->x] == TREE) {
             gs->player->x = precedentX;
             gs->player->y = precedentY;
-            gs->player->mouvementCooldown = 3; // COoldown moins important en cas de mouvement non autorisé : A confirmer 
+            gs->player->mouvementCooldown = 1; // Cooldown moins important en cas de mouvement non autorisé : A confirmer 
         }
 
-        if (hasMoved)
-            gs->player->mouvementCooldown = 6; // 2 mouvements par seconde autorisé : À confirmer
+        if (hasMoved) {
+            gs->player->mouvementCooldown = 3; // 2 mouvements par seconde autorisé : À confirmer
+            gs->player->afk = 0;
+        }
     }
 
     gs->player->mouvementCooldown = gs->player->mouvementCooldown <= 1 ? 0 : gs->player->mouvementCooldown - 1;
+    gs->player->afk++;
 }
 
 void scrolling(GameState *gs)
@@ -138,13 +143,25 @@ bool handleCollision(GameState *gs)
     Element *cursor = gs->cars->head;
     while (cursor != NULL)
     {
-        if (cursor->car->x == gs->player->x && cursor->car->y == gs->player->y)
-        {
-            gs->gameOver = true;
-            return true;
+        Car * c = cursor->car;
+        if (c->y == gs->player->y) {
+            int endingX = c->x + c->size * c->direction + c->direction * -1;
+            int startingX = c->x;
+            
+            if (startingX > endingX) {
+                int t = startingX;
+                startingX = endingX;
+                endingX = t;
+            }
+            
+            if (gs->player->x >= startingX && gs->player->x <= endingX)
+            {
+                printf("Collision sur l'intervalle [%d,%d] en Y = %d avec un joueur en %d,%d", startingX, endingX, c->y, gs->player->x, gs->player->y);
+                gs->gameOver = true;
+                return true;
+            }
         }
-        else
-            cursor = cursor->next;
+        cursor = cursor->next;
     }
     return false;
 }
@@ -162,14 +179,16 @@ void addCar(GameState *gs, int y, int forcedDirection)
 
     int direction = forcedDirection == 0 ? (rand() % 2 ? 1 : -1) : forcedDirection;
     int startingX = (direction == 1) ? 0 : gs->grid->length - 1;
-    int maxSize = (gs->score / 10 + 3 >= 6) ? 6 : gs->score / 10 + 3;
-    int size = rand() % maxSize;
-    int speed = rand() % 6;
+    int maxSize = (gs->score / 20 + 3 >= 6) ? 6 : gs->score / 20 + 3;
+    int size = 1 + rand() % maxSize;
+    int maxSpeed = (gs->score / 20 + 1 >= 5) ? 5 : gs->score / 20 + 1;
+    int speed = 1 + rand() % maxSpeed;
 
     *newCar = (Car){.x = startingX, .y = y, .size = size, .direction = direction, .speed = speed, .accumulator = 0};
     gs->grid->cases[y][startingX] = CAR;
     add_last(gs->cars, newCar);
 }
+
 
 void updateCars(GameState *gs)
 {
@@ -181,20 +200,23 @@ void updateCars(GameState *gs)
 
         if (c->accumulator == c->speed)
         {
-            if (c->y >= 0 && c->y < gs->grid->height && c->x >= 0 && c->x < gs->grid->length)
-                gs->grid->cases[c->y][c->x] = ROAD;
+            for (int i = 0; i < c->size; i++)
+                if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
+                    gs->grid->cases[c->y][c->x + i * c->direction] = ROAD;
 
             int newX = c->x + c->direction;
 
             if (newX < 0 || newX >= gs->grid->length)
-                c->x = newX < 0 ? gs->grid->length - 1 : 0;
+                c->x = newX < 0 ? gs->grid->length : 0;
             else
                 c->x = newX;
 
             c->accumulator = 0;
 
-            if (c->y >= 0 && c->y < gs->grid->height && c->x >= 0 && c->x < gs->grid->length)
-                gs->grid->cases[c->y][c->x] = CAR;
+            for (int i = 0; i < c->size; i++)
+                if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
+                    gs->grid->cases[c->y][c->x + i * c->direction] = CAR;
+            
         }
         else
             c->accumulator++;
@@ -217,6 +239,7 @@ void decrementCarsOnY(GameState *gs)
 void updateGameState(GameState *gs)
 {
     updateCars(gs);
-    displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y);
-    // print_deque(gs->cars); // For debug purposes
+    displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y, gs->carMaxSize);
+    // print_deque(gs->cars); // Pour faire de la debug
+    // printf("%d, %d", gs->player->x, gs->player->y);
 }

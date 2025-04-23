@@ -87,7 +87,7 @@ void print_deque(Deque *queue)
     printf("[\n");
     for (int i = 0; i < queue->size; i++)
     {
-        printf("#%d, y : %d\n", i, cursor->car->y);
+        printf("#%d, y : %d, x : %d, s : %d, d : %d, v : %d\n", i, cursor->car->y, cursor->car->x, cursor->car->size, cursor->car->direction, cursor->car->speed);
         cursor = cursor->next;
     }
     printf("]\n");

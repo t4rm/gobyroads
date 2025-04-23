@@ -21,9 +21,9 @@ typedef struct _Grid
 typedef struct _GameState GameState;
 typedef struct _Player Player;
 
-Grid *createGrid(int heigth, int length);
+Grid *createGrid(int heigth, int length, int carMaxSize);
 Occupation *createRow(int length, Occupation type);
 void applyOccupationToRow(Occupation *row, int length, Occupation type);
-void displayGrid(Grid *grid, int score, int playerX, int playerY);
+void displayGrid(Grid *grid, int score, int playerX, int playerY, int carMaxSize);
 
 #endif

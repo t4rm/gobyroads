@@ -7,7 +7,7 @@
 
 typedef struct _Player
 {
-    int x, y, mouvementCooldown;
+    int x, y, mouvementCooldown, afk;
 } Player;
 
 typedef struct _Car
@@ -27,6 +27,7 @@ typedef struct _GameState
     int score;
     int backwardMovements;
     int nextSafeZone;
+    int carMaxSize;
     bool gameOver;
 } GameState;
 

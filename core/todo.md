@@ -6,10 +6,11 @@
 - Ajout des véhicules, ceux-ci doivent se déplacer indépendamment du joueur, donc en fonction de leur vitesse qui leur est propre.
     - Mise en place de liste doublement chaîné pour permettre l'ajout des véhicules par le haut et leur sortie par le bas ✅
     - Avoir des routes avec plusieurs véhicules en fonction de la difficulté, ces véhicules ne doivent pas se superposés  
-    - Prendre en charge la taille des véhicules qui doit être affichée (et notamment quand un véhicule avec size > 1 quitte l'écran, sa queue doit quitter progressivement)
-- Gestion des collisions qui entrainent la fin de jeu ✅
+    - Prendre en charge la taille des véhicules qui doit être affichée (et notamment quand un véhicule avec size > 1 quitte l'écran, sa queue doit quitter progressivement) ✅
+- Gestion des collisions qui entrainent la fin de jeu, même pour les grands véhicules (queue, corps et tête du véhicule) ✅
 - Gestion du score
-- Gestion de l'abandon (pas bouger pendant trop longtemps)
+    - Effet sonore tous les 50 de scores 
+- Gestion de l'abandon (pas bouger pendant trop longtemps) ✅
 - Correction du scintillement de l'écran (clignottage) ✅
 - Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant
 
