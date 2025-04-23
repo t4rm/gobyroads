@@ -205,8 +205,8 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
     while (desiredCars > 0 && availableSize > 0)
     {
         int nextSize = 1 + rand() % (maxSize < availableSize ? maxSize : availableSize);
-        int spacing = 5 + rand() % 3; // 3 à 6
-
+        int spacing = 5 + rand() % 3; 
+        
         int safeCooldown = (lastSize + spacing) * speed;
 
         cumulativeCooldown += safeCooldown;
