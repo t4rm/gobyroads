@@ -17,6 +17,7 @@
 - Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant, à voir si c'est un bug ou non.
 - Gestion du score
     - Effet sonore tous les 50 de scores 
+- Patch bug de freezing
 
 ## Bonus :
 - ReadMe

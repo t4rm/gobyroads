@@ -349,9 +349,8 @@ void updateGameState(GameState *gs)
 {
     updateCars(gs);
     displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y, gs->carMaxSize);
-
-    print_deque(gs->cars); // Pour faire de la debug
-    printQue(gs->effects);
+    // print_deque(gs->cars); // Pour faire de la debug
+    // printQue(gs->effects);
     // printf("%d, %d", gs->player->x, gs->player->y);
 }
 

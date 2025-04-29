@@ -129,10 +129,12 @@ void removeRow(Deque *deque, int y)
         return; 
     
     Element *cursor = deque->head;
+    Element *next = deque->head->next;
 
     while (cursor != NULL)
     {
         Car *c = cursor->car;
+        next = cursor->next;
 
         if (c->y == y)
         {
@@ -162,6 +164,6 @@ void removeRow(Deque *deque, int y)
         }
         
         // On passe à l'élément suivant
-        cursor = cursor->next;
+        cursor = next;
     }
 }

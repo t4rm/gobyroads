@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude
+CFLAGS = -Wall -Wextra -Iinclude -g
 
 SRC_DIR = src
 TEST_DIR = tests
@@ -22,12 +22,13 @@ $(OBJ_DIR)/%.o: | $(OBJ_DIR)
 $(BIN_DIR)/main: | $(BIN_DIR)
 $(BIN_DIR)/test: | $(BIN_DIR)
 
-all: main
-
-# Execute the main.c file, compiling every other C file in src.
-main: $(OBJ_FILES) | $(BIN_DIR)
-	$(CC) -o $(BIN_DIR)/main $(OBJ_FILES)
+# Execute the main file
+run: main
 	$(BIN_DIR)/main.exe
+
+# Compile every C file in src.
+main: $(OBJ_FILES) | $(BIN_DIR)
+	$(CC) -o $(BIN_DIR)/main $(OBJ_FILES) -g
 
 # Execute the test_main.c file, compiling every other C file in src.
 test: $(OBJ_FILES_NO_MAIN) $(OBJ_DIR)/test_main.o | $(BIN_DIR)
