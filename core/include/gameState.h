@@ -3,7 +3,7 @@
 
 #include "map.h"
 #include "deque.h"
-#include "que.h"
+#include "effect_queue.h"
 #include "stdbool.h"
 
 typedef struct _Player
@@ -18,7 +18,7 @@ typedef struct _Car
 
 
 typedef struct _Grid Grid;
-typedef struct _Que Que;
+typedef struct _EffectQueue EffectQueue;
 typedef struct _Deque Deque;
 
 typedef struct _GameState
@@ -26,7 +26,7 @@ typedef struct _GameState
     Grid *grid;
     Player *player;
     Deque *cars;
-    Que *effects;
+    EffectQueue *effects;
     int carsAmount;
     int score;
     int backwardMovements;

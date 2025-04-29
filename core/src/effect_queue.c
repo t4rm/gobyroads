@@ -1,29 +1,18 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "que.h"
+#include "effect_queue.h"
 #include "gamestate.h"
 
-Que *createQue(void)
+EffectQueue *createEffectQueue(void)
 {
-    Que *new = malloc(sizeof(Que));
+    EffectQueue *new = malloc(sizeof(EffectQueue));
     new->size = 0;
     new->head = malloc(sizeof(EffectElement));
     new->tail = malloc(sizeof(EffectElement));
-
     return new;
 }
 
-bool isEmptyQue(Que *que) { return que->size == 0; }
-int getQueSize(Que *que) { return que->size; }
-
-Effect *getFirstEffect(Que *que)
-{
-    if (isEmptyQue(que))
-        return NULL;
-    return que->head->effect;
-}
-
-void addLastEffectToQue(Que *queue, Effect *effect)
+void addLastEffectToEffectQueue(EffectQueue *queue, Effect *effect)
 {
     EffectElement *new_e = malloc(sizeof(EffectElement));
     new_e->effect = effect;
@@ -37,7 +26,7 @@ void addLastEffectToQue(Que *queue, Effect *effect)
     queue->size++;
 }
 
-void destroyQue(Que *queue)
+void destroyEffectQueue(EffectQueue *queue)
 {
     EffectElement *cursor = queue->head;
     while (cursor != NULL)
@@ -55,7 +44,7 @@ void destroyQue(Que *queue)
     free(queue);
 }
 
-void printQue(Que *queue)
+void printEffectQueue(EffectQueue *queue)
 {
 
     if (queue->size == 0)
@@ -75,7 +64,7 @@ void printQue(Que *queue)
     printf("]\n");
 }
 
-void removeFirstEffect(Que *que)
+void removeFirstEffect(EffectQueue *que)
 {
     if (que->size == 0)
         return;
@@ -86,7 +75,7 @@ void removeFirstEffect(Que *que)
     free(tmp);
 }
 
-void removeRowEffect(Que *queue, int y) {
+void removeRowEffectQueue(EffectQueue *queue, int y) {
     if (queue->head == NULL) return;
 
     EffectElement *cursor = queue->head;

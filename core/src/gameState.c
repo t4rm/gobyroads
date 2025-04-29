@@ -10,7 +10,7 @@ GameState *initGameState(int h, int l)
     GameState *gs = (GameState *)malloc(sizeof(GameState));
     gs->carMaxSize = 6;
     gs->cars = createDeque();
-    gs->effects = createQue();
+    gs->effects = createEffectQueue();
     gs->grid = createGrid(h, l, gs->carMaxSize);
     gs->player = (Player *)malloc(sizeof(Player));
     gs->player->x = (l + 2 * gs->carMaxSize) / 2;
@@ -43,7 +43,7 @@ GameState *initGameState(int h, int l)
 
 void destroyGameState(GameState * gs) {
     destroyDeque(gs->cars);
-    destroyQue(gs->effects);
+    destroyEffectQueue(gs->effects);
     destroyGrid(gs->grid);
     free(gs->player);
     free(gs);
@@ -122,7 +122,7 @@ void scrolling(GameState *gs)
     {
         if (gs->grid->cases[0][0] != SAFE && gs->grid->cases[0][0] != TREE) {
             removeRow(gs->cars, 0);
-            removeRowEffect(gs->effects, 0);
+            removeRowEffectQueue(gs->effects, 0);
         }
 
         for (int i = 0; i < gs->grid->height - 1; i++)
@@ -234,7 +234,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
         e->car = nextCar;
         e->cooldown = cumulativeCooldown;
 
-        addLastEffectToQue(gs->effects, e);
+        addLastEffectToEffectQueue(gs->effects, e);
 
         lastSize = nextSize;
         availableSize -= nextSize;
@@ -350,7 +350,7 @@ void updateGameState(GameState *gs)
     updateCars(gs);
     displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y, gs->carMaxSize);
     // printDeque(gs->cars); // Pour faire de la debug
-    // printQue(gs->effects);
+    // printEffectQueue(gs->effects);
     // printf("%d, %d", gs->player->x, gs->player->y);
 }
 
