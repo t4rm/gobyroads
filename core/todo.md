@@ -18,6 +18,9 @@
 - Gestion du score
     - Effet sonore tous les 50 de scores 
 - Patch bug de freezing
+- Séparation logique du player
+- Plus de deque, que des queues simples
+
 
 ## Bonus :
 - ReadMe
