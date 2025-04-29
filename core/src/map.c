@@ -1,0 +1,69 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include "map.h"
+
+Grid *createGrid(int height, int length, int carMaxSize)
+{
+    Grid *grid = (Grid *)malloc(sizeof(Grid));
+    grid->height = height;
+    grid->length = length + 2 * carMaxSize;
+    grid->cases = malloc(sizeof(Occupation *) * height);
+
+    for (int i = 0; i < height; i++)
+    {
+        Occupation baseTile = i == 0 ? SAFE : ROAD;
+        grid->cases[i] = createRow(length + 2 * carMaxSize, baseTile);
+    }
+
+    return grid;
+}
+
+void destroyGrid(Grid * g)
+{
+    for (int i = 0; i < g->height; i++)
+    {
+        free(g->cases[i]);
+    }
+    free(g);
+}
+
+Occupation *createRow(int length, Occupation type)
+{
+    Occupation *row = (Occupation *)malloc(length * sizeof(Occupation));
+    applyOccupationToRow(row, length, type);
+    return row;
+}
+
+void applyOccupationToRow(Occupation *row, int length, Occupation type) {
+    for (int i = 0; i < length; i++) row[i] = type == SAFE ? rand() % length/3 ? SAFE : TREE : type;
+}
+
+void displayGrid(Grid *grid, int score, int playerX, int playerY, int carMaxSize) {
+    printf("\033[1;1H");
+    printf("Crossy Roads | Score : %d | Appuyer sur \"f\" pour quitter. \n\n", score); 
+    printf("\033[3;1H"); 
+
+    for (int i = 0; i < grid->height; i++) {
+        int row = grid->height - 1 - i;
+    
+        for (int j = carMaxSize; j < grid->length - carMaxSize + 1; j++) {
+            int virtualJ = j - carMaxSize;
+            printf("\033[%d;%dH", i + 3, virtualJ);
+    
+            if (row == playerY && j == playerX) {
+                printf("P");
+            } else {
+                switch (grid->cases[row][j]) {
+                    case SAFE: printf("="); break;
+                    case CAR_LEFT: printf("<"); break;
+                    case CAR_RIGHT: printf(">"); break;
+                    case ROAD: printf("_"); break;
+                    case TREE: printf("T"); break;
+                    default: printf("?"); break;
+                }
+            }
+        }
+    }
+
+    fflush(stdout);
+}

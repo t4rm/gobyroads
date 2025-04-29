@@ -1,0 +1,169 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include "deque.h"
+#include "gamestate.h"
+
+Deque *createDeque(void)
+{
+    Deque *new = malloc(sizeof(Deque));
+    new->size = 0;
+    new->head = malloc(sizeof(Element));
+    new->tail = malloc(sizeof(Element));
+
+    return new;
+}
+
+bool isEmptyDeque(Deque *deque) { return deque->size == 0; }
+int getSizeDeque(Deque *deque) { return deque->size; }
+
+void addFirstDeque(Deque *deque, Car *car)
+{
+    Element *new_e = malloc(sizeof(Element));
+    new_e->car = car;
+    new_e->next = deque->head;
+    new_e->previous = NULL;
+    deque->head->previous = new_e;
+    deque->head = new_e;
+    if (deque->size == 0)
+        deque->tail = new_e;
+    deque->size += 1;
+}
+
+Car *getFirstDeque(Deque *deque)
+{
+    if (isEmptyDeque(deque))
+        return NULL;
+    return deque->head->car;
+}
+
+void addLastDeque(Deque *queue, Car *car)
+{
+    Element *new_e = malloc(sizeof(Element));
+    new_e->car = car;
+    new_e->previous = queue->tail;
+    new_e->next = NULL;
+    queue->tail->next = new_e;
+    queue->tail = new_e;
+
+    if (queue->size == 0)
+        queue->head = new_e;
+    queue->size += 1;
+}
+
+Car *get_last(Deque *queue)
+{
+    if (isEmptyDeque(queue))
+        return NULL;
+    return queue->tail->car;
+}
+
+void destroyDeque(Deque *queue)
+{
+    Element *cursor = queue->head;
+    while (cursor != NULL)
+    {
+        Element *next = cursor->next;
+        if (cursor->car)
+            free(cursor->car);
+        free(cursor);
+        cursor = next;
+    }
+    free(queue);
+}
+
+void printDeque(Deque *queue)
+{
+
+    if (queue->size == 0)
+    {
+        printf("[\n]\n");
+        return;
+    }
+
+    printf("%d\n", queue->size);
+
+    Element *cursor = queue->head;
+
+    printf("[\n");
+    for (int i = 0; i < queue->size; i++)
+    {
+        printf("#%d, y : %d, x : %d, s : %d, d : %d, v : %d\n", i, cursor->car->y, cursor->car->x, cursor->car->size, cursor->car->direction, cursor->car->speed);
+        cursor = cursor->next;
+    }
+    printf("]\n");
+}
+
+Car *removeFirstDeque(Deque *deque)
+{
+    if (deque->size == 0)
+        return NULL;
+
+    Element *tmp = deque->head;
+    Car *s = tmp->car;
+    deque->head = tmp->next;
+    free(tmp);
+    deque->head->previous = NULL;
+    deque->size--;
+
+    return s;
+}
+
+Car *removeLastDeque(Deque *deque)
+{
+    if (deque->size == 0)
+        return NULL;
+
+    Element *tmp = deque->tail;
+    Car *s = tmp->car;
+    deque->tail = tmp->previous;
+    free(tmp);
+    deque->tail->next = NULL;
+    deque->size--;
+
+    return s;
+}
+
+void removeRow(Deque *deque, int y)
+{
+    if (deque->size == 0)
+        return; 
+    
+    Element *cursor = deque->head;
+    Element *next = deque->head->next;
+
+    while (cursor != NULL)
+    {
+        Car *c = cursor->car;
+        next = cursor->next;
+
+        if (c->y == y)
+        {
+            if (cursor == deque->head)
+            {
+                deque->head = cursor->next;
+                if (deque->head != NULL) 
+                    deque->head->previous = NULL;
+            }
+            else if (cursor == deque->tail)  // Si c'est le dernier élément
+            {
+                deque->tail = cursor->previous;
+                if (deque->tail != NULL)  // Si la deque n'est pas vide après la suppression
+                    deque->tail->next = NULL;
+            }
+            else  // Si c'est un élément intermédiaire
+            {
+                cursor->previous->next = cursor->next;
+                cursor->next->previous = cursor->previous;
+            }
+            
+            // Libération de la mémoire de l'élément
+            free(cursor->car);  // Libérer la mémoire allouée pour la voiture
+            free(cursor);       // Libérer la mémoire de l'élément de la deque
+            
+            deque->size--;  // Réduire la taille de la deque
+        }
+        
+        // On passe à l'élément suivant
+        cursor = next;
+    }
+}
