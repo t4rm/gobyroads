@@ -42,7 +42,7 @@ GameState *initGameState(int h, int l)
 }
 
 void destroyGameState(GameState * gs) {
-    destroy_deque(gs->cars);
+    destroyDeque(gs->cars);
     destroyQue(gs->effects);
     destroyGrid(gs->grid);
     free(gs->player);
@@ -202,7 +202,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
 
     *baseCar = (Car){.x = startingX, .y = y, .size = size, .direction = direction, .speed = speed, .accumulator = 0};
     gs->grid->cases[y][startingX] = direction == 1 ? CAR_RIGHT : CAR_LEFT;
-    add_last(gs->cars, baseCar);
+    addLastDeque(gs->cars, baseCar);
 
     availableSize -= size;
     desiredCars--;
@@ -230,7 +230,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
         Effect *e = (Effect *)malloc(sizeof(Effect));
         if (!e) return;
 
-        e->function = &add_last;
+        e->function = &addLastDeque;
         e->car = nextCar;
         e->cooldown = cumulativeCooldown;
 
@@ -349,7 +349,7 @@ void updateGameState(GameState *gs)
 {
     updateCars(gs);
     displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y, gs->carMaxSize);
-    // print_deque(gs->cars); // Pour faire de la debug
+    // printDeque(gs->cars); // Pour faire de la debug
     // printQue(gs->effects);
     // printf("%d, %d", gs->player->x, gs->player->y);
 }

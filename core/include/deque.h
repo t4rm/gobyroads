@@ -18,16 +18,16 @@ typedef struct _Deque {
 } Deque;
 
 Deque* createDeque(void);
-Car* get_first(Deque* deque);
-Car* remove_first(Deque* deque);
-Car* remove_last(Deque* deque);
+Car* getFirstDeque(Deque* deque);
+Car* removeFirstDeque(Deque* deque);
+Car* removeLastDeque(Deque* deque);
 // Car *remove_pos(Deque *deque, int x, int y);
 void removeRow(Deque* deque, int y);
-void destroy_deque(Deque* queue);
-bool is_empty(Deque* deque);
-int get_size(Deque* deque);
-void add_first(Deque* deque, Car* car);
-void add_last(Deque* queue, Car* car);
-void print_deque(Deque* queue);
+void destroyDeque(Deque* queue);
+bool isEmptyDeque(Deque* deque);
+int getSizeDeque(Deque* deque);
+void addFirstDeque(Deque* deque, Car* car);
+void addLastDeque(Deque* queue, Car* car);
+void printDeque(Deque* queue);
 
 #endif

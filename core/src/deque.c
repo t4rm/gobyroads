@@ -13,10 +13,10 @@ Deque *createDeque(void)
     return new;
 }
 
-bool is_empty(Deque *deque) { return deque->size == 0; }
-int get_size(Deque *deque) { return deque->size; }
+bool isEmptyDeque(Deque *deque) { return deque->size == 0; }
+int getSizeDeque(Deque *deque) { return deque->size; }
 
-void add_first(Deque *deque, Car *car)
+void addFirstDeque(Deque *deque, Car *car)
 {
     Element *new_e = malloc(sizeof(Element));
     new_e->car = car;
@@ -29,14 +29,14 @@ void add_first(Deque *deque, Car *car)
     deque->size += 1;
 }
 
-Car *get_first(Deque *deque)
+Car *getFirstDeque(Deque *deque)
 {
-    if (is_empty(deque))
+    if (isEmptyDeque(deque))
         return NULL;
     return deque->head->car;
 }
 
-void add_last(Deque *queue, Car *car)
+void addLastDeque(Deque *queue, Car *car)
 {
     Element *new_e = malloc(sizeof(Element));
     new_e->car = car;
@@ -52,12 +52,12 @@ void add_last(Deque *queue, Car *car)
 
 Car *get_last(Deque *queue)
 {
-    if (is_empty(queue))
+    if (isEmptyDeque(queue))
         return NULL;
     return queue->tail->car;
 }
 
-void destroy_deque(Deque *queue)
+void destroyDeque(Deque *queue)
 {
     Element *cursor = queue->head;
     while (cursor != NULL)
@@ -71,7 +71,7 @@ void destroy_deque(Deque *queue)
     free(queue);
 }
 
-void print_deque(Deque *queue)
+void printDeque(Deque *queue)
 {
 
     if (queue->size == 0)
@@ -93,7 +93,7 @@ void print_deque(Deque *queue)
     printf("]\n");
 }
 
-Car *remove_first(Deque *deque)
+Car *removeFirstDeque(Deque *deque)
 {
     if (deque->size == 0)
         return NULL;
@@ -108,7 +108,7 @@ Car *remove_first(Deque *deque)
     return s;
 }
 
-Car *remove_last(Deque *deque)
+Car *removeLastDeque(Deque *deque)
 {
     if (deque->size == 0)
         return NULL;
