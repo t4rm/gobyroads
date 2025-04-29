@@ -7,8 +7,8 @@ CarQueue *createCarQueue(void)
 {
     CarQueue *new = malloc(sizeof(CarQueue));
     new->size = 0;
-    new->head = NULL;
-    new->tail = NULL;
+    new->head = malloc(sizeof(CarElement));
+    new->tail = malloc(sizeof(EffectElement));
     return new;
 }
 

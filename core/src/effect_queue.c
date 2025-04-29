@@ -75,7 +75,7 @@ void removeFirstEffect(EffectQueue *que)
     free(tmp);
 }
 
-void removeRowEffectQueue(EffectQueue *queue, int y) {
+void removeRowEffect(EffectQueue *queue, int y) {
     if (queue->head == NULL) return;
 
     EffectElement *cursor = queue->head;

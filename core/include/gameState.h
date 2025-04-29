@@ -2,8 +2,8 @@
 #define GAMESTATE_H
 
 #include "map.h"
-#include "deque.h"
 #include "effect_queue.h"
+#include "car_queue.h"
 #include "stdbool.h"
 
 typedef struct _Player
@@ -16,16 +16,15 @@ typedef struct _Car
   int x, y, size, direction, speed, accumulator;
 } Car;
 
-
 typedef struct _Grid Grid;
 typedef struct _EffectQueue EffectQueue;
-typedef struct _Deque Deque;
+typedef struct _CarQueue CarQueue;
 
 typedef struct _GameState
 {
     Grid *grid;
     Player *player;
-    Deque *cars;
+    CarQueue *cars;
     EffectQueue *effects;
     int carsAmount;
     int score;

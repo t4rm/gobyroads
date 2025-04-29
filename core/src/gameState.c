@@ -9,7 +9,7 @@ GameState *initGameState(int h, int l)
 {
     GameState *gs = (GameState *)malloc(sizeof(GameState));
     gs->carMaxSize = 6;
-    gs->cars = createDeque();
+    gs->cars = createCarQueue();
     gs->effects = createEffectQueue();
     gs->grid = createGrid(h, l, gs->carMaxSize);
     gs->player = (Player *)malloc(sizeof(Player));
@@ -42,7 +42,7 @@ GameState *initGameState(int h, int l)
 }
 
 void destroyGameState(GameState * gs) {
-    destroyDeque(gs->cars);
+    destroyCarQueue(gs->cars);
     destroyEffectQueue(gs->effects);
     destroyGrid(gs->grid);
     free(gs->player);
@@ -121,8 +121,8 @@ void scrolling(GameState *gs)
     if (gs->player->y == 3)
     {
         if (gs->grid->cases[0][0] != SAFE && gs->grid->cases[0][0] != TREE) {
-            removeRow(gs->cars, 0);
-            removeRowEffectQueue(gs->effects, 0);
+            removeRowCar(gs->cars, 0);
+            removeRowEffect(gs->effects, 0);
         }
 
         for (int i = 0; i < gs->grid->height - 1; i++)
@@ -152,7 +152,7 @@ bool handleCollision(GameState *gs)
     if (gs->grid->cases[gs->player->y][0] == SAFE)
         return false;
     
-    Element *cursor = gs->cars->head;
+    CarElement *cursor = gs->cars->head;
     while (cursor != NULL)
     {
         Car * c = cursor->car;
@@ -202,7 +202,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
 
     *baseCar = (Car){.x = startingX, .y = y, .size = size, .direction = direction, .speed = speed, .accumulator = 0};
     gs->grid->cases[y][startingX] = direction == 1 ? CAR_RIGHT : CAR_LEFT;
-    addLastDeque(gs->cars, baseCar);
+    addLastCar(gs->cars, baseCar);
 
     availableSize -= size;
     desiredCars--;
@@ -230,7 +230,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
         Effect *e = (Effect *)malloc(sizeof(Effect));
         if (!e) return;
 
-        e->function = &addLastDeque;
+        e->function = &addLastCar;
         e->car = nextCar;
         e->cooldown = cumulativeCooldown;
 
@@ -265,11 +265,11 @@ void updateEffects(GameState *gs)
 
 void updateCars(GameState *gs)
 {
-    Element *cursor = gs->cars->head;
+    CarElement *cursor = gs->cars->head;
     while (cursor != NULL)
     {
         Car *c = cursor->car;
-        Element *next = cursor->next;
+        CarElement *next = cursor->next;
 
         if (c->accumulator == c->speed)
         {
@@ -302,7 +302,7 @@ void updateCars(GameState *gs)
 
 void decrementCarsOnY(GameState *gs)
 {
-    Element *cursor = gs->cars->head;
+    CarElement *cursor = gs->cars->head;
     while (cursor != NULL)
     {
         Car *c = cursor->car;
