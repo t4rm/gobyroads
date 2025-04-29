@@ -79,7 +79,7 @@ void printCarQueue(CarQueue *queue)
     
     printf("%d\n", queue->size);
     
-    Element *cursor = queue->head;
+    CarElement *cursor = queue->head;
     
     printf("[\n");
     for (int i = 0; i < queue->size; i++)
