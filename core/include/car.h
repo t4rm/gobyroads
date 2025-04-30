@@ -5,7 +5,7 @@
 
 typedef struct _GameState GameState;
 
-void addCar(GameState *gs, int y, int direction, int availableSize);
+void addCar(GameState *gs, int y, int direction, int availableSize, Occupation roadType);
 void updateCars(GameState *gs);
 void decrementCarsOnY(GameState *gs);
 

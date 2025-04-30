@@ -54,11 +54,13 @@ void displayGrid(Grid *grid, int score, int playerX, int playerY, int carMaxSize
                 printf("P");
             } else {
                 switch (grid->cases[row][j]) {
+                    case ROAD: printf("_"); break;
+                    case WATER: printf("~"); break;
                     case SAFE: printf("="); break;
+                    case TREE: printf("T"); break;
                     case CAR_LEFT: printf("<"); break;
                     case CAR_RIGHT: printf(">"); break;
-                    case ROAD: printf("_"); break;
-                    case TREE: printf("T"); break;
+                    case LOG: printf("L"); break;
                     default: printf("?"); break;
                 }
             }

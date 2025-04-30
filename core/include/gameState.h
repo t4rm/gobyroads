@@ -11,6 +11,10 @@
 #include "car.h"
 #include "effect.h"
 
+typedef struct _Grid Grid;
+typedef struct _EffectQueue EffectQueue;
+typedef struct _CarQueue CarQueue;
+
 typedef struct _Player
 {
     int x, y, mouvementCooldown, afk;
@@ -19,11 +23,8 @@ typedef struct _Player
 typedef struct _Car
 {
   int x, y, size, direction, speed, accumulator;
+  Occupation type;
 } Car;
-
-typedef struct _Grid Grid;
-typedef struct _EffectQueue EffectQueue;
-typedef struct _CarQueue CarQueue;
 
 typedef struct _GameState
 {
@@ -44,7 +45,7 @@ GameState *initGameState();
 void playerMove(GameState *gs);
 void scrolling(GameState *gs);
 void updateGameState();
-bool handleCollision(GameState *gs);
+void handleCollision(GameState *gs);
 void destroyGameState(GameState * gs);
 
 #endif

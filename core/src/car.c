@@ -1,7 +1,7 @@
 #include "car.h"
 #include <stdlib.h>
 
-void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
+void addCar(GameState *gs, int y, int forcedDirection, int availableSize, Occupation roadType)
 {
     if (y < 0 || y >= gs->grid->height) return;
     if (gs->grid->cases[y][0] == SAFE || gs->grid->cases[y][0] == TREE) return;
@@ -23,8 +23,10 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize)
 
     int loopTime = gs->grid->length * speed;
 
-    *baseCar = (Car){.x = startingX, .y = y, .size = size, .direction = direction, .speed = speed, .accumulator = 0};
-    gs->grid->cases[y][startingX] = direction == 1 ? CAR_RIGHT : CAR_LEFT;
+    *baseCar = (Car){.x = startingX, .y = y, .size = size, .direction = direction, .speed = speed, .accumulator = 0, .type = roadType}; 
+    
+    //roadType : When we have ROAD, then we know for sure that we have cars. When we have WATER, we know we have logs.
+    gs->grid->cases[y][startingX] = roadType == WATER ? LOG : direction == 1 ? CAR_RIGHT : CAR_LEFT;;
     addLastCar(gs->cars, baseCar);
 
     availableSize -= size;
@@ -83,7 +85,7 @@ void updateCars(GameState *gs)
         {
             for (int i = 0; i < c->size; i++)
                 if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
-                    gs->grid->cases[c->y][c->x + i * c->direction] = ROAD;
+                    gs->grid->cases[c->y][c->x + i * c->direction] = c->type;
 
             int newX = c->x + c->direction;
             c->x = (newX < 0) ? gs->grid->length - 1 : (newX >= gs->grid->length ? 0 : newX);
@@ -91,7 +93,7 @@ void updateCars(GameState *gs)
 
             for (int i = 0; i < c->size; i++)
                 if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
-                    gs->grid->cases[c->y][c->x + i * c->direction] = c->direction == 1 ? CAR_RIGHT : CAR_LEFT;
+                    gs->grid->cases[c->y][c->x + i * c->direction] = c->type == WATER ? LOG : c->direction == 1 ? CAR_RIGHT : CAR_LEFT;
         }
         else
         {

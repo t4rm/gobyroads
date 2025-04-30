@@ -26,7 +26,7 @@ GameState *initGameState(int h, int l)
     gs->nextSafeZone = 3 + (gs->score / 10);
 
     for (int i = 0; i < gs->grid->height; i++)
-        addCar(gs, i, 0, gs->grid->length/2);
+        addCar(gs, i, 0, gs->grid->length/2, ROAD);
 
     gs->grid->cases[gs->player->y][gs->player->x] = SAFE; // On spawn sur une safe zone, pas un arbre.
 
@@ -56,7 +56,8 @@ void scrolling(GameState *gs)
         for (int i = 0; i < gs->grid->height - 1; i++)
             gs->grid->cases[i] = gs->grid->cases[i + 1];
 
-        gs->grid->cases[gs->grid->height - 1] = createRow(gs->grid->length, ROAD);
+        Occupation roadType = rand() % 2 ? ROAD : WATER;
+        gs->grid->cases[gs->grid->height - 1] = createRow(gs->grid->length, roadType);
 
         gs->player->y--;
 
@@ -70,40 +71,22 @@ void scrolling(GameState *gs)
             applyOccupationToRow(gs->grid->cases[gs->grid->height - 1], gs->grid->length, SAFE);
             gs->nextSafeZone = 4 + (gs->score / 10);
         }
-        else
-            addCar(gs, gs->grid->height - 1, 0, gs->grid->length/2);
+        else 
+            addCar(gs, gs->grid->height - 1, 0, gs->grid->length/2, roadType);
     }
 }
 
-bool handleCollision(GameState *gs)
+void handleCollision(GameState *gs)
 {
-    if (gs->grid->cases[gs->player->y][0] == SAFE)
-        return false;
+    // Previous : We check every car and see if a car is colliding with the player.
+    // New : Check directly on the map if the user is stepping on a CAR cell.
+    // Pros : Faster. Less Code. Easier to read. Better for future implementation, like here with LOG and Water.
+    // We don't even need to mind safe zone and logs.
+
+    Occupation playerOccupation = gs->grid->cases[gs->player->y][gs->player->x];
     
-    CarElement *cursor = gs->cars->head;
-    while (cursor != NULL)
-    {
-        Car * c = cursor->car;
-        if (c->y == gs->player->y) {
-            int endingX = c->x + c->size * c->direction + c->direction * -1;
-            int startingX = c->x;
-            
-            if (startingX > endingX) {
-                int t = startingX;
-                startingX = endingX;
-                endingX = t;
-            }
-            
-            if (gs->player->x >= startingX && gs->player->x <= endingX)
-            {
-                // printf("Collision sur l'intervalle [%d,%d] en Y = %d avec un joueur en %d,%d", startingX, endingX, c->y, gs->player->x, gs->player->y);
-                gs->gameOver = true;
-                return true;
-            }
-        }
-        cursor = cursor->next;
-    }
-    return false;
+    if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == WATER)
+        gs->gameOver = true;
 }
 
 void updateGameState(GameState *gs)

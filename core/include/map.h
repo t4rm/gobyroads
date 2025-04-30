@@ -4,12 +4,12 @@
 typedef enum
 {
     ROAD,
-    CAR_LEFT,
-    CAR_RIGHT,
+    WATER,
     SAFE,
     TREE,
-    LOG,
-    WATER
+    CAR_LEFT,
+    CAR_RIGHT,
+    LOG
 } Occupation;
 
 typedef struct _Grid
