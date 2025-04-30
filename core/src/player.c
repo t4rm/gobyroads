@@ -30,13 +30,13 @@ void playerMove(GameState *gs)
                     }
                     break;
                 case 'q':
-                    if (gs->player->x > gs->carMaxSize) {
+                    if (gs->player->x > gs->carMaxSize + 1) {
                         gs->player->x--;
                         hasMoved = true;
                     }
                     break;
                 case 'd':
-                    if (gs->player->x < gs->grid->length - 1 - gs->carMaxSize) {
+                    if (gs->player->x < gs->grid->length - gs->carMaxSize) {
                         gs->player->x++;
                         hasMoved = true;
                     }

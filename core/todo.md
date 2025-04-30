@@ -9,7 +9,7 @@
         - Création d'une "EffectQueue", celle-ci sera peuplée d'évènements qui sont prévus mais pas encore fait, à chaque frame on décrémente le temps d'attente de tous les évènements, quand un évènement a son temps à 0, il est réalisé. ✅
         - Ajout de cars dans les effects queues pour en avoir plusieurs dans la ligne, le temps doit prendre en compte la vitesse et la taille du véhicule actuel pour que le car soit ajouté seulement lorsque le car actuel n'empiète pas sur la zone de départ : Attendre qu'il parcourt 6 + 1 cases. Soit T = D/V = 7... ✅
     - Prendre en charge la taille des véhicules qui doit être affichée (et notamment quand un véhicule avec size > 1 quitte l'écran, sa queue doit quitter progressivement) ✅
-- Gestion des collisions qui entrainent la fin de jeu, même pour les grands véhicules (queue, corps et tête du véhicule) ✅
+- Gestion des collisions qui entrainent la fin de jeu, même pour les grands véhicules (queue, corps et tête du véhicule) ✅ [REWORKED] ✅
 - Gestion de l'abandon (pas bouger pendant trop longtemps) ✅
 - Correction du scintillement de l'écran (clignottage) ✅
 - Véhicule différencé selon leurs directions ">" et "<". ✅
@@ -21,12 +21,12 @@
     - Effet sonore tous les 50 de scores 
 - Plus de deque, que des queues simples. ✅
 - Séparation des logiques. ✅
-- Ajout des rivières et des rondins de bois sur celleszezzz-ci.
-    - Sans l'effectQueue pour voir. Puis après avec.
-- Rework de la logique de mise à jour des effets.
+- Ajout des rivières et des rondins de bois sur celles-ci.
+    - Ajout d'eau et de rondins sans logique supplémentaire. ✅
+    - Une fois sur un rondin, on est porté par celui-ci. Si le rondin sort de la carte, on perd.
+- Impossible d'aller au bord de map grid starting -1 et finishing -1, faut +1 des deux côtés. ✅
+- Rework de la logique de mise à jour des effets. Actuellement : buggé, freeze.
 - Ajout d'une Queue générique dont hériterait l'EffectQueue et la CarQueue.
-- Patch bug de freezing. run
-- Impossible d'aller au bord de map grid starting -1 et finishing -1, faut +1 des deux côtés.
 
 ## Bonus :
 - ReadMe
