@@ -44,24 +44,29 @@ void destroyEffectQueue(EffectQueue *queue)
     free(queue);
 }
 
+void destroyEffect(EffectElement *element)
+{
+    free(element->effect->car);
+    free(element->effect);
+    free(element);
+}
+
 void printEffectQueue(EffectQueue *queue)
 {
 
     if (queue->size == 0)
     {
-        printf("[\n]\n");
+        printf("\n[]\n");
         return;
     }
 
     EffectElement *cursor = queue->head;
 
-    printf("[\n");
     for (int i = 0; i < queue->size; i++)
     {
-        printf("#%d, cd: %d\n", i, cursor->effect->cooldown);
+        printf("- %d, cd: %d\n", i, cursor->effect->cooldown);
         cursor = cursor->next;
     }
-    printf("]\n");
 }
 
 void removeFirstEffect(EffectQueue *que)

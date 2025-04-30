@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <conio.h>
 #include "gamestate.h"
-#include "deque.h"
 
 GameState *initGameState(int h, int l)
 {
@@ -349,8 +348,9 @@ void updateGameState(GameState *gs)
 {
     updateCars(gs);
     displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y, gs->carMaxSize);
-    // printDeque(gs->cars); // Pour faire de la debug
-    // printEffectQueue(gs->effects);
+    printf("\n");
+    // printCarQueue(gs->cars); // Pour faire de la debug
+    printEffectQueue(gs->effects);
     // printf("%d, %d", gs->player->x, gs->player->y);
 }
 
