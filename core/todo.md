@@ -26,7 +26,7 @@
     - Ajout d'eau et de rondins sans logique supplémentaire. ✅
     - Une fois sur un rondin, on est porté par celui-ci. Si le rondin sort de la carte, on perd.  ✅
     - Les rondins ont une vitesse plus lentes, et s'accourcissent avec le temps, leur fonctionnement est contraire aux voitures. ✅
-- Rework de la logique de mise à jour des effets. Actuellement : buggé, freeze.
+- Rework de la logique de mise à jour des effets. Actuellement : buggé, freeze. [EN COURS]
 - Ajout d'une Queue générique dont hériterait l'EffectQueue et la CarQueue.
 
 ## Bonus :

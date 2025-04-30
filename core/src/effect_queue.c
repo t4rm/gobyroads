@@ -6,23 +6,9 @@ EffectQueue *createEffectQueue(void)
 {
     EffectQueue *new = malloc(sizeof(EffectQueue));
     new->size = 0;
-    new->head = malloc(sizeof(EffectElement));
-    new->tail = malloc(sizeof(EffectElement));
+    new->head = NULL;
+    new->tail = NULL;
     return new;
-}
-
-void addLastEffectToEffectQueue(EffectQueue *queue, Effect *effect)
-{
-    EffectElement *new_e = malloc(sizeof(EffectElement));
-    new_e->effect = effect;
-    new_e->next = NULL;
-    queue->tail->next = new_e;
-    queue->tail = new_e;
-
-    if (queue->size == 0)
-        queue->head = new_e;
-
-    queue->size++;
 }
 
 void destroyEffectQueue(EffectQueue *queue)
@@ -31,23 +17,87 @@ void destroyEffectQueue(EffectQueue *queue)
     while (cursor != NULL)
     {
         EffectElement *next = cursor->next;
-        if (cursor->effect) {
-            if(cursor->effect->car) {
-                    free(cursor->effect->car);
-                }
-                free(cursor->effect);
-            }
+        if (cursor->effect)
+        {
+            if (cursor->effect->car)
+                free(cursor->effect->car);
+            free(cursor->effect);
+        }
         free(cursor);
         cursor = next;
     }
     free(queue);
 }
 
-void destroyEffect(EffectElement *element)
+void removeFirstEffect(EffectQueue *queue)
 {
-    free(element->effect->car);
-    free(element->effect);
-    free(element);
+    if (queue->size == 0)
+        return;
+
+    EffectElement *tmp = queue->head;
+    queue->head = tmp->next;
+    if (tmp->effect)
+    {
+        if (tmp->effect->car)
+            free(tmp->effect->car);
+        free(tmp->effect);
+    }
+    free(tmp);
+    queue->size--;
+
+    if (queue->size == 0)
+        queue->tail = NULL;
+}
+
+void removeRowEffect(EffectQueue *queue, int y)
+{
+    if (queue->head == NULL)
+        return;
+
+    EffectElement *cursor = queue->head;
+    EffectElement *prev = NULL;
+
+    while (cursor != NULL)
+    {
+        EffectElement *next = cursor->next;
+
+        if (cursor->effect && cursor->effect->car && cursor->effect->car->y == y)
+        {
+            if (prev == NULL)
+                queue->head = next;
+            else
+                prev->next = next;
+
+            if (cursor == queue->tail)
+                queue->tail = prev;
+
+            free(cursor->effect->car);
+            free(cursor->effect);
+            free(cursor);
+            queue->size--;
+        }
+        else
+        {
+            prev = cursor;
+        }
+
+        cursor = next;
+    }
+}
+
+void addLastEffect(EffectQueue *queue, Effect *effect)
+{
+    EffectElement *new_e = malloc(sizeof(EffectElement));
+    new_e->effect = effect;
+    new_e->next = NULL;
+
+    if (queue->tail)
+        queue->tail->next = new_e;
+    else
+        queue->head = new_e;
+
+    queue->tail = new_e;
+    queue->size++;
 }
 
 void printEffectQueue(EffectQueue *queue)
@@ -66,50 +116,4 @@ void printEffectQueue(EffectQueue *queue)
         printf("- %d, cd: %d\n", i, cursor->effect->cooldown);
         cursor = cursor->next;
     }
-}
-
-void removeFirstEffect(EffectQueue *que)
-{
-    if (que->size == 0)
-        return;
-
-    EffectElement *tmp = que->head;
-    que->head = tmp->next;
-    que->size--;
-    free(tmp);
-}
-
-void removeRowEffect(EffectQueue *queue, int y) {
-    if (queue->head == NULL) return;
-
-    EffectElement *cursor = queue->head;
-    EffectElement *prev = NULL;
-
-    while (cursor != NULL) {
-        EffectElement *next = cursor->next;
-
-        if (cursor->effect && cursor->effect->car && cursor->effect->car->y == y) {
-            if (prev == NULL) {
-                queue->head = next;
-            } else {
-                prev->next = next;
-            }
-
-            // Libère proprement
-            free(cursor->effect->car);
-            free(cursor->effect);
-            free(cursor);
-
-            queue->size--;
-            cursor = next;
-            continue; // ne pas faire prev = cursor après suppression
-        }
-
-        prev = cursor;
-        cursor = next;
-    }
-
-    // Met à jour tail si nécessaire
-    if (queue->head == NULL)
-        queue->tail = NULL;
 }

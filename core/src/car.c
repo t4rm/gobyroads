@@ -81,7 +81,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize, Occupa
         e->car = nextCar;
         e->cooldown = cumulativeCooldown;
 
-        addLastEffectToEffectQueue(gs->effects, e);
+        addLastEffect(gs->effects, e);
 
         lastSize = nextSize;
         availableSize -= nextSize;

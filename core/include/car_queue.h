@@ -20,10 +20,10 @@ typedef struct _CarQueue
 } CarQueue;
 
 CarQueue *createCarQueue(void);
+void destroyCarQueue(CarQueue *queue);
 void removeFirstCar(CarQueue *Que);
 void removeRowCar(CarQueue *queue, int y);
 void addLastCar(CarQueue *queue, Car *car);
 void printCarQueue(CarQueue *queue);
-void destroyCarQueue(CarQueue *queue);
 
 #endif

@@ -4,37 +4,57 @@
 void updateEffects(GameState *gs)
 {
     EffectElement *cursor = gs->effects->head;
+    EffectElement *previous = NULL;
 
-    if (!cursor)
-        return;
-
-    // Effect *effect = cursor->effect;
-
-    if (cursor->effect && cursor->effect->car)
+    while (cursor != NULL)
     {
-        if (cursor->effect->car->y < 0)
+        EffectElement *next = cursor->next;
+        Effect *e = cursor->effect;
+
+        bool shouldRemove = false;
+
+        if (e && e->car && e->car->y < 0)
         {
-            removeFirstEffect(gs->effects);
-            return;
+            // The effect is no longer relevant (off-screen)
+            shouldRemove = true;
+        }
+        else if (e && e->cooldown == 0) // TODO : Factorize, maybe use removeRow and put y to -1.
+        {
+            // Execute the effect
+            e->function(gs->cars, e->car);
+            shouldRemove = true;
+        }
+        else if (e)
+        {
+            e->cooldown--;
         }
 
-        if (cursor->effect->cooldown <= 0)
-        {
-            cursor->effect->function(gs->cars, cursor->effect->car);
-            removeFirstEffect(gs->effects);
-            return;
-        }
-    }
-    else
-    {
-        while (cursor != NULL)
-        {
-            if (cursor->effect && cursor->effect->cooldown > 0)
-                cursor->effect->cooldown--;
-            cursor = cursor->next;
-        }
+        // if (shouldRemove)
+        // {
+        //     if (previous == NULL)
+        //         gs->effects->head = next;
+        //     else
+        //         previous->next = next;
+
+        //     if (cursor == gs->effects->tail)
+        //         gs->effects->tail = previous;
+
+        //     if (e) {
+        //         if (e->car) free(e->car);
+        //         free(e);
+        //     }
+        //     free(cursor);
+        //     gs->effects->size--;
+        // }
+        // else
+        // {
+        //     previous = cursor;
+        // }
+
+        cursor = next;
     }
 }
+
 
 void decrementEffectsOnY(GameState *gs)
 {

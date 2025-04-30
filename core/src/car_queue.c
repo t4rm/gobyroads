@@ -11,6 +11,19 @@ CarQueue *createCarQueue(void)
     return queue;
 }
 
+void destroyCarQueue(CarQueue *queue)
+{
+    CarElement *cursor = queue->head;
+    while (cursor != NULL)
+    {
+        CarElement *next = cursor->next;
+        if (cursor->car) free(cursor->car);
+        free(cursor);
+        cursor = next;
+    }
+    free(queue);
+}
+
 void removeFirstCar(CarQueue *queue)
 {
     if (queue->size == 0) return;
@@ -99,15 +112,3 @@ void printCarQueue(CarQueue *queue)
     printf("]\n");
 }
 
-void destroyCarQueue(CarQueue *queue)
-{
-    CarElement *cursor = queue->head;
-    while (cursor != NULL)
-    {
-        CarElement *next = cursor->next;
-        if (cursor->car) free(cursor->car);
-        free(cursor);
-        cursor = next;
-    }
-    free(queue);
-}

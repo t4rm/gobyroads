@@ -28,11 +28,10 @@ typedef struct _EffectQueue
 } EffectQueue;
 
 EffectQueue *createEffectQueue(void);
-void removeFirstEffect(EffectQueue *Que);
-void destroyEffect(EffectElement *element);
-void addLastEffectToEffectQueue(EffectQueue *queue, Effect *effect);
-void printEffectQueue(EffectQueue *queue);
-void removeRowEffect(EffectQueue *queue, int y);
 void destroyEffectQueue(EffectQueue *queue);
+void removeFirstEffect(EffectQueue *queue);
+void removeRowEffect(EffectQueue *queue, int y);
+void addLastEffect(EffectQueue *queue, Effect *effect);
+void printEffectQueue(EffectQueue *queue);
 
 #endif
