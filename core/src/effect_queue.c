@@ -86,20 +86,30 @@ void removeRowEffect(EffectQueue *queue, int y) {
     EffectElement *prev = NULL;
 
     while (cursor != NULL) {
-        if (cursor->effect->car->y == y) {
+        EffectElement *next = cursor->next;
+
+        if (cursor->effect && cursor->effect->car && cursor->effect->car->y == y) {
             if (prev == NULL) {
-                queue->head = cursor->next;
+                queue->head = next;
             } else {
-                prev->next = cursor->next;
+                prev->next = next;
             }
 
+            // Libère proprement
+            free(cursor->effect->car);
             free(cursor->effect);
             free(cursor);
 
             queue->size--;
+            cursor = next;
+            continue; // ne pas faire prev = cursor après suppression
         }
 
         prev = cursor;
-        cursor = cursor->next;
+        cursor = next;
     }
+
+    // Met à jour tail si nécessaire
+    if (queue->head == NULL)
+        queue->tail = NULL;
 }

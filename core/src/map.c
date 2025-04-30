@@ -18,6 +18,13 @@ Grid *createGrid(int height, int length, int carMaxSize)
     return grid;
 }
 
+Occupation *createRow(int length, Occupation type)
+{
+    Occupation *row = (Occupation *)malloc(length * sizeof(Occupation));
+    applyOccupationToRow(row, length, type);
+    return row;
+}
+
 void destroyGrid(Grid * g)
 {
     for (int i = 0; i < g->height; i++)
@@ -25,13 +32,6 @@ void destroyGrid(Grid * g)
         free(g->cases[i]);
     }
     free(g);
-}
-
-Occupation *createRow(int length, Occupation type)
-{
-    Occupation *row = (Occupation *)malloc(length * sizeof(Occupation));
-    applyOccupationToRow(row, length, type);
-    return row;
 }
 
 void applyOccupationToRow(Occupation *row, int length, Occupation type) {

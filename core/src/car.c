@@ -75,6 +75,10 @@ void updateCars(GameState *gs)
         Car *c = cursor->car;
         CarElement *next = cursor->next;
 
+        // The car's accumulator is a number that once reached will make the car move forward. It is then resets. The speed is the number of accumulating points given to a car per Frame.
+        // Therefore, a car with an accumulator or 100, a speed of 2, will move forward every 50 frames. In 60 FPS, it is 1.2 seconds.
+        // Formula is : FPS/(Accumulator/Speed). Higher FPS = Slower cars, unless the accumulator is scalled down/speed is scalled up.
+
         if (c->accumulator == c->speed)
         {
             for (int i = 0; i < c->size; i++)

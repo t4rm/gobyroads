@@ -21,14 +21,18 @@ int main()
         // struct timespec frameStartTime;
         // clock_gettime(CLOCK_MONOTONIC, &frameStartTime); // Récupérer l'heure en nanosecondes
 
-        if (gs->player->afk >= FPS * 4) gs->gameOver = true;
-
+        // if (gs->player->afk >= FPS * 4) gs->gameOver = true;
+        
+        // Start of the game handling logic
         updateCars(gs);
-        updateGameState(gs);
-        playerMove(gs);
-        scrolling(gs);
         updateEffects(gs);
+        updateGameState(gs);
+        // Game is updated, map is fresh, cars progressed
+        playerMove(gs);
         handleCollision(gs);
+        // Player moved, if he collided the game stops, otherwise we scroll down when y >= 3.
+        scrolling(gs);
+        // End of the game handling logic.
 
         DWORD frameEndTime = GetTickCount();
         DWORD elapsedTime = frameEndTime - frameStartTime;

@@ -21,9 +21,12 @@
     - Effet sonore tous les 50 de scores 
 - Plus de deque, que des queues simples. ✅
 - Séparation des logiques. ✅
+- Ajout des rivières et des rondins de bois sur celleszezzz-ci.
+    - Sans l'effectQueue pour voir. Puis après avec.
+- Rework de la logique de mise à jour des effets.
 - Ajout d'une Queue générique dont hériterait l'EffectQueue et la CarQueue.
-- Patch bug de freezing. 
-- Ajout des rivières et des rondins de bois sur celles-ci.
+- Patch bug de freezing. run
+- Impossible d'aller au bord de map grid starting -1 et finishing -1, faut +1 des deux côtés.
 
 ## Bonus :
 - ReadMe

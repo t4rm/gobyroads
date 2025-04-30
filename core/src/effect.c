@@ -8,11 +8,22 @@ void updateEffects(GameState *gs)
     if (!cursor)
         return;
 
-    Effect *effect = cursor->effect;
-    if (effect && effect->car && effect->cooldown <= 0 && effect->car->y >= 0)
+    // Effect *effect = cursor->effect;
+
+    if (cursor->effect && cursor->effect->car)
     {
-        effect->function(gs->cars, effect->car);
-        removeFirstEffect(gs->effects);
+        if (cursor->effect->car->y < 0)
+        {
+            removeFirstEffect(gs->effects);
+            return;
+        }
+
+        if (cursor->effect->cooldown <= 0)
+        {
+            cursor->effect->function(gs->cars, cursor->effect->car);
+            removeFirstEffect(gs->effects);
+            return;
+        }
     }
     else
     {
@@ -46,8 +57,10 @@ void decrementEffectsOnY(GameState *gs)
 
             cursor = cursor->next;
 
-            if (toDelete->effect) {
-                if (toDelete->effect->car) free(toDelete->effect->car);
+            if (toDelete->effect)
+            {
+                if (toDelete->effect->car)
+                    free(toDelete->effect->car);
                 free(toDelete->effect);
             }
             free(toDelete);

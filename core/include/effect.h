@@ -3,6 +3,8 @@
 
 #include "gamestate.h"
 
+typedef struct _GameState GameState;
+
 void updateEffects(GameState *gs);
 void decrementEffectsOnY(GameState *gs);
 
