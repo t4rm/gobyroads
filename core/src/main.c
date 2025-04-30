@@ -1,9 +1,13 @@
 #include <stdio.h>
-#include "gameState.h"
 #include <windows.h> // Pour Sleep()
 // #include <time.h>   // Pour clock_gettime()
 // #include <unistd.h> // Pour usleep()
 // Inversez les commentaires si vous n'êtes pas sur windows.
+#include "gamestate.h"
+#include "player.h"
+#include "effect.h"
+#include "car.h"
+
 
 int main()
 {
@@ -19,6 +23,7 @@ int main()
 
         if (gs->player->afk >= FPS * 4) gs->gameOver = true;
 
+        updateCars(gs);
         updateGameState(gs);
         playerMove(gs);
         scrolling(gs);

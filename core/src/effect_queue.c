@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "effect_queue.h"
-#include "gamestate.h"
 
 EffectQueue *createEffectQueue(void)
 {

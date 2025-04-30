@@ -1,10 +1,15 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+
 #include "map.h"
 #include "effect_queue.h"
 #include "car_queue.h"
-#include "stdbool.h"
+#include "car.h"
+#include "effect.h"
 
 typedef struct _Player
 {
@@ -36,15 +41,10 @@ typedef struct _GameState
 
 
 GameState *initGameState();
-void addCar(GameState *gs, int y, int direction, int availableSize);
-void updateCars(GameState *gs);
 void playerMove(GameState *gs);
 void scrolling(GameState *gs);
-void decrementCarsOnY(GameState *gs);
-void decrementEffectsOnY(GameState *gs);
 void updateGameState();
 bool handleCollision(GameState *gs);
-void updateEffects(GameState *gs);
 void destroyGameState(GameState * gs);
 
 #endif

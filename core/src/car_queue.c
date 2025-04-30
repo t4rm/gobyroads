@@ -1,57 +1,61 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "car_queue.h"
-#include "gamestate.h"
 
 CarQueue *createCarQueue(void)
 {
-    CarQueue *new = malloc(sizeof(CarQueue));
-    new->size = 0;
-    new->head = malloc(sizeof(CarElement));
-    new->tail = malloc(sizeof(EffectElement));
-    return new;
+    CarQueue *queue = malloc(sizeof(CarQueue));
+    queue->size = 0;
+    queue->head = NULL;
+    queue->tail = NULL;
+    return queue;
 }
 
-void removeFirstCar(CarQueue *que)
+void removeFirstCar(CarQueue *queue)
 {
-    if (que->size == 0)
-    return;
-    
-    CarElement *tmp = que->head;
-    que->head = tmp->next;
-    que->size--;
+    if (queue->size == 0) return;
+
+    CarElement *tmp = queue->head;
+    queue->head = tmp->next;
+    if (tmp->car) free(tmp->car);
     free(tmp);
+    queue->size--;
+
+    if (queue->size == 0)
+        queue->tail = NULL;
 }
 
 void removeRowCar(CarQueue *queue, int y)
 {
-    if (queue->head == NULL)
-    return;
-    
+    if (queue->head == NULL) return;
+
     CarElement *cursor = queue->head;
     CarElement *prev = NULL;
-    
+
     while (cursor != NULL)
     {
-        if (cursor->car->y == y)
+        CarElement *next = cursor->next;
+
+        if (cursor->car && cursor->car->y == y)
         {
             if (prev == NULL)
-            {
-                queue->head = cursor->next;
-            }
+                queue->head = next;
             else
-            {
-                prev->next = cursor->next;
-            }
-            
+                prev->next = next;
+
+            if (cursor == queue->tail)
+                queue->tail = prev;
+
             free(cursor->car);
             free(cursor);
-            
             queue->size--;
         }
-        
-        prev = cursor;
-        cursor = cursor->next;
+        else
+        {
+            prev = cursor;
+        }
+
+        cursor = next;
     }
 }
 
@@ -60,12 +64,13 @@ void addLastCar(CarQueue *queue, Car *car)
     CarElement *new_e = malloc(sizeof(CarElement));
     new_e->car = car;
     new_e->next = NULL;
-    queue->tail->next = new_e;
-    queue->tail = new_e;
 
-    if (queue->size == 0)
+    if (queue->tail)
+        queue->tail->next = new_e;
+    else
         queue->head = new_e;
 
+    queue->tail = new_e;
     queue->size++;
 }
 
@@ -76,15 +81,19 @@ void printCarQueue(CarQueue *queue)
         printf("[\n]\n");
         return;
     }
-    
+
     printf("%d\n", queue->size);
-    
     CarElement *cursor = queue->head;
-    
+
     printf("[\n");
-    for (int i = 0; i < queue->size; i++)
+    for (int i = 0; i < queue->size && cursor != NULL; i++)
     {
-        printf("#%d, y : %d, x : %d, s : %d, d : %d, v : %d\n", i, cursor->car->y, cursor->car->x, cursor->car->size, cursor->car->direction, cursor->car->speed);
+        if (cursor->car)
+        {
+            printf("#%d, y : %d, x : %d, s : %d, d : %d, v : %d\n",
+                   i, cursor->car->y, cursor->car->x, cursor->car->size,
+                   cursor->car->direction, cursor->car->speed);
+        }
         cursor = cursor->next;
     }
     printf("]\n");
@@ -96,8 +105,7 @@ void destroyCarQueue(CarQueue *queue)
     while (cursor != NULL)
     {
         CarElement *next = cursor->next;
-        if (cursor->car)
-            free(cursor->car);
+        if (cursor->car) free(cursor->car);
         free(cursor);
         cursor = next;
     }

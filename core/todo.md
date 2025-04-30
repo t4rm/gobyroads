@@ -1,4 +1,4 @@
-# TODO :
+# DONE :
 - Si 3 pas en arrière -> Game Over ✅
 - Génération procédurale de la carte avec possibilité de faire jusqu'à 2 pas en arrière. L'écart entre les safe-zones augmente avec le score. ✅
     - Prise en charge des écarts grandissants entre les safe-zones ✅
@@ -14,13 +14,16 @@
 - Correction du scintillement de l'écran (clignottage) ✅
 - Véhicule différencé selon leurs directions ">" et "<". ✅
 - Nettoyage des zones mémoires lors de la fin du jeu. ✅
+
+# TODO :
 - Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant, à voir si c'est un bug ou non.
 - Gestion du score
     - Effet sonore tous les 50 de scores 
-- Patch bug de freezing
-- Séparation logique du player
-- Plus de deque, que des queues simples
-
+- Plus de deque, que des queues simples. ✅
+- Séparation des logiques. ✅
+- Ajout d'une Queue générique dont hériterait l'EffectQueue et la CarQueue.
+- Patch bug de freezing. 
+- Ajout des rivières et des rondins de bois sur celles-ci.
 
 ## Bonus :
 - ReadMe

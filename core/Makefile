@@ -26,6 +26,9 @@ $(BIN_DIR)/test: | $(BIN_DIR)
 run: main
 	$(BIN_DIR)/main.exe
 
+debug: main
+	gdb $(BIN_DIR)/main.exe
+
 # Compile every C file in src.
 main: $(OBJ_FILES) | $(BIN_DIR)
 	$(CC) -o $(BIN_DIR)/main $(OBJ_FILES) -g
