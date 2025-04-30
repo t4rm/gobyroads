@@ -83,7 +83,7 @@ void updateCars(GameState *gs)
 
         if (c->accumulator == c->speed)
         {
-            for (int i = 0; i < c->size; i++)
+            for (int i = 0; i < c->size; i++) // Clear the road.
                 if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
                     gs->grid->cases[c->y][c->x + i * c->direction] = c->type;
 
@@ -91,7 +91,11 @@ void updateCars(GameState *gs)
             c->x = (newX < 0) ? gs->grid->length - 1 : (newX >= gs->grid->length ? 0 : newX);
             c->accumulator = 0;
 
-            for (int i = 0; i < c->size; i++)
+            if (c->type == WATER && gs->player->y == c->y) // If player is on water, game should stop, unless he is on a log.
+                gs->player->x += c->direction; // On a log, the player moves too.
+            
+
+            for (int i = 0; i < c->size; i++) // Put the car at his new position
                 if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
                     gs->grid->cases[c->y][c->x + i * c->direction] = c->type == WATER ? LOG : c->direction == 1 ? CAR_RIGHT : CAR_LEFT;
         }

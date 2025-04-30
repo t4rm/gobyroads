@@ -85,7 +85,10 @@ void handleCollision(GameState *gs)
 
     Occupation playerOccupation = gs->grid->cases[gs->player->y][gs->player->x];
     
-    if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == WATER)
+    if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == WATER) // Colliding with an object.
+        gs->gameOver = true;
+    
+    if (gs->player->x < gs->carMaxSize || gs->player->x > gs->grid->length - gs->carMaxSize + 1 ) // Colliding with the void (out of the viewable map)
         gs->gameOver = true;
 }
 
