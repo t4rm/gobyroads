@@ -1,15 +1,15 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "gamestate.h"
-
 typedef enum
 {
     ROAD,
+    WATER,
+    SAFE,
+    TREE,
     CAR_LEFT,
     CAR_RIGHT,
-    SAFE,
-    TREE
+    LOG
 } Occupation;
 
 typedef struct _Grid
@@ -18,9 +18,6 @@ typedef struct _Grid
     int height;
     int length;
 } Grid;
-
-typedef struct _GameState GameState;
-typedef struct _Player Player;
 
 Grid *createGrid(int heigth, int length, int carMaxSize);
 Occupation *createRow(int length, Occupation type);

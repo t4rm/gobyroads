@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -g
+CFLAGS = -Wall -Wextra -Iinclude -g -O0
 
 SRC_DIR = src
 TEST_DIR = tests
@@ -25,6 +25,9 @@ $(BIN_DIR)/test: | $(BIN_DIR)
 # Execute the main file
 run: main
 	$(BIN_DIR)/main.exe
+
+debug: main
+	gdb $(BIN_DIR)/main.exe
 
 # Compile every C file in src.
 main: $(OBJ_FILES) | $(BIN_DIR)

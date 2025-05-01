@@ -1,10 +1,19 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+
 #include "map.h"
-#include "deque.h"
-#include "que.h"
-#include "stdbool.h"
+#include "effect_queue.h"
+#include "car_queue.h"
+#include "car.h"
+#include "effect.h"
+
+typedef struct _Grid Grid;
+typedef struct _EffectQueue EffectQueue;
+typedef struct _CarQueue CarQueue;
 
 typedef struct _Player
 {
@@ -14,19 +23,15 @@ typedef struct _Player
 typedef struct _Car
 {
   int x, y, size, direction, speed, accumulator;
+  Occupation type;
 } Car;
-
-
-typedef struct _Grid Grid;
-typedef struct _Que Que;
-typedef struct _Deque Deque;
 
 typedef struct _GameState
 {
     Grid *grid;
     Player *player;
-    Deque *cars;
-    Que *effects;
+    CarQueue *cars;
+    EffectQueue *effects;
     int carsAmount;
     int score;
     int backwardMovements;
@@ -37,15 +42,10 @@ typedef struct _GameState
 
 
 GameState *initGameState();
-void addCar(GameState *gs, int y, int direction, int availableSize);
-void updateCars(GameState *gs);
 void playerMove(GameState *gs);
 void scrolling(GameState *gs);
-void decrementCarsOnY(GameState *gs);
-void decrementEffectsOnY(GameState *gs);
 void updateGameState();
-bool handleCollision(GameState *gs);
-void updateEffects(GameState *gs);
+void handleCollision(GameState *gs);
 void destroyGameState(GameState * gs);
 
 #endif
