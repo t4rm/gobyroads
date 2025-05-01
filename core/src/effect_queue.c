@@ -71,6 +71,7 @@ void removeRowEffect(EffectQueue *queue, int y)
             if (cursor == queue->tail)
                 queue->tail = prev;
 
+            printf("\nrow %d deleted\n", cursor->effect->car->y);
             free(cursor->effect->car);
             free(cursor->effect);
             free(cursor);

@@ -8,7 +8,6 @@
 #include "effect.h"
 #include "car.h"
 
-
 int main()
 {
     GameState *gs = initGameState(15, 30);
@@ -22,7 +21,7 @@ int main()
         // clock_gettime(CLOCK_MONOTONIC, &frameStartTime); // Récupérer l'heure en nanosecondes
 
         // if (gs->player->afk >= FPS * 4) gs->gameOver = true;
-        
+
         // Start of the game handling logic
         updateCars(gs);
         updateEffects(gs);
@@ -37,9 +36,10 @@ int main()
         DWORD frameEndTime = GetTickCount();
         DWORD elapsedTime = frameEndTime - frameStartTime;
 
-        if (elapsedTime < frameTime) {
+        if (elapsedTime < frameTime)
+        {
             DWORD sleepTime = frameTime - elapsedTime;
-            Sleep(sleepTime); 
+            Sleep(sleepTime);
         }
 
         // struct timespec frameEndTime;
@@ -57,7 +57,8 @@ int main()
 
     printf("\e[1;1H\e[2J");
 
-    if (gs->gameOver) printf("\n\nPerdu, score final: %d\n", gs->score);
+    if (gs->gameOver)
+        printf("\n\nPerdu, score final: %d\n", gs->score);
 
     destroyGameState(gs);
 

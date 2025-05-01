@@ -1,20 +1,25 @@
 #include "car.h"
 #include <stdlib.h>
 
-void determineMaxesValues(int score, Occupation roadType, int *maxSize, int *maxSpeed, int *minSpeed, int *maxCars) {
-    if (roadType == ROAD) {
+void determineMaxesValues(int score, Occupation roadType, int *maxSize, int *maxSpeed, int *minSpeed, int *maxCars)
+{
+    if (roadType == ROAD)
+    {
         *maxSize = (score / 20 + 3 >= 6) ? 6 : score / 20 + 3;
         *minSpeed = (6 - score / 25 < 2) ? 2 : 6 - score / 25;
         *maxSpeed = *minSpeed + 3;
         *maxCars = (score >= 100) ? 4 : 2 + score / 20;
-    } else if (roadType == WATER) {
+    }
+    else if (roadType == WATER)
+    {
         *maxSize = (6 - score / 20 < 3) ? 3 : 6 - score / 20;
         *minSpeed = (7 - score / 25 < 4) ? 4 : 7 - score / 25;
         *maxSpeed = *minSpeed + 1;
         *maxCars = (4 - score / 30 < 2) ? 2 : 4 - score / 30;
     }
 
-    if (maxSpeed < minSpeed) maxSpeed = minSpeed;
+    if (maxSpeed < minSpeed)
+        maxSpeed = minSpeed;
 }
 
 void addCar(GameState *gs, int y, int forcedDirection, int availableSize, Occupation roadType)
@@ -32,7 +37,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize, Occupa
     int startingX = (direction == 1) ? 0 : gs->grid->length - 1;
 
     int maxSize, maxSpeed, maxCars, minSpeed;
-    
+
     determineMaxesValues(gs->score, roadType, &maxSize, &maxSpeed, &minSpeed, &maxCars);
 
     int size = 1 + rand() % (maxSize < availableSize ? maxSize : availableSize);
@@ -68,7 +73,7 @@ void addCar(GameState *gs, int y, int forcedDirection, int availableSize, Occupa
         if (!nextCar)
             return;
 
-        *nextCar = (Car){.x = startingX, .y = y, .size = nextSize, .direction = direction, .speed = speed, .accumulator = 0};
+        *nextCar = (Car){.x = startingX, .y = y, .size = nextSize, .direction = direction, .speed = speed, .accumulator = 0, .type = roadType};
 
         Effect *e = (Effect *)malloc(sizeof(Effect));
         if (!e)
@@ -98,7 +103,7 @@ void updateCars(GameState *gs)
         CarElement *next = cursor->next;
 
         // The car's accumulator will climb with each frame incrementing it. Once it reaches speed, it will reset and make the car moves forward in the same frame.
-        // e.g.: A car with a speed of 10 will need 10 frames to move forward, so in 60 FPS he will move forward every 1/6 second, making him moves forward 6 times per second. 
+        // e.g.: A car with a speed of 10 will need 10 frames to move forward, so in 60 FPS he will move forward every 1/6 second, making him moves forward 6 times per second.
         // Formula is : FPS/Speed.
 
         if (c->accumulator == c->speed)
@@ -107,12 +112,30 @@ void updateCars(GameState *gs)
                 if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
                     gs->grid->cases[c->y][c->x + i * c->direction] = c->type;
 
+            // Previous :
+            // This work only if there is only one log on a road of water.
+            // When there are multiple logs, they all make the player moves forward, pushing him on the water instantly.
+            // New :
+            // We can use the previous code for collision handling here :
+
+            if (c->type == WATER && gs->player->y == c->y) // If player is on water, game should stop, unless he is on a log.
+            {
+                int endingX = c->x + c->size * c->direction + c->direction * -1;
+                int startingX = c->x;
+                if (startingX > endingX)
+                {
+                    int t = startingX;
+                    startingX = endingX;
+                    endingX = t;
+                }
+
+                if (gs->player->x >= startingX && gs->player->x <= endingX)
+                    gs->player->x += c->direction; // On a log, the player moves too.
+            }
+
             int newX = c->x + c->direction;
             c->x = (newX < 0) ? gs->grid->length - 1 : (newX >= gs->grid->length ? 0 : newX);
             c->accumulator = 0;
-
-            if (c->type == WATER && gs->player->y == c->y) // If player is on water, game should stop, unless he is on a log.
-                gs->player->x += c->direction;             // On a log, the player moves too.
 
             for (int i = 0; i < c->size; i++) // Put the car at his new position
                 if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)

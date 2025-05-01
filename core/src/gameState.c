@@ -26,17 +26,18 @@ GameState *initGameState(int h, int l)
     gs->nextSafeZone = 3 + (gs->score / 10);
 
     for (int i = 0; i < gs->grid->height; i++)
-        addCar(gs, i, 0, gs->grid->length/2, ROAD);
+        addCar(gs, i, 0, gs->grid->length / 2, ROAD);
 
     gs->grid->cases[gs->player->y][gs->player->x] = SAFE; // On spawn sur une safe zone, pas un arbre.
 
     printf("\e[1;1H\e[2J"); // Nettoyage de l'écran
-    printf("\e[?25l"); // Cacher le curseur
+    printf("\e[?25l");      // Cacher le curseur
 
     return gs;
 }
 
-void destroyGameState(GameState * gs) {
+void destroyGameState(GameState *gs)
+{
     destroyCarQueue(gs->cars);
     destroyEffectQueue(gs->effects);
     destroyGrid(gs->grid);
@@ -48,7 +49,8 @@ void scrolling(GameState *gs)
 {
     if (gs->player->y == 3)
     {
-        if (gs->grid->cases[0][0] != SAFE && gs->grid->cases[0][0] != TREE) {
+        if (gs->grid->cases[0][0] != SAFE && gs->grid->cases[0][0] != TREE)
+        {
             removeRowCar(gs->cars, 0);
             removeRowEffect(gs->effects, 0);
         }
@@ -71,8 +73,8 @@ void scrolling(GameState *gs)
             applyOccupationToRow(gs->grid->cases[gs->grid->height - 1], gs->grid->length, SAFE);
             gs->nextSafeZone = 4 + (gs->score / 10);
         }
-        else 
-            addCar(gs, gs->grid->height - 1, 0, gs->grid->length/2, roadType);
+        else
+            addCar(gs, gs->grid->height - 1, 0, gs->grid->length / 2, roadType);
     }
 }
 
@@ -84,19 +86,19 @@ void handleCollision(GameState *gs)
     // We don't even need to mind safe zone and logs.
 
     Occupation playerOccupation = gs->grid->cases[gs->player->y][gs->player->x];
-    
+
     if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == WATER) // Colliding with an object.
         gs->gameOver = true;
-    
-    if (gs->player->x < gs->carMaxSize || gs->player->x > gs->grid->length - gs->carMaxSize + 1 ) // Colliding with the void (out of the viewable map)
+
+    if (gs->player->x < gs->carMaxSize || gs->player->x > gs->grid->length - gs->carMaxSize + 1) // Colliding with the void (out of the viewable map)
         gs->gameOver = true;
 }
 
 void updateGameState(GameState *gs)
 {
     displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y, gs->carMaxSize);
-    printf("\n");
+    // printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     // printCarQueue(gs->cars); // Pour faire de la debug
-    printEffectQueue(gs->effects);
+    // printEffectQueue(gs->effects);
     // printf("%d, %d", gs->player->x, gs->player->y);
 }
