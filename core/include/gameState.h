@@ -17,7 +17,7 @@ typedef struct _CarQueue CarQueue;
 
 typedef struct _Player
 {
-    int x, y, mouvementCooldown, afk;
+  int x, y, mouvementCooldown, afk, offsetX, offsetY;
 } Player;
 
 typedef struct _Car
@@ -28,24 +28,23 @@ typedef struct _Car
 
 typedef struct _GameState
 {
-    Grid *grid;
-    Player *player;
-    CarQueue *cars;
-    EffectQueue *effects;
-    int carsAmount;
-    int score;
-    int backwardMovements;
-    int nextSafeZone;
-    int carMaxSize;
-    bool gameOver;
+  Grid *grid;
+  Player *player;
+  CarQueue *cars;
+  EffectQueue *effects;
+  int carsAmount;
+  int score;
+  int backwardMovements;
+  int nextSafeZone;
+  int carMaxSize;
+  bool gameOver;
 } GameState;
-
 
 GameState *initGameState();
 void playerMove(GameState *gs);
 void scrolling(GameState *gs);
 void updateGameState();
 void handleCollision(GameState *gs);
-void destroyGameState(GameState * gs);
+void destroyGameState(GameState *gs);
 
 #endif

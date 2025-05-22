@@ -5,6 +5,8 @@
 // #include "SDL2/SDL_image.h"
 #include "sdl_wrapper.h"
 #include "sdl_texture.h"
+// Core game features, wrapped with UI Concepts
+#include "core_wrapper.h"
 // Core game features, directly from core
 #include "gamestate.h"
 #include "player.h"
@@ -12,10 +14,11 @@
 #include "car.h"
 // Standard
 #include <stdio.h>
+#include <math.h>
 
 // Windows dimension constants
-const int WIDTH = 640;
-const int HEIGHT = 480;
+const int WIDTH = 480;
+const int HEIGHT = 640;
 
 int main(int argc, char *argv[])
 {
@@ -27,64 +30,53 @@ int main(int argc, char *argv[])
 
     Textures *textures = initTextures(renderer);
 
-    // code gestion affichage joueur
-    int spriteFullWidth, spriteFullHeight;
-    if (SDL_QueryTexture(textures->playerTexture, NULL, NULL, &spriteFullWidth, &spriteFullHeight))
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in query texture: %s", SDL_GetError());
-        exit(-1);
-    }
-    int spriteWidth = spriteFullWidth / 4;
-    int spriteHeight = spriteFullHeight / 4;
-    // ---
+    // GameState *gs = initGameState(15, 30);
+    UIGameState *uiGs = initUIGameState(15, 30);
 
     SDL_Event event;
-    int running = 1;
-    int offsetX = 0, offsetY = 0;
-    int distance = 0;
+    // GameState *gs = initGameState(15, 30);
 
-    while (running)
+    while (uiGs)
     {
+        Uint64 start = SDL_GetPerformanceCounter();
+
         if (SDL_PollEvent(&event))
         {
-            switch (event.type)
-            {
-            case SDL_QUIT:
-                running = 0;
-                break;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_DOWN:
-                    distance += 1;
-                    offsetY = 2;
-                    offsetX += 1;
-                    offsetX %= 4;
-                    break;
-                }
-                break;
-            case SDL_KEYUP:
-                offsetX = 0;
-                offsetY = 0;
-                break;
-            }
+            handleEvents(uiGs, &event);
+            // actions joueur
 
-            SDL_Color const BACKGROUND_COLOR = {.r = 0xFF, .g = 0xFF, .b = 0xFF, .a = SDL_ALPHA_OPAQUE};
+            // actions des mobs
 
-            if (SDL_SetRenderDrawColor(renderer,
-                                       BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, BACKGROUND_COLOR.a))
-                SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in set render draw color: %s", SDL_GetError());
+            // calcul interactions (collisions)
 
-            if (SDL_RenderClear(renderer))
-                SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render clear: %s", SDL_GetError());
+            // maj état du jeu (états mobs, joueur, score)
 
-            SDL_Rect spriteRect = {.x = offsetX * spriteWidth, .y = offsetY * spriteWidth, .w = spriteWidth, .h = spriteHeight};
-            SDL_Rect destRect = {.x = 0, .y = distance * 10, .w = spriteWidth, .h = spriteHeight};
-            if (SDL_RenderCopy(renderer, textures->playerTexture, &spriteRect, &destRect))
-                SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render copy: %s", SDL_GetError());
-
-            SDL_RenderPresent(renderer);
+            // maj rendu & rendu
+            SDLW_UpdateAndRender(uiGs, renderer, textures);
         }
+
+        // Physics loop
+        // Uint32 current = SDL_GetTicks();
+
+        // Calculate dT (in seconds)
+
+        // float dT = (current - lastUpdate) / 1000.0f;
+        // for (/* objects */)
+        // {
+        //     object.position += object.velocity * dT;
+        // }
+
+        // // Set updated time
+        // lastUpdate = current;
+
+        // 60 FPS CAP
+        Uint64 end = SDL_GetPerformanceCounter();
+
+        float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+
+        float delayTime = 16.666f - elapsedMS;
+        if (delayTime > 0)
+            SDL_Delay((Uint32)floor(delayTime));
     }
 
     destroyTextures(textures);
