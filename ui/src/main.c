@@ -2,7 +2,9 @@
 
 // SDL 2
 #include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
+// #include "SDL2/SDL_image.h"
+#include "sdl_wrapper.h"
+#include "sdl_texture.h"
 // Core game features, directly from core
 #include "gamestate.h"
 #include "player.h"
@@ -17,66 +19,28 @@ const int HEIGHT = 480;
 
 int main(int argc, char *argv[])
 {
-    if (SDL_Init(SDL_INIT_EVERYTHING))
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in init: %s", SDL_GetError());
-        exit(-1);
-    }
-    atexit(SDL_Quit);
+    SDL_Window *window = NULL;
+    SDL_Renderer *renderer = NULL;
 
-    if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in image init: %s", IMG_GetError());
-        exit(-1);
-    }
-    atexit(IMG_Quit);
+    if (SDLW_Initialize(&window, &renderer, WIDTH, HEIGHT) != 0)
+        exit(EXIT_FAILURE);
 
-    SDL_Window *window;
-    window = SDL_CreateWindow("Goby Roads", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                              WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
-    if (!window)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in window init: %s", SDL_GetError());
-        exit(-1);
-    }
+    Textures *textures = initTextures(renderer);
 
-    SDL_Renderer *renderer;
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in renderer init: %s", SDL_GetError());
-        exit(-1);
-    }
-
-    SDL_Surface *spriteSurface = IMG_Load("assets/sprite.png");
-    if (!spriteSurface)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in sprite surface init: %s", IMG_GetError());
-        exit(-1);
-    }
-
-    SDL_Texture *spriteTexture = SDL_CreateTextureFromSurface(renderer, spriteSurface);
-    if (!spriteTexture)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in sprite texture init: %s", SDL_GetError());
-        exit(-1);
-    }
-
-    SDL_FreeSurface(spriteSurface);
-
+    // code gestion affichage joueur
     int spriteFullWidth, spriteFullHeight;
-    if (SDL_QueryTexture(spriteTexture, NULL, NULL, &spriteFullWidth, &spriteFullHeight))
+    if (SDL_QueryTexture(textures->playerTexture, NULL, NULL, &spriteFullWidth, &spriteFullHeight))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in query texture: %s", SDL_GetError());
         exit(-1);
     }
-
     int spriteWidth = spriteFullWidth / 4;
     int spriteHeight = spriteFullHeight / 4;
+    // ---
 
     SDL_Event event;
     int running = 1;
-    int offset = 0;
+    int offsetX = 0, offsetY = 0;
     int distance = 0;
 
     while (running)
@@ -93,13 +57,15 @@ int main(int argc, char *argv[])
                 {
                 case SDLK_DOWN:
                     distance += 1;
-                    offset += 1;
-                    offset %= 4;
+                    offsetY = 2;
+                    offsetX += 1;
+                    offsetX %= 4;
                     break;
                 }
                 break;
             case SDL_KEYUP:
-                offset = 0;
+                offsetX = 0;
+                offsetY = 0;
                 break;
             }
 
@@ -112,16 +78,16 @@ int main(int argc, char *argv[])
             if (SDL_RenderClear(renderer))
                 SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render clear: %s", SDL_GetError());
 
-            SDL_Rect spriteRect = {.x = offset * spriteWidth, .y = 0, .w = spriteWidth, .h = spriteHeight};
+            SDL_Rect spriteRect = {.x = offsetX * spriteWidth, .y = offsetY * spriteWidth, .w = spriteWidth, .h = spriteHeight};
             SDL_Rect destRect = {.x = 0, .y = distance * 10, .w = spriteWidth, .h = spriteHeight};
-            if (SDL_RenderCopy(renderer, spriteTexture, &spriteRect, &destRect))
+            if (SDL_RenderCopy(renderer, textures->playerTexture, &spriteRect, &destRect))
                 SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render copy: %s", SDL_GetError());
 
             SDL_RenderPresent(renderer);
         }
     }
 
-    SDL_DestroyTexture(spriteTexture);
+    destroyTextures(textures);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 
