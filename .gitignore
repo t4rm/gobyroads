@@ -69,4 +69,8 @@ dkms.conf
 /node_modules
 env.json
 
+
 # End of https://mrkandreev.name/snippets/gitignore-generator/#C,Git,StdLib
+
+*.cmake
+*.pc

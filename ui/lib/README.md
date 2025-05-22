@@ -1,0 +1,1 @@
+# Lib consists of cmake and pkgconfig files of SDL 2.
