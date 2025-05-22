@@ -1,7 +1,14 @@
 #define SDL_MAIN_HANDLED
 
+// SDL 2
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
+// Core game features, directly from core
+#include "gamestate.h"
+#include "player.h"
+#include "effect.h"
+#include "car.h"
+// Standard
 #include <stdio.h>
 
 // Windows dimension constants
@@ -25,7 +32,7 @@ int main(int argc, char *argv[])
     atexit(IMG_Quit);
 
     SDL_Window *window;
-    window = SDL_CreateWindow("demo sprite", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    window = SDL_CreateWindow("Goby Roads", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                               WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
     if (!window)
     {
