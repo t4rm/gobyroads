@@ -1,5 +1,10 @@
 #include "sdl_wrapper.h"
 
+int gridToScreenY(int gridY, int gridHeight)
+{
+    return (gridHeight - 1 - gridY) * CELL_SIZE;
+}
+
 int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int height)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING))
@@ -67,18 +72,16 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
 
     int spriteWidth = spriteFullWidth / 4;
     int spriteHeight = spriteFullHeight / 4;
-    int offsetX = 0, offsetY = 0;
-    int distance = 0;
 
     SDL_Rect spriteRect = {
-        .x = offsetX * spriteWidth,
-        .y = offsetY * spriteHeight,
+        .x = uiGs->playerOffset->x * spriteWidth,
+        .y = uiGs->playerOffset->y * spriteHeight,
         .w = spriteWidth,
         .h = spriteHeight};
 
     SDL_Rect destRect = {
-        .x = 0,
-        .y = distance * 10,
+        .x = uiGs->core->player->x * 10,
+        .y = gridToScreenY(uiGs->core->player->y, uiGs->core->grid->height),
         .w = spriteWidth,
         .h = spriteHeight};
 

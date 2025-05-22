@@ -11,7 +11,7 @@ typedef struct _PlayerOffset
 typedef struct _UIGameState
 {
     GameState *core;
-    PlayerOffset playerOffset;
+    PlayerOffset *playerOffset;
     int running;
 } UIGameState;
 

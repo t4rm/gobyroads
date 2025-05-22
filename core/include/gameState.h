@@ -17,7 +17,7 @@ typedef struct _CarQueue CarQueue;
 
 typedef struct _Player
 {
-  int x, y, mouvementCooldown, afk, offsetX, offsetY;
+  int x, y, mouvementCooldown, afk;
 } Player;
 
 typedef struct _Car

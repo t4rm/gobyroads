@@ -5,10 +5,10 @@ Textures *initTextures(SDL_Renderer *renderer)
     Textures *textures = (Textures *)malloc(sizeof(Textures));
 
     textures->playerTexture = makeTextures("assets/goblin.png", renderer);
+    textures->safeTexture = makeTextures("assets/grass.png", renderer);
     // textures->carTexture = makeTextures("sprites/car.png", renderer);
     // textures->logTexture = makeTextures("sprites/log.png", renderer);
     // textures->roadTexture = makeTextures("sprites/grass.png", renderer);
-    // textures->safeTexture = makeTextures("sprites/grass.png", renderer);
     // textures->treeTexture = makeTextures("sprites/bush.png", renderer);
     // textures->waterTexture = makeTextures("sprites/water.png", renderer);
 
@@ -18,10 +18,10 @@ Textures *initTextures(SDL_Renderer *renderer)
 void destroyTextures(Textures *textures)
 {
     SDL_DestroyTexture(textures->playerTexture);
+    SDL_DestroyTexture(textures->safeTexture);
     //     SDL_DestroyTexture(textures->carTexture);
     //     SDL_DestroyTexture(textures->logTexture);
     //     SDL_DestroyTexture(textures->roadTexture);
-    //     SDL_DestroyTexture(textures->safeTexture);
     //     SDL_DestroyTexture(textures->treeTexture);
     //     SDL_DestroyTexture(textures->waterTexture);
 }

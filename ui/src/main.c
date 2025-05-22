@@ -30,27 +30,24 @@ int main(int argc, char *argv[])
 
     Textures *textures = initTextures(renderer);
 
-    // GameState *gs = initGameState(15, 30);
     UIGameState *uiGs = initUIGameState(15, 30);
+    // Plutôt utiliser les vraies dimensions du coup.
+    // Et appliquer un coefficient de réduction pour le comportement du jeu en CLI ?
+    // Comment gérer le fait qu'une coordonnée est representé en 1 pixel ici.
 
     SDL_Event event;
-    // GameState *gs = initGameState(15, 30);
 
-    while (uiGs)
+    while (uiGs->running)
     {
         Uint64 start = SDL_GetPerformanceCounter();
 
         if (SDL_PollEvent(&event))
         {
-            handleEvents(uiGs, &event);
             // actions joueur
-
+            handleEvents(uiGs, &event);
             // actions des mobs
-
             // calcul interactions (collisions)
-
             // maj état du jeu (états mobs, joueur, score)
-
             // maj rendu & rendu
             SDLW_UpdateAndRender(uiGs, renderer, textures);
         }

@@ -7,6 +7,8 @@
 #include "core_wrapper.h"
 #include <stdlib.h>
 
+#define CELL_SIZE 10;
+
 int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int height);
 int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *textures);
 
