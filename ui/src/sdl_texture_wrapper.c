@@ -1,21 +1,21 @@
-#include "sdl_texture.h"
+#include "sdl_texture_wrapper.h"
 
-Textures *initTextures(SDL_Renderer *renderer)
+Textures *SDLW_InitTextures(SDL_Renderer *renderer)
 {
     Textures *textures = (Textures *)malloc(sizeof(Textures));
 
-    textures->safeTexture = makeTextures("assets/grass.png", renderer);
-    textures->playerTexture = makeTextures("assets/goblin.png", renderer);
-    textures->roadTexture = makeTextures("assets/road.png", renderer);
-    textures->waterTexture = makeTextures("assets/water.png", renderer);
-    textures->treeTexture = makeTextures("assets/tree.png", renderer);
-    textures->carTexture = makeTextures("assets/car.png", renderer);
-    textures->logTexture = makeTextures("assets/log.png", renderer);
+    textures->safeTexture = SDLW_MakeTexture("assets/grass.png", renderer);
+    textures->playerTexture = SDLW_MakeTexture("assets/goblin.png", renderer);
+    textures->roadTexture = SDLW_MakeTexture("assets/road.png", renderer);
+    textures->waterTexture = SDLW_MakeTexture("assets/water.png", renderer);
+    textures->treeTexture = SDLW_MakeTexture("assets/tree.png", renderer);
+    textures->carTexture = SDLW_MakeTexture("assets/car.png", renderer);
+    textures->logTexture = SDLW_MakeTexture("assets/log.png", renderer);
 
     return textures;
 }
 
-void destroyTextures(Textures *textures)
+void SDLW_DestroyTextures(Textures *textures)
 {
     SDL_DestroyTexture(textures->playerTexture);
     SDL_DestroyTexture(textures->safeTexture);
@@ -26,7 +26,7 @@ void destroyTextures(Textures *textures)
     SDL_DestroyTexture(textures->logTexture);
 }
 
-SDL_Texture *makeTextures(char *sprite_name, SDL_Renderer *renderer)
+SDL_Texture *SDLW_MakeTexture(char *sprite_name, SDL_Renderer *renderer)
 {
     SDL_Surface *spriteSurface = IMG_Load(sprite_name);
     if (!spriteSurface)

@@ -17,8 +17,8 @@ typedef struct texture_t
     SDL_Texture *logTexture;
 } Textures;
 
-Textures *initTextures(SDL_Renderer *renderer);
-SDL_Texture *makeTextures(char *sprite_name, SDL_Renderer *renderer);
-void destroyTextures(Textures *textures);
+Textures *SDLW_InitTextures(SDL_Renderer *renderer);
+SDL_Texture *SDLW_MakeTexture(char *sprite_name, SDL_Renderer *renderer);
+void SDLW_DestroyTextures(Textures *textures);
 
 #endif

@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "sdl_texture.h"
+#include "sdl_texture_wrapper.h"
 #include "core_wrapper.h"
 #include <stdlib.h>
 

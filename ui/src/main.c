@@ -3,7 +3,7 @@
 #include "SDL2/SDL.h"
 // #include "SDL2/SDL_image.h"
 #include "sdl_wrapper.h"
-#include "sdl_texture.h"
+#include "sdl_texture_wrapper.h"
 // Core game features, wrapped with UI Concepts
 #include "core_wrapper.h"
 // Core game features, directly from core
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     if (SDLW_Initialize(&window, &renderer, WIDTH, HEIGHT) != 0)
         exit(EXIT_FAILURE);
 
-    Textures *textures = initTextures(renderer);
+    Textures *textures = SDLW_InitTextures(renderer);
 
     UIGameState *uiGs = initUIGameState(ROWS, COLS);
     // Plutôt utiliser les vraies dimensions du coup.
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    destroyTextures(textures);
+    SDLW_DestroyTextures(textures);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 
