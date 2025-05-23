@@ -17,8 +17,8 @@
 #include <math.h>
 
 // Windows dimension constants
-const int WIDTH = 480;
-const int HEIGHT = 640;
+const int WIDTH = 15 * 48;
+const int HEIGHT = 20 * 48;
 
 int main(int argc, char *argv[])
 {
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
     Textures *textures = initTextures(renderer);
 
-    UIGameState *uiGs = initUIGameState(15, 30);
+    UIGameState *uiGs = initUIGameState(15, 32 - 12);
     // Plutôt utiliser les vraies dimensions du coup.
     // Et appliquer un coefficient de réduction pour le comportement du jeu en CLI ?
     // Comment gérer le fait qu'une coordonnée est representé en 1 pixel ici.

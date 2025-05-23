@@ -10,7 +10,7 @@
 
 int main()
 {
-    GameState *gs = initGameState(15, 30);
+    GameState *gs = initGameState(15, 32 - 12);
     const int FPS = 60;
     const int frameTime = 1000 / FPS;
 
