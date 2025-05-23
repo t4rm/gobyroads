@@ -1,5 +1,4 @@
 #define SDL_MAIN_HANDLED
-
 // SDL 2
 #include "SDL2/SDL.h"
 // #include "SDL2/SDL_image.h"
@@ -15,7 +14,6 @@
 // Standard
 #include <stdio.h>
 #include <math.h>
-// Windows dimension constants
 
 int main(int argc, char *argv[])
 {
@@ -32,44 +30,42 @@ int main(int argc, char *argv[])
     // Et appliquer un coefficient de réduction pour le comportement du jeu en CLI ?
     // Comment gérer le fait qu'une coordonnée est representé en 1 pixel ici.
     SDL_Event event;
+    const int FPS = 12;
+    const int frameTime = 1000 / FPS;
 
     while (uiGs->running)
     {
-        Uint64 start = SDL_GetPerformanceCounter();
+        Uint64 frameStartTime = SDL_GetTicks64();
 
         if (SDL_PollEvent(&event))
         {
-            // actions joueur
+            // Actions joueur
             handleEvents(uiGs, &event);
-            // actions des mobs
-            // calcul interactions (collisions)
-            // maj état du jeu (états mobs, joueur, score)
-            // maj rendu & rendu
-            SDLW_UpdateAndRender(uiGs, renderer, textures);
         }
+        // Est-ce qu'on "fire" des évènements pour les mises à jours des voitures et on migre leur "handling" en haut ? :
+        updateCars(uiGs->core);
+        updateEffects(uiGs->core);
+        // Fin des possibles évents à "fire" ----
 
-        // Physics loop
-        // Uint32 current = SDL_GetTicks();
+        // Calcul interactions (collisions)
+        // handleCollision(uiGs->core);
 
-        // Calculate dT (in seconds)
+        // maj état du jeu (états mobs, joueur, score)
+        // A faire ici : Calcul de vélocité pour les animations des obstacles ?
+        scrolling(uiGs->core);
 
-        // float dT = (current - lastUpdate) / 1000.0f;
-        // for (/* objects */)
-        // {
-        //     object.position += object.velocity * dT;
-        // }
+        // maj rendu & rendu
+        updateGameState(uiGs->core);
+        SDLW_UpdateAndRender(uiGs, renderer, textures);
 
-        // // Set updated time
-        // lastUpdate = current;
+        Uint64 frameEndTime = SDL_GetTicks64();
+        Uint64 elapsedTime = frameEndTime - frameStartTime;
 
-        // 60 FPS CAP
-        Uint64 end = SDL_GetPerformanceCounter();
-
-        float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
-
-        float delayTime = 16.666f - elapsedMS;
-        if (delayTime > 0)
-            SDL_Delay((Uint32)floor(delayTime));
+        if (elapsedTime < frameTime)
+        {
+            Uint64 sleepTime = frameTime - elapsedTime;
+            SDL_Delay(sleepTime);
+        }
     }
 
     destroyTextures(textures);

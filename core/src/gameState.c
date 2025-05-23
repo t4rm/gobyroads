@@ -8,7 +8,7 @@ GameState *initGameState(int h, int l, bool isWrapped)
     gs->effects = createEffectQueue();
     gs->grid = createGrid(h, l, gs->carMaxSize, isWrapped);
     gs->player = (Player *)malloc(sizeof(Player));
-    gs->player->x = isWrapped ? l / 2 : (l + 2 * gs->carMaxSize) / 2;
+    gs->player->x = (l + 2 * gs->carMaxSize + 1) / 2;
     gs->player->y = 0;
     gs->player->mouvementCooldown = 0;
     gs->player->afk = 0;
@@ -31,11 +31,11 @@ GameState *initGameState(int h, int l, bool isWrapped)
 
     gs->grid->cases[gs->player->y][gs->player->x] = SAFE; // On spawn sur une safe zone, pas un arbre.
 
-    if (!isWrapped)
-    {
-        printf("\e[1;1H\e[2J"); // Nettoyage de l'écran
-        printf("\e[?25l");      // Cacher le curseur
-    }
+    // if (!isWrapped)
+    // {
+    printf("\e[1;1H\e[2J"); // Nettoyage de l'écran
+    printf("\e[?25l");      // Cacher le curseur
+    // }
 
     return gs;
 }
@@ -88,13 +88,12 @@ void handleCollision(GameState *gs)
     // New : Check directly on the map if the user is stepping on a CAR cell.
     // Pros : Faster. Less Code. Easier to read. Better for future implementation, like here with LOG and Water.
     // We don't even need to mind safe zone and logs.
-
     Occupation playerOccupation = gs->grid->cases[gs->player->y][gs->player->x];
-
-    if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == WATER) // Colliding with an object.
+    // Colliding with an object.
+    if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == WATER)
         gs->gameOver = true;
-
-    if (gs->player->x < gs->carMaxSize || gs->player->x > gs->grid->length - gs->carMaxSize + 1) // Colliding with the void (out of the viewable map)
+    // Colliding with the void (out of the viewable map)
+    if (gs->player->x < gs->carMaxSize || gs->player->x > gs->grid->length - gs->carMaxSize + 1)
         gs->gameOver = true;
 }
 

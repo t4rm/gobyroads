@@ -3,7 +3,7 @@
 UIGameState *initUIGameState(int h, int l)
 {
     UIGameState *uiGs = malloc(sizeof(UIGameState));
-    uiGs->core = initGameState(h, l);
+    uiGs->core = initGameState(h, l, 1);
     uiGs->playerOffset = (PlayerOffset *)malloc(sizeof(PlayerOffset));
     uiGs->playerOffset->x = 0;
     uiGs->playerOffset->y = 0;
@@ -20,6 +20,8 @@ void destroyUIGameState(UIGameState *uiGs)
 void handleEvents(UIGameState *uiGS, SDL_Event *event)
 {
     int hasMoved = 0;
+    int precedentX = uiGS->core->player->x, precedentY = uiGS->core->player->y;
+
     switch (event->type)
     {
     case SDL_QUIT:
@@ -56,6 +58,18 @@ void handleEvents(UIGameState *uiGS, SDL_Event *event)
         {
             uiGS->playerOffset->x += 1;
             uiGS->playerOffset->x %= 4;
+            uiGS->core->player->mouvementCooldown = 3;
+            uiGS->core->player->afk = 0;
+        }
+
+        if (uiGS->core->player->x >= 0 && uiGS->core->player->y >= 0)
+        {
+            if (uiGS->core->grid->cases[uiGS->core->player->y][uiGS->core->player->x] == TREE)
+            {
+                uiGS->core->player->x = precedentX;
+                uiGS->core->player->y = precedentY;
+                uiGS->core->player->mouvementCooldown = 1;
+            }
         }
         break;
     case SDL_KEYUP:

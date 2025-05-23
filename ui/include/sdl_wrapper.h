@@ -13,6 +13,7 @@
 #define WIDTH COLS *CELL_SIZE
 #define HEIGHT ROWS *CELL_SIZE
 #define flipY(y) (ROWS - 1 - (y))
+#define CAR_MAX_SIZE 6
 
 int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int height);
 int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *textures);

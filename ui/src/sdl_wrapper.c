@@ -35,7 +35,6 @@ int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int
 }
 
 int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *textures)
-// SDL_Texture *playerTexture, int offsetX, int offsetY, int spriteWidth, int spriteHeight, int distance
 {
     // Background
     SDL_Color const BACKGROUND_COLOR = {.r = 0xFF, .g = 0xFF, .b = 0xFF, .a = SDL_ALPHA_OPAQUE};
@@ -54,15 +53,15 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
     }
 
     Grid *grid = uiGs->core->grid;
-    // int carMaxSize = uiGs->core->carMaxSize;
+    int carMaxSize = uiGs->core->carMaxSize;
     for (int y = 0; y < grid->height; y++)
     {
         // Option 1 : ne render que la partie visible du jeu comme dans core
-        // Option 2 : tout render et SDL se débrouille :
-        for (int x = 0; x < grid->length; x++)
+        // Option 2 : tout render  :
+        for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
         {
             // Map elements (SafeZone, Roads) (Background)
-            switch (grid->cases[flipY(y)][x])
+            switch (grid->cases[y][x])
             {
             case SAFE:
             case TREE:
@@ -81,7 +80,7 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
                 break;
             }
             // Mobs (Logs, Cars, Trees) (Foreground)
-            switch (grid->cases[flipY(y)][x])
+            switch (grid->cases[y][x])
             {
             case TREE:
                 SDLW_RenderCopy(renderer, textures->treeTexture, x, y, 0, 0, SDL_FLIP_NONE);
@@ -108,7 +107,6 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
     // printf("%d, %d\n", grid->height, grid->length);
     // printf("%d, %d (%d)\n", uiGs->core->player->x, uiGs->core->player->y, flipY(uiGs->core->player->y));
     SDLW_RenderCopy(renderer, textures->playerTexture, uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y, SDL_FLIP_NONE);
-
     SDL_RenderPresent(renderer);
     return 0;
 }
@@ -122,7 +120,7 @@ void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y, int xOffset,
     SDL_Rect spriteRect = {xOffset * CELL_SIZE, yOffset * CELL_SIZE, CELL_SIZE, CELL_SIZE};
     // Better : Only define it once for static spritesheet (only 1 sprite in the sheet)
     // The part we need, often its the whole spritesheet but in the case of a player it's only a portion of it.
-    SDL_Rect destRect = {x * CELL_SIZE, flipY(y) * CELL_SIZE, CELL_SIZE, CELL_SIZE};
+    SDL_Rect destRect = {(x - CAR_MAX_SIZE - 1) * CELL_SIZE, flipY(y) * CELL_SIZE, CELL_SIZE, CELL_SIZE};
     if (SDL_RenderCopyEx(r, t, &spriteRect, &destRect, 0.0, NULL, flip))
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render copy: %s", SDL_GetError());
 }

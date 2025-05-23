@@ -61,6 +61,7 @@ int main()
         printf("\n\nPerdu, score final: %d\n", gs->score);
 
     destroyGameState(gs);
+    printf("\e[?25h"); // Afficher le curseur
 
     return 0;
 }
