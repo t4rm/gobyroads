@@ -6,11 +6,11 @@ Textures *initTextures(SDL_Renderer *renderer)
 
     textures->playerTexture = makeTextures("assets/goblin.png", renderer);
     textures->safeTexture = makeTextures("assets/grass.png", renderer);
-    // textures->carTexture = makeTextures("sprites/car.png", renderer);
-    // textures->logTexture = makeTextures("sprites/log.png", renderer);
-    // textures->roadTexture = makeTextures("sprites/grass.png", renderer);
-    // textures->treeTexture = makeTextures("sprites/bush.png", renderer);
-    // textures->waterTexture = makeTextures("sprites/water.png", renderer);
+    textures->roadTexture = makeTextures("assets/road.png", renderer);
+    textures->waterTexture = makeTextures("assets/water.png", renderer);
+    // textures->carTexture = makeTextures("assets/car.png", renderer);
+    // textures->logTexture = makeTextures("assets/log.png", renderer);
+    // textures->treeTexture = makeTextures("assets/bush.png", renderer);
 
     return (textures);
 }
@@ -19,11 +19,11 @@ void destroyTextures(Textures *textures)
 {
     SDL_DestroyTexture(textures->playerTexture);
     SDL_DestroyTexture(textures->safeTexture);
+    SDL_DestroyTexture(textures->roadTexture);
+    SDL_DestroyTexture(textures->waterTexture);
     //     SDL_DestroyTexture(textures->carTexture);
     //     SDL_DestroyTexture(textures->logTexture);
-    //     SDL_DestroyTexture(textures->roadTexture);
     //     SDL_DestroyTexture(textures->treeTexture);
-    //     SDL_DestroyTexture(textures->waterTexture);
 }
 
 SDL_Texture *makeTextures(char *sprite_name, SDL_Renderer *renderer)

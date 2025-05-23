@@ -10,10 +10,10 @@ typedef struct texture_t
 {
     SDL_Texture *playerTexture;
     SDL_Texture *safeTexture;
-    // SDL_Texture *carTexture;
-    // SDL_Texture *roadTexture;
-    // SDL_Texture *waterTexture;
+    SDL_Texture *roadTexture;
+    SDL_Texture *waterTexture;
     // SDL_Texture *treeTexture;
+    // SDL_Texture *carTexture;
     // SDL_Texture *logTexture;
 } Textures;
 

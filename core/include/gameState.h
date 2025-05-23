@@ -37,13 +37,13 @@ typedef struct _GameState
   int backwardMovements;
   int nextSafeZone;
   int carMaxSize;
-  bool gameOver;
+  bool gameOver, isWrapped;
 } GameState;
 
-GameState *initGameState();
+GameState *initGameState(int h, int l, bool isWrapped);
 void playerMove(GameState *gs);
 void scrolling(GameState *gs);
-void updateGameState();
+void updateGameState(GameState *gs);
 void handleCollision(GameState *gs);
 void destroyGameState(GameState *gs);
 

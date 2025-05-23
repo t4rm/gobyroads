@@ -1,9 +1,11 @@
 # DONE :
-- Structure de projet qui reprend les concepts de core (les inclus et les compiles) ✅
+- Structure de projet qui reprend les concepts de core (les inclus et les compiles) : Encapsulation ✅
 
 # TODO :
 - Affichage de la grille virtuelle (celle dans le core) sur la fenêtre
-    - Comment faire le lien entre les cases et les dimensions réelles ? Contrainte de dimensions à étudier
+    - Comment faire le lien entre les cases et les dimensions réelles ? Contrainte de dimensions à étudier , fluidité
+    - Affichage du joueur ✅
+    - Fluidité des déplacements : Pas de *sauts* de cases mais plutôt des *animations*
 - Réintégrer les logiques de gestion de jeu dans l'encapsulateur de GameState : UIGameState
     - En somme : Permettre la mise à jour des effets, etc, depuis SDL et non pas notre moteur (core)
 - Générer/Créer les sprites nécessaires et aux bonnes dimensions, pour l'instant des placeholders
@@ -14,5 +16,3 @@
     - Route
     - Herbe (safezone)
     - Arbre
-
-        

@@ -1,14 +1,14 @@
 #include "gamestate.h"
 
-GameState *initGameState(int h, int l)
+GameState *initGameState(int h, int l, bool isWrapped)
 {
     GameState *gs = (GameState *)malloc(sizeof(GameState));
     gs->carMaxSize = 6;
     gs->cars = createCarQueue();
     gs->effects = createEffectQueue();
-    gs->grid = createGrid(h, l, gs->carMaxSize);
+    gs->grid = createGrid(h, l, gs->carMaxSize, isWrapped);
     gs->player = (Player *)malloc(sizeof(Player));
-    gs->player->x = (l + 2 * gs->carMaxSize) / 2;
+    gs->player->x = isWrapped ? l / 2 : (l + 2 * gs->carMaxSize) / 2;
     gs->player->y = 0;
     gs->player->mouvementCooldown = 0;
     gs->player->afk = 0;
@@ -16,6 +16,7 @@ GameState *initGameState(int h, int l)
     gs->backwardMovements = 0;
     gs->gameOver = false;
     gs->nextSafeZone = 3;
+    gs->isWrapped = isWrapped;
 
     while (gs->nextSafeZone < h)
     {
@@ -30,8 +31,11 @@ GameState *initGameState(int h, int l)
 
     gs->grid->cases[gs->player->y][gs->player->x] = SAFE; // On spawn sur une safe zone, pas un arbre.
 
-    printf("\e[1;1H\e[2J"); // Nettoyage de l'écran
-    printf("\e[?25l");      // Cacher le curseur
+    if (!isWrapped)
+    {
+        printf("\e[1;1H\e[2J"); // Nettoyage de l'écran
+        printf("\e[?25l");      // Cacher le curseur
+    }
 
     return gs;
 }

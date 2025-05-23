@@ -15,26 +15,22 @@
 // Standard
 #include <stdio.h>
 #include <math.h>
-
 // Windows dimension constants
-const int WIDTH = 15 * 48;
-const int HEIGHT = 20 * 48;
 
 int main(int argc, char *argv[])
 {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 
-    if (SDLW_Initialize(&window, &renderer, WIDTH, HEIGHT) != 0)
+    if (SDLW_Initialize(window, renderer, WIDTH, HEIGHT) != 0)
         exit(EXIT_FAILURE);
 
     Textures *textures = initTextures(renderer);
 
-    UIGameState *uiGs = initUIGameState(15, 32 - 12);
+    UIGameState *uiGs = initUIGameState(ROWS, COLS);
     // Plutôt utiliser les vraies dimensions du coup.
     // Et appliquer un coefficient de réduction pour le comportement du jeu en CLI ?
     // Comment gérer le fait qu'une coordonnée est representé en 1 pixel ici.
-
     SDL_Event event;
 
     while (uiGs->running)

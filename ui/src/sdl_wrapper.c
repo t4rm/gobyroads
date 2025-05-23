@@ -1,11 +1,6 @@
 #include "sdl_wrapper.h"
 
-int gridToScreenY(int gridY, int gridHeight)
-{
-    return (gridHeight - 1 - gridY) * CELL_SIZE;
-}
-
-int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int height)
+int SDLW_Initialize(SDL_Window *window, SDL_Renderer *renderer, int width, int height)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING))
     {
@@ -21,16 +16,16 @@ int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int
     }
     atexit(IMG_Quit);
 
-    *window = SDL_CreateWindow("Goby Roads", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                               width, height, SDL_WINDOW_SHOWN);
-    if (!*window)
+    window = SDL_CreateWindow("Goby Roads", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                              width, height, SDL_WINDOW_SHOWN);
+    if (!window)
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in window init: %s", SDL_GetError());
         return -1;
     }
 
-    *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
-    if (!*renderer)
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer)
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in renderer init: %s", SDL_GetError());
         return -1;
@@ -39,7 +34,7 @@ int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int
     return 0;
 }
 
-int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *textures)
+int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer renderer, Textures *textures)
 // SDL_Texture *playerTexture, int offsetX, int offsetY, int spriteWidth, int spriteHeight, int distance
 {
     // Background
@@ -59,38 +54,56 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
     }
 
     // Map elements (Tree, SafeZone, Roads)
-
     // Mobs (Logs, Cars)
-
     // Player
-    int spriteFullWidth, spriteFullHeight;
-    if (SDL_QueryTexture(textures->playerTexture, NULL, NULL, &spriteFullWidth, &spriteFullHeight))
+
+    Grid *grid = uiGs->core->grid;
+    int carMaxSize = uiGs->core->carMaxSize;
+    for (int i = 0; i < grid->height; i++)
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in query texture: %s", SDL_GetError());
-        exit(-1);
-    } // Better : Only ask for dimensions once and store them somewhere.
+        int row = grid->height - 1 - i;
 
-    int spriteWidth = spriteFullWidth / 4;
-    int spriteHeight = spriteFullHeight / 4;
-
-    SDL_Rect spriteRect = {
-        .x = uiGs->playerOffset->x * spriteWidth,
-        .y = uiGs->playerOffset->y * spriteHeight,
-        .w = spriteWidth,
-        .h = spriteHeight};
-
-    SDL_Rect destRect = {
-        .x = uiGs->core->player->x * 10,
-        .y = gridToScreenY(uiGs->core->player->y, uiGs->core->grid->height),
-        .w = spriteWidth,
-        .h = spriteHeight};
-
-    if (SDL_RenderCopy(renderer, textures->playerTexture, &spriteRect, &destRect))
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render copy: %s", SDL_GetError());
-        exit(-1);
+        for (int j = carMaxSize; j < grid->length - carMaxSize + 1; j++)
+        {
+            // int virtualJ = j - carMaxSize;
+            // Display the map without objects :
+            switch (grid->cases[row][j])
+            {
+                // case SAFE:
+                // break;
+                // case ROAD: printf("_"); break;
+                // case WATER: printf("~"); break;
+                // case SAFE: printf("="); break;
+                // case TREE: printf("T"); break;
+                // case CAR_LEFT: printf("<"); break;
+                // case CAR_RIGHT: printf(">"); break;
+                // case LOG: printf("L"); break;
+                // default: printf("?"); break;
+            }
+            // if (row == playerY && j == playerX)
+            // uiGs->playerOffset->
+        }
     }
+
+    // Debug informations for Player true and virtual coordinates
+    // printf("%d, %d (%d)\n", uiGs->core->player->x, uiGs->core->player->y, flipY(uiGs->core->player->y));
+    SDLW_RenderCopy(renderer, textures->playerTexture, uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y);
+    SDLW_RenderCopy(renderer, textures->safeTexture, 400, 400, 1, 1);
 
     SDL_RenderPresent(renderer);
     return 0;
+}
+
+// This work fine for dynamic sprite like Player, but this is "OVERKILL" for Static Sprites like Grass.
+// Grass don't have offsets, but we could ! They would become animated (simulating the wind for example)
+// Same for waves in Rivers
+void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y, int xOffset, int yOffset)
+{
+    // The whole spritesheet :
+    SDL_Rect spriteRect = {xOffset * CELL_SIZE, yOffset * CELL_SIZE, CELL_SIZE, CELL_SIZE};
+    // Better : Only define it once for static spritesheet (only 1 sprite in the sheet)
+    // The part we need, often its the whole spritesheet but in the case of a player it's only a portion of it.
+    SDL_Rect destRect = {x * CELL_SIZE, flipY(y) * CELL_SIZE, CELL_SIZE, CELL_SIZE};
+    if (SDL_RenderCopy(r, t, &spriteRect, &destRect))
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render copy: %s", SDL_GetError());
 }
