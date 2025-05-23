@@ -53,42 +53,57 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
         exit(-1);
     }
 
-    // Map elements (Tree, SafeZone, Roads)
-    // Mobs (Logs, Cars)
-    // Player
-
     Grid *grid = uiGs->core->grid;
-    int carMaxSize = uiGs->core->carMaxSize;
-    for (int i = 0; i < grid->height; i++)
+    // int carMaxSize = uiGs->core->carMaxSize;
+    for (int y = 0; y < grid->height; y++)
     {
-        int row = grid->height - 1 - i;
-
-        for (int j = carMaxSize; j < grid->length - carMaxSize + 1; j++)
+        // int row = grid->height - 1 - y;
+        for (int x = 0; x < grid->length; x++)
         {
-            // int virtualJ = j - carMaxSize;
-            // Display the map without objects :
-            switch (grid->cases[row][j])
+            // Map elements (SafeZone, Roads) (Background)
+            switch (grid->cases[flipY(y)][x])
             {
-                // case SAFE:
-                // break;
-                // case ROAD: printf("_"); break;
-                // case WATER: printf("~"); break;
-                // case SAFE: printf("="); break;
-                // case TREE: printf("T"); break;
-                // case CAR_LEFT: printf("<"); break;
-                // case CAR_RIGHT: printf(">"); break;
-                // case LOG: printf("L"); break;
-                // default: printf("?"); break;
+            case SAFE:
+            case TREE:
+                SDLW_RenderCopy(renderer, textures->safeTexture, x, y, 0, 0);
+                break;
+            case ROAD:
+            case CAR_LEFT:
+            case CAR_RIGHT:
+                SDLW_RenderCopy(renderer, textures->roadTexture, x, y, 0, 0);
+                break;
+            case WATER:
+            case LOG:
+                SDLW_RenderCopy(renderer, textures->waterTexture, x, y, 0, 0);
+                break;
+            default:
+                break;
             }
-            // if (row == playerY && j == playerX)
-            // uiGs->playerOffset->
+            // Mobs (Logs, Cars, Trees) (Foreground)
+            switch (grid->cases[flipY(y)][x])
+            {
+            case TREE:
+                SDLW_RenderCopy(renderer, textures->treeTexture, x, y, 0, 0);
+                break;
+            case CAR_LEFT:
+                break;
+            case CAR_RIGHT:
+                break;
+            case LOG:
+                break;
+            case SAFE:
+            case ROAD:
+            case WATER:
+                break;
+            }
         }
     }
 
+    // Player
     // Debug informations for Player true and virtual coordinates
+    // printf("%d, %d\n", grid->height, grid->length);
     // printf("%d, %d (%d)\n", uiGs->core->player->x, uiGs->core->player->y, flipY(uiGs->core->player->y));
     SDLW_RenderCopy(renderer, textures->playerTexture, uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y);
-    SDLW_RenderCopy(renderer, textures->safeTexture, 400, 400, 1, 1);
 
     SDL_RenderPresent(renderer);
     return 0;
