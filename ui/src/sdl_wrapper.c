@@ -57,7 +57,8 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
     // int carMaxSize = uiGs->core->carMaxSize;
     for (int y = 0; y < grid->height; y++)
     {
-        // int row = grid->height - 1 - y;
+        // Option 1 : ne render que la partie visible du jeu comme dans core
+        // Option 2 : tout render et SDL se débrouille :
         for (int x = 0; x < grid->length; x++)
         {
             // Map elements (SafeZone, Roads) (Background)
@@ -65,16 +66,16 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
             {
             case SAFE:
             case TREE:
-                SDLW_RenderCopy(renderer, textures->safeTexture, x, y, 0, 0);
+                SDLW_RenderCopy(renderer, textures->safeTexture, x, y, 0, 0, SDL_FLIP_NONE);
                 break;
             case ROAD:
             case CAR_LEFT:
             case CAR_RIGHT:
-                SDLW_RenderCopy(renderer, textures->roadTexture, x, y, 0, 0);
+                SDLW_RenderCopy(renderer, textures->roadTexture, x, y, 0, 0, SDL_FLIP_NONE);
                 break;
             case WATER:
             case LOG:
-                SDLW_RenderCopy(renderer, textures->waterTexture, x, y, 0, 0);
+                SDLW_RenderCopy(renderer, textures->waterTexture, x, y, 0, 0, SDL_FLIP_NONE);
                 break;
             default:
                 break;
@@ -83,13 +84,16 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
             switch (grid->cases[flipY(y)][x])
             {
             case TREE:
-                SDLW_RenderCopy(renderer, textures->treeTexture, x, y, 0, 0);
+                SDLW_RenderCopy(renderer, textures->treeTexture, x, y, 0, 0, SDL_FLIP_NONE);
                 break;
             case CAR_LEFT:
+                SDLW_RenderCopy(renderer, textures->carTexture, x, y, 0, 0, SDL_FLIP_HORIZONTAL);
                 break;
             case CAR_RIGHT:
+                SDLW_RenderCopy(renderer, textures->carTexture, x, y, 0, 0, SDL_FLIP_NONE);
                 break;
             case LOG:
+                SDLW_RenderCopy(renderer, textures->logTexture, x, y, 0, 0, SDL_FLIP_NONE);
                 break;
             case SAFE:
             case ROAD:
@@ -103,7 +107,7 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
     // Debug informations for Player true and virtual coordinates
     // printf("%d, %d\n", grid->height, grid->length);
     // printf("%d, %d (%d)\n", uiGs->core->player->x, uiGs->core->player->y, flipY(uiGs->core->player->y));
-    SDLW_RenderCopy(renderer, textures->playerTexture, uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y);
+    SDLW_RenderCopy(renderer, textures->playerTexture, uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y, SDL_FLIP_NONE);
 
     SDL_RenderPresent(renderer);
     return 0;
@@ -112,13 +116,13 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *te
 // This work fine for dynamic sprite like Player, but this is "OVERKILL" for Static Sprites like Grass.
 // Grass don't have offsets, but we could ! They would become animated (simulating the wind for example)
 // Same for waves in Rivers
-void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y, int xOffset, int yOffset)
+void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y, int xOffset, int yOffset, SDL_RendererFlip flip)
 {
     // The whole spritesheet :
     SDL_Rect spriteRect = {xOffset * CELL_SIZE, yOffset * CELL_SIZE, CELL_SIZE, CELL_SIZE};
     // Better : Only define it once for static spritesheet (only 1 sprite in the sheet)
     // The part we need, often its the whole spritesheet but in the case of a player it's only a portion of it.
     SDL_Rect destRect = {x * CELL_SIZE, flipY(y) * CELL_SIZE, CELL_SIZE, CELL_SIZE};
-    if (SDL_RenderCopy(r, t, &spriteRect, &destRect))
+    if (SDL_RenderCopyEx(r, t, &spriteRect, &destRect, 0.0, NULL, flip))
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render copy: %s", SDL_GetError());
 }

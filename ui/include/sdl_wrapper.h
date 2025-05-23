@@ -16,6 +16,6 @@
 
 int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int height);
 int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *textures);
-void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y, int xOffset, int yOffset);
+void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y, int xOffset, int yOffset, SDL_RendererFlip flip);
 
 #endif

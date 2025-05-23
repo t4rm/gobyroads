@@ -3,7 +3,7 @@
 
 # TODO :
 - Affichage de la grille virtuelle (celle dans le core) sur la fenêtre
-    - Comment faire le lien entre les cases et les dimensions réelles ? Contrainte de dimensions à étudier , fluidité
+    - Comment faire le lien entre les cases et les dimensions réelles ? Option choisie : On calcule la taille d'une "case" du jeu virtuel (core) et le jeu réel (sdl) sera composé de case de cette taille.
     - Affichage du joueur ✅
     - Fluidité des déplacements : Pas de *sauts* de cases mais plutôt des *animations*
 - Réintégrer les logiques de gestion de jeu dans l'encapsulateur de GameState : UIGameState

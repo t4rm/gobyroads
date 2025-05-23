@@ -13,8 +13,8 @@ typedef struct texture_t
     SDL_Texture *roadTexture;
     SDL_Texture *waterTexture;
     SDL_Texture *treeTexture;
-    // SDL_Texture *carTexture;
-    // SDL_Texture *logTexture;
+    SDL_Texture *carTexture;
+    SDL_Texture *logTexture;
 } Textures;
 
 Textures *initTextures(SDL_Renderer *renderer);
