@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 
-    if (SDLW_Initialize(window, renderer, WIDTH, HEIGHT) != 0)
+    if (SDLW_Initialize(&window, &renderer, WIDTH, HEIGHT) != 0)
         exit(EXIT_FAILURE);
 
     Textures *textures = initTextures(renderer);

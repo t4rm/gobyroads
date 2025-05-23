@@ -1,6 +1,6 @@
 #include "sdl_wrapper.h"
 
-int SDLW_Initialize(SDL_Window *window, SDL_Renderer *renderer, int width, int height)
+int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int height)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING))
     {
@@ -16,16 +16,16 @@ int SDLW_Initialize(SDL_Window *window, SDL_Renderer *renderer, int width, int h
     }
     atexit(IMG_Quit);
 
-    window = SDL_CreateWindow("Goby Roads", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                              width, height, SDL_WINDOW_SHOWN);
-    if (!window)
+    *window = SDL_CreateWindow("Goby Roads", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                               width, height, SDL_WINDOW_SHOWN);
+    if (!*window)
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in window init: %s", SDL_GetError());
         return -1;
     }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer)
+    *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
+    if (!*renderer)
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in renderer init: %s", SDL_GetError());
         return -1;
@@ -34,7 +34,7 @@ int SDLW_Initialize(SDL_Window *window, SDL_Renderer *renderer, int width, int h
     return 0;
 }
 
-int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer renderer, Textures *textures)
+int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, Textures *textures)
 // SDL_Texture *playerTexture, int offsetX, int offsetY, int spriteWidth, int spriteHeight, int distance
 {
     // Background
