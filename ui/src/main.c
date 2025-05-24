@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     if (SDLW_Initialize(&window, &renderer, WIDTH, HEIGHT) != 0)
         exit(EXIT_FAILURE);
 
-    Textures *textures = SDLW_InitTextures(renderer);
+    TextureCollection *textures = SDLW_InitTextures(renderer);
 
     UIGameState *uiGs = initUIGameState(ROWS, COLS);
     // Plutôt utiliser les vraies dimensions du coup.

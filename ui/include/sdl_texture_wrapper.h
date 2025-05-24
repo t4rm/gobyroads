@@ -5,20 +5,31 @@
 #include <stdlib.h>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
+#include "string.h"
 
-typedef struct texture_t
+typedef struct _NamedTexture
 {
-    SDL_Texture *playerTexture;
-    SDL_Texture *safeTexture;
-    SDL_Texture *roadTexture;
-    SDL_Texture *waterTexture;
-    SDL_Texture *treeTexture;
-    SDL_Texture *carTexture;
-    SDL_Texture *logTexture;
-} Textures;
+    char *name;
+    SDL_Texture *texture;
+    int size; // The size of the side of a sprite in the spritesheet.
+} NamedTexture;
 
-Textures *SDLW_InitTextures(SDL_Renderer *renderer);
+typedef struct
+{
+    const char *name;
+    const char *path;
+    int size; // The size of the side of a sprite in the spritesheet.
+} TextureInfo;
+
+typedef struct _TextureCollection
+{
+    NamedTexture *textures;
+    int count;
+} TextureCollection;
+
+TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer);
+SDL_Texture *GetTexture(TextureCollection *collection, const char *name);
+void SDLW_DestroyTextures(TextureCollection *collection);
 SDL_Texture *SDLW_MakeTexture(char *sprite_name, SDL_Renderer *renderer);
-void SDLW_DestroyTextures(Textures *textures);
 
 #endif

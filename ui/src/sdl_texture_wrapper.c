@@ -1,29 +1,63 @@
 #include "sdl_texture_wrapper.h"
 
-Textures *SDLW_InitTextures(SDL_Renderer *renderer)
+TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer)
 {
-    Textures *textures = (Textures *)malloc(sizeof(Textures));
+    TextureInfo textureData[] = {
+        // Map :
+        {"grass", "assets/grass.png", 42},
+        {"road", "assets/road.png", 42},
+        {"water", "assets/water.png", 42},
 
-    textures->safeTexture = SDLW_MakeTexture("assets/grass.png", renderer);
-    textures->playerTexture = SDLW_MakeTexture("assets/goblin.png", renderer);
-    textures->roadTexture = SDLW_MakeTexture("assets/road.png", renderer);
-    textures->waterTexture = SDLW_MakeTexture("assets/water.png", renderer);
-    textures->treeTexture = SDLW_MakeTexture("assets/tree.png", renderer);
-    textures->carTexture = SDLW_MakeTexture("assets/car.png", renderer);
-    textures->logTexture = SDLW_MakeTexture("assets/log.png", renderer);
+        // Cars (ALWAYS EAST DIRECTION) :
+        {"car_1", "assets/cars/1.png", 100},
+        {"car_2", "assets/cars/2.png", 100},
+        {"car_3", "assets/cars/3.png", 140},
+        // {"car_4", "assets/cars/4.png", 42},
 
-    return textures;
+        // Logs :
+        {"log", "assets/log.png", 42},
+
+        // Player & Tree
+        {"player", "assets/goblin.png", 42},
+        {"tree", "assets/tree.png", 42}};
+
+    size_t textureCount = sizeof(textureData) / sizeof(TextureInfo);
+
+    TextureCollection *collection = malloc(sizeof(TextureCollection));
+    collection->count = textureCount;
+    collection->textures = malloc(sizeof(NamedTexture) * textureCount);
+
+    for (size_t i = 0; i < textureCount; i++)
+    {
+        collection->textures[i].name = strdup(textureData[i].name);
+        collection->textures[i].size = textureData[i].size;
+        collection->textures[i].texture = SDLW_MakeTexture((char *)textureData[i].path, renderer);
+    }
+
+    return collection;
 }
 
-void SDLW_DestroyTextures(Textures *textures)
+SDL_Texture *GetTexture(TextureCollection *collection, const char *name)
 {
-    SDL_DestroyTexture(textures->playerTexture);
-    SDL_DestroyTexture(textures->safeTexture);
-    SDL_DestroyTexture(textures->roadTexture);
-    SDL_DestroyTexture(textures->waterTexture);
-    SDL_DestroyTexture(textures->treeTexture);
-    SDL_DestroyTexture(textures->carTexture);
-    SDL_DestroyTexture(textures->logTexture);
+    for (size_t i = 0; i < collection->count; i++)
+    {
+        if (strcmp(collection->textures[i].name, name) == 0)
+        {
+            return collection->textures[i].texture;
+        }
+    }
+    return NULL;
+}
+
+void SDLW_DestroyTextures(TextureCollection *collection)
+{
+    for (size_t i = 0; i < collection->count; i++)
+    {
+        SDL_DestroyTexture(collection->textures[i].texture);
+        free(collection->textures[i].name);
+    }
+    free(collection->textures);
+    free(collection);
 }
 
 SDL_Texture *SDLW_MakeTexture(char *sprite_name, SDL_Renderer *renderer)
