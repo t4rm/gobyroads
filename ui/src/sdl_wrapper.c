@@ -179,7 +179,7 @@ void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
             continue;
 
         int centerX = c->x + c->direction * (c->size - 1) / 2;
-        SDL_RendererFlip flip = (c->direction == -1) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+        SDL_RendererFlip flip = (c->direction == -1 && c->type != WATER) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
         SDLW_RenderCopy(r, GetTexture(t, textureName), centerX, c->y, c->accumulator % 4, yOffset, flip, yDepth, spriteSize, xDepth);
     }
