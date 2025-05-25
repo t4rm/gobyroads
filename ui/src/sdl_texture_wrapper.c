@@ -6,20 +6,21 @@ TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer)
         // Map :
         {"grass", "assets/grass.png", 42},
         {"road", "assets/road.png", 42},
-        {"water", "assets/water.png", 42},
+        {"water", "assets/water.jpg", 42},
 
         // Cars (ALWAYS EAST DIRECTION) :
         {"car_1", "assets/cars/1.png", 100},
         {"car_2", "assets/cars/2.png", 100},
         {"car_3", "assets/cars/3.png", 140},
-        // {"car_4", "assets/cars/4.png", 42},
+        {"car_4", "assets/cars/4.png", 42},
+        {"car_5", "assets/cars/5.png", 210},
 
         // Logs :
         {"log", "assets/log.png", 42},
 
         // Player & Tree
         {"player", "assets/goblin.png", 42},
-        {"tree", "assets/tree.png", 42}};
+        {"tree", "assets/trees/1.png", 128}};
 
     size_t textureCount = sizeof(textureData) / sizeof(TextureInfo);
 

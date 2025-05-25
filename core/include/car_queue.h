@@ -2,6 +2,8 @@
 #define CAR_QUEUE_H
 
 #include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "gamestate.h"
 
 typedef struct _Car Car;
@@ -10,6 +12,7 @@ typedef struct _CarElement
 {
     Car *car;
     struct _CarElement *next;
+    struct _CarElement *previous; // Only used by SDL2
 } CarElement;
 
 typedef struct _CarQueue

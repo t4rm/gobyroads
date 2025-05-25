@@ -17,19 +17,21 @@
     - Joueur
     - Voiture (Taille 1 ... 6, 6 = Long Bus) dans les deux sens (SDL_FLIP)
     - Nénuphar
-    - Rondinsa
+    - Rondins
     - Route
     - Herbe (safezone)
     - Arbre
 
 
-    
+
 - Afficher les obstacles différemment de la carte de base (contrainte de taille des véhicules/rondins)
     - Pour afficher une grande voiture, on se positionne au centre de celle-ci en largeur et on fait son rendu :
         - Il faut savoir qu'on a pour chaque voiture, la position de son coffre (son startingX) et sa taille (size).
         - Le sprite doit donc être généré à la position X = startingX + (size - 1) / 2
+        - Le Y quant à lui doit être calculé de tel sorte que la voiture qui se trouve au centre du sprite soit bien affichée
     - Le moteur graphique va l'afficher en débordant à gauche et droite à condition de bien spécifier la taille du sprite
         - Ces tailles varient : 100 pour les véhicules de taille 1 et 2, 140 pour les tailles 3, ...
 
 
-
+- Migrer le jeu en 32x32;
+<!-- X = 9, direction = -1, size = 3,  <- V7 V 8 V 9 -->

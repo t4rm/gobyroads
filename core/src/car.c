@@ -5,14 +5,14 @@ void determineMaxesValues(int score, Occupation roadType, int *maxSize, int *max
 {
     if (roadType == ROAD)
     {
-        *maxSize = (score / 20 + 3 >= 6) ? 6 : score / 20 + 3;
-        *minSpeed = (6 - score / 25 < 2) ? 2 : 6 - score / 25;
+        *maxSize = (score / 20 + 3 >= 5) ? 5 : score / 20 + 3;
+        *minSpeed = (5 - score / 25 < 2) ? 2 : 5 - score / 25;
         *maxSpeed = *minSpeed + 3;
         *maxCars = (score >= 100) ? 4 : 2 + score / 20;
     }
     else if (roadType == WATER)
     {
-        *maxSize = (6 - score / 20 < 3) ? 3 : 6 - score / 20;
+        *maxSize = (5 - score / 20 < 3) ? 3 : 5 - score / 20;
         *minSpeed = (7 - score / 25 < 4) ? 4 : 7 - score / 25;
         *maxSpeed = *minSpeed + 1;
         *maxCars = (4 - score / 30 < 2) ? 2 : 4 - score / 30;
@@ -103,7 +103,7 @@ void updateCars(GameState *gs)
         CarElement *next = cursor->next;
 
         // The car's accumulator will climb with each frame incrementing it. Once it reaches speed, it will reset and make the car moves forward in the same frame.
-        // e.g.: A car with a speed of 10 will need 10 frames to move forward, so in 60 FPS he will move forward every 1/6 second, making him moves forward 6 times per second.
+        // e.g.: A caçr with a speed of 10 will need 10 frames to move forward, so in 60 FPS he will move forward every 1/6 second, making him moves forward 6 times per second.
         // Formula is : FPS/Speed.
 
         if (c->accumulator == c->speed)
