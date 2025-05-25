@@ -4,34 +4,37 @@ TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer)
 {
     TextureInfo textureData[] = {
         // Map :
-        {"grass", "assets/grass.png", 42},
-        {"road", "assets/road.png", 42},
-        {"water", "assets/water.jpg", 42},
+        {"grass", "assets/grass.png"},
+        {"road", "assets/road.png"},
+        {"water", "assets/water.jpg"},
 
         // Cars (ALWAYS EAST DIRECTION) :
-        {"car_1", "assets/cars/1.png", 100},
-        {"car_2", "assets/cars/2.png", 100},
-        {"car_3", "assets/cars/3.png", 140},
-        {"car_4", "assets/cars/4.png", 42},
-        {"car_5", "assets/cars/5.png", 210},
+        {"car_1", "assets/cars/1.png"},
+        {"car_2", "assets/cars/2.png"},
+        {"car_3", "assets/cars/3.png"},
+        {"car_4", "assets/cars/4.png"},
+        {"car_5", "assets/cars/5.png"},
 
         // Logs :
-        {"log", "assets/log.png", 42},
+        {"l_1", "assets/logs/1.png"},
+        {"l_2", "assets/logs/2.png"},
+        {"l_3", "assets/logs/3.png"},
+        {"l_4", "assets/logs/4.png"},
+        {"l_5", "assets/logs/5.png"},
 
         // Player & Tree
-        {"player", "assets/goblin.png", 42},
-        {"tree", "assets/trees/1.png", 128}};
+        {"player", "assets/goblin.png"},
+        {"tree", "assets/trees/1.png"}};
 
-    size_t textureCount = sizeof(textureData) / sizeof(TextureInfo);
+    int textureCount = sizeof(textureData) / sizeof(TextureInfo);
 
     TextureCollection *collection = malloc(sizeof(TextureCollection));
     collection->count = textureCount;
     collection->textures = malloc(sizeof(NamedTexture) * textureCount);
 
-    for (size_t i = 0; i < textureCount; i++)
+    for (int i = 0; i < textureCount; i++)
     {
         collection->textures[i].name = strdup(textureData[i].name);
-        collection->textures[i].size = textureData[i].size;
         collection->textures[i].texture = SDLW_MakeTexture((char *)textureData[i].path, renderer);
     }
 
@@ -40,19 +43,15 @@ TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer)
 
 SDL_Texture *GetTexture(TextureCollection *collection, const char *name)
 {
-    for (size_t i = 0; i < collection->count; i++)
-    {
+    for (int i = 0; i < collection->count; i++)
         if (strcmp(collection->textures[i].name, name) == 0)
-        {
             return collection->textures[i].texture;
-        }
-    }
     return NULL;
 }
 
 void SDLW_DestroyTextures(TextureCollection *collection)
 {
-    for (size_t i = 0; i < collection->count; i++)
+    for (int i = 0; i < collection->count; i++)
     {
         SDL_DestroyTexture(collection->textures[i].texture);
         free(collection->textures[i].name);

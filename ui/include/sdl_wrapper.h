@@ -18,7 +18,7 @@
 int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int height);
 int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureCollection *textures);
 void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y, int xOffset, int yOffset, SDL_RendererFlip flip, int yDepth, int cellSize, int xDepth);
-void SDLW_RenderCarsSortedByY(SDL_Renderer *r, TextureCollection *t, CarQueue *queue);
+void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType);
 int compareCarElements(const void *a, const void *b);
 
 #endif

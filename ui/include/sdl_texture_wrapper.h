@@ -11,14 +11,12 @@ typedef struct _NamedTexture
 {
     char *name;
     SDL_Texture *texture;
-    int size; // The size of the side of a sprite in the spritesheet.
 } NamedTexture;
 
 typedef struct
 {
     const char *name;
     const char *path;
-    int size; // The size of the side of a sprite in the spritesheet.
 } TextureInfo;
 
 typedef struct _TextureCollection

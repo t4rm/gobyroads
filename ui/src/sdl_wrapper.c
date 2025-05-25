@@ -1,5 +1,13 @@
 #include "sdl_wrapper.h"
 
+int compareCarElements(const void *a, const void *b)
+{
+    CarElement *carA = *(CarElement **)a;
+    CarElement *carB = *(CarElement **)b;
+
+    return carB->car->y - carA->car->y;
+}
+
 int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int height)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING))
@@ -46,6 +54,8 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
 
     for (int y = grid->height - 1; y >= 0; y--)
     {
+        SDL_Texture *t = NULL;
+        int xOffset = 0, yOffset = 0;
         // -------- Sol --------
         for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
         {
@@ -53,42 +63,84 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
             {
             case SAFE:
             case TREE:
-                SDLW_RenderCopy(renderer, GetTexture(textures, "grass"), x, y, x % 5, 0, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
+                t = GetTexture(textures, "grass");
+                xOffset = x % 5;
                 break;
             case ROAD:
             case CAR_LEFT:
             case CAR_RIGHT:
-                SDLW_RenderCopy(renderer, GetTexture(textures, "road"), x, y, 0, 0, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
+                t = GetTexture(textures, "road");
                 break;
             case WATER:
             case LOG:
-                SDLW_RenderCopy(renderer, GetTexture(textures, "water"), x, y, x % 3, 0, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
+                t = GetTexture(textures, "water");
+                xOffset = x % 3;
                 break;
             default:
                 break;
             }
+            SDLW_RenderCopy(renderer, t, x, y, xOffset, yOffset, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
         }
-
+        // -------- Rondins  --------
+        SDLW_RenderCars(renderer, textures, carQueue, y, WATER);
+        // -------- Joueur --------
         if (uiGs->core->player->y == y)
-        {
-            // -------- Joueur --------
             SDLW_RenderCopy(renderer, GetTexture(textures, "player"), uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
-        }
-
-        // -------- Voitures --------
-        for (CarElement *carElt = carQueue->head; carElt != NULL; carElt = carElt->next)
+        // -------- Voitures  --------
+        SDLW_RenderCars(renderer, textures, carQueue, y, ROAD);
+        // -------- Arbres --------x
+        for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
         {
-            Car *c = carElt->car;
-            if (!c || c->type == LOG || c->y != y)
-                continue;
+            if (grid->cases[y][x] == TREE)
+                SDLW_RenderCopy(renderer, GetTexture(textures, "tree"), x, y, 0, 0, SDL_FLIP_NONE, 14, 128, 0);
+        }
+    }
 
-            int centerX = c->x + c->direction * (c->size - 1) / 2;
-            int xDepth = 0;
-            SDL_RendererFlip flip = (c->direction == -1) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+    SDL_RenderPresent(renderer);
+    return 0;
+}
 
-            int spriteSize, yDepth;
-            const char *textureName;
+void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType)
+{
+    for (CarElement *carElt = queue->head; carElt != NULL; carElt = carElt->next)
+    {
+        Car *c = carElt->car;
+        if (!c || c->y != y || c->type != desiredType)
+            continue;
 
+        const char *textureName = NULL;
+        int spriteSize = 0, yDepth = 0, xDepth = 0, yOffset = c->type == WATER ? 0 : c->accumulator % 3;
+
+        if (c->type == WATER)
+            switch (c->size)
+            {
+            case 1:
+                textureName = "l_1";
+                spriteSize = 48;
+                break;
+            case 2:
+                textureName = "l_2";
+                spriteSize = 96;
+                xDepth = 0.5 * CELL_SIZE;
+                break;
+            case 3:
+                textureName = "l_3";
+                spriteSize = 144;
+                break;
+            case 4:
+                textureName = "l_4";
+                spriteSize = 192;
+                xDepth = 0.5 * CELL_SIZE;
+                break;
+            case 5:
+                textureName = "l_5";
+                spriteSize = 240;
+                break;
+            default:
+                textureName = NULL;
+                break;
+            }
+        else
             switch (c->size)
             {
             case 1:
@@ -100,6 +152,7 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
                 textureName = "car_2";
                 spriteSize = 100;
                 yDepth = 8;
+                xDepth = 0.5 * CELL_SIZE;
                 break;
             case 3:
                 textureName = "car_3";
@@ -118,115 +171,19 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
                 yDepth = 12;
                 break;
             default:
-                textureName = "car_1";
-                spriteSize = 48;
-                yDepth = 12;
+                textureName = NULL;
                 break;
             }
 
-            SDLW_RenderCopy(renderer, GetTexture(textures, textureName),
-                            centerX, c->y, c->accumulator % 4, c->accumulator % 3,
-                            flip, yDepth, spriteSize, xDepth);
-        }
-
-        // -------- Arbres --------
-        for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
-        {
-            if (grid->cases[y][x] == TREE)
-            {
-                SDLW_RenderCopy(renderer, GetTexture(textures, "tree"), x, y, 0, 0, SDL_FLIP_NONE, 14, 128, 0);
-            }
-        }
-    }
-
-    SDL_RenderPresent(renderer);
-    return 0;
-}
-
-int compareCarElements(const void *a, const void *b)
-{
-    CarElement *carA = *(CarElement **)a;
-    CarElement *carB = *(CarElement **)b;
-
-    return carB->car->y - carA->car->y;
-}
-
-// We use a temporary structure because we need to sort by Y Axis : The render should be from the top to the bottom for a top down view.
-void SDLW_RenderCarsSortedByY(SDL_Renderer *renderer, TextureCollection *textures, CarQueue *queue)
-{
-    if (queue->size == 0)
-        return;
-
-    CarElement **carArray = malloc(sizeof(CarElement *) * queue->size);
-    if (!carArray)
-        return;
-
-    int i = 0;
-    CarElement *cursor = queue->head;
-    while (cursor != NULL && i < queue->size)
-    {
-        carArray[i++] = cursor;
-        cursor = cursor->next;
-    }
-
-    qsort(carArray, queue->size, sizeof(CarElement *), compareCarElements);
-
-    for (int j = 0; j < queue->size; j++)
-    {
-        Car *c = carArray[j]->car;
-
-        if (!c || c->type == LOG)
-            break;
+        if (!textureName)
+            continue;
 
         int centerX = c->x + c->direction * (c->size - 1) / 2;
-        int xDepth = 0;
         SDL_RendererFlip flip = (c->direction == -1) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
-        int spriteSize, yDepth;
-        const char *textureName;
-
-        switch (c->size)
-        {
-        case 1:
-            textureName = "car_1";
-            spriteSize = 100;
-            yDepth = 4;
-            break;
-        case 2:
-            textureName = "car_2";
-            spriteSize = 100;
-            yDepth = 8;
-            break;
-        case 3:
-            textureName = "car_3";
-            spriteSize = 140;
-            yDepth = 12;
-            break;
-        case 4:
-            textureName = "car_4";
-            spriteSize = 210;
-            yDepth = 12;
-            xDepth = 0.5 * CELL_SIZE;
-            break;
-        case 5:
-            textureName = "car_5";
-            spriteSize = 230;
-            yDepth = 12;
-            break;
-        default:
-            textureName = "car_1";
-            spriteSize = 48;
-            yDepth = 12;
-            break;
-        }
-
-        SDLW_RenderCopy(renderer, GetTexture(textures, textureName),
-                        centerX, c->y, c->accumulator % 4, c->accumulator % 3, flip, yDepth, spriteSize, xDepth);
+        SDLW_RenderCopy(r, GetTexture(t, textureName), centerX, c->y, c->accumulator % 4, yOffset, flip, yDepth, spriteSize, xDepth);
     }
-
-    free(carArray);
 }
-
 // This work fine for dynamic sprite like Player, but this is "OVERKILL" for Static Sprites like Grass.
 // Grass don't have offsets, but we could ! They would become animated (simulating the wind for example)
 // Same for waves in Rivers
