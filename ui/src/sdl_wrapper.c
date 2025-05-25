@@ -121,7 +121,7 @@ void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
             case 2:
                 textureName = "l_2";
                 spriteSize = 96;
-                xDepth = 0.5 * CELL_SIZE;
+                xDepth = c->direction * 0.5 * CELL_SIZE;
                 break;
             case 3:
                 textureName = "l_3";
@@ -130,7 +130,7 @@ void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
             case 4:
                 textureName = "l_4";
                 spriteSize = 192;
-                xDepth = 0.5 * CELL_SIZE;
+                xDepth = c->direction * 0.5 * CELL_SIZE;
                 break;
             case 5:
                 textureName = "l_5";
@@ -152,7 +152,7 @@ void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
                 textureName = "car_2";
                 spriteSize = 100;
                 yDepth = 8;
-                xDepth = 0.5 * CELL_SIZE;
+                xDepth = c->direction * 0.5 * CELL_SIZE;
                 break;
             case 3:
                 textureName = "car_3";
@@ -163,7 +163,7 @@ void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
                 textureName = "car_4";
                 spriteSize = 210;
                 yDepth = 12;
-                xDepth = 0.5 * CELL_SIZE;
+                xDepth = c->direction * 0.5 * CELL_SIZE;
                 break;
             case 5:
                 textureName = "car_5";
