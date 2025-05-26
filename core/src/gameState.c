@@ -84,12 +84,16 @@ void handleCollision(GameState *gs)
     // New : Check directly on the map if the user is stepping on a CAR cell.
     // Pros : Faster. Less Code. Easier to read. Better for future implementation, like here with LOG and Water.
     // We don't even need to mind safe zone and logs.
+    // Colliding with the void (out of the viewable map)
+    if (gs->player->x < gs->carMaxSize || gs->player->x > gs->grid->length - gs->carMaxSize + 1 || gs->player->y < 0)
+    {
+        gs->gameOver = true;
+        return;
+    }
+
     Occupation playerOccupation = gs->grid->cases[gs->player->y][gs->player->x];
     // Colliding with an object.
     if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == WATER)
-        gs->gameOver = true;
-    // Colliding with the void (out of the viewable map)
-    if (gs->player->x < gs->carMaxSize || gs->player->x > gs->grid->length - gs->carMaxSize + 1)
         gs->gameOver = true;
 }
 
