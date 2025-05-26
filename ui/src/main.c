@@ -4,6 +4,7 @@
 // #include "SDL2/SDL_image.h"
 #include "sdl_wrapper.h"
 #include "sdl_texture_wrapper.h"
+#include "sdl_screens_wrapper.h"
 // Core game features, wrapped with UI Concepts
 #include "core_wrapper.h"
 // Core game features, directly from core
@@ -19,9 +20,9 @@ int main(int argc, char *argv[])
 {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-    TTF_Font *font = NULL;
+    TTF_Fonts *fonts = (TTF_Fonts *)malloc(sizeof(TTF_Fonts));
 
-    if (SDLW_Initialize(&window, &renderer, &font, WIDTH, HEIGHT) != 0)
+    if (SDLW_Initialize(&window, &renderer, &fonts, WIDTH, HEIGHT) != 0)
         exit(EXIT_FAILURE);
 
     TextureCollection *textures = SDLW_InitTextures(renderer);
@@ -36,42 +37,59 @@ int main(int argc, char *argv[])
 
     while (uiGs->running)
     {
-        Uint64 frameStartTime = SDL_GetTicks64();
-
-        if (SDL_PollEvent(&event))
+        if (uiGs->intro)
         {
-            // Actions joueur
-            handleEvents(uiGs, &event);
+            SDLW_IntroScreen(renderer, fonts);
+            if (SDL_PollEvent(&event))
+                handleEvents(uiGs, &event, WAITING);
         }
-        // Est-ce qu'on "fire" des évènements pour les mises à jours des voitures et on migre leur "handling" en haut ? :
-        updateCars(uiGs->core);
-        updateEffects(uiGs->core);
-        // Fin des possibles évents à "fire" ----
-
-        // Calcul interactions (collisions)
-        // handleCollision(uiGs->core);
-
-        // maj état du jeu (états mobs, joueur, score)
-        // A faire ici : Calcul de vélocité pour les animations des obstacles ?
-        scrolling(uiGs->core);
-
-        // maj rendu & rendu
-        updateGameState(uiGs->core);
-        SDLW_UpdateAndRender(uiGs, renderer, textures, font);
-
-        Uint64 frameEndTime = SDL_GetTicks64();
-        Uint64 elapsedTime = frameEndTime - frameStartTime;
-
-        if (elapsedTime < frameTime)
+        else if (uiGs->core->gameOver)
         {
-            Uint64 sleepTime = frameTime - elapsedTime;
-            SDL_Delay(sleepTime);
+            SDLW_GameOverScreen(renderer, fonts, uiGs->core->score);
+            if (SDL_PollEvent(&event))
+                handleEvents(uiGs, &event, LOST);
+        }
+        else
+        {
+            Uint64 frameStartTime = SDL_GetTicks64();
+
+            if (SDL_PollEvent(&event))
+                handleEvents(uiGs, &event, PLAYING);
+
+            // Est-ce qu'on "fire" des évènements pour les mises à jours des voitures et on migre leur "handling" en haut ? :
+            updateCars(uiGs->core);
+            updateEffects(uiGs->core);
+            // Fin des possibles évents à "fire" ----
+
+            // Calcul interactions (collisions)
+            handleCollision(uiGs->core);
+
+            // maj état du jeu (états mobs, joueur, score)
+            // A faire ici : Calcul de vélocité pour les animations des obstacles ?
+            scrolling(uiGs->core);
+
+            // maj rendu & rendu
+            updateGameState(uiGs->core);
+            SDLW_UpdateAndRender(uiGs, renderer, textures, fonts);
+
+            Uint64 frameEndTime = SDL_GetTicks64();
+            Uint64 elapsedTime = frameEndTime - frameStartTime;
+
+            if (elapsedTime < frameTime)
+            {
+                Uint64 sleepTime = frameTime - elapsedTime;
+                SDL_Delay(sleepTime);
+            }
         }
     }
 
     SDLW_DestroyTextures(textures);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    TTF_CloseFont(fonts->large);
+    TTF_CloseFont(fonts->medium);
+    TTF_CloseFont(fonts->small);
+    free(fonts);
 
     return 0;
 }

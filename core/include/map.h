@@ -19,7 +19,7 @@ typedef struct _Grid
     int length;
 } Grid;
 
-Grid *createGrid(int heigth, int length, int carMaxSize, int isWrapped);
+Grid *createGrid(int heigth, int length, int carMaxSize);
 Occupation *createRow(int length, Occupation type);
 void applyOccupationToRow(Occupation *row, int length, Occupation type);
 void displayGrid(Grid *grid, int score, int playerX, int playerY, int carMaxSize);

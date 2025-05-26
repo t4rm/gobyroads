@@ -2,9 +2,8 @@
 #include <stdio.h>
 #include "map.h"
 
-Grid *createGrid(int height, int length, int carMaxSize, int isWrapped)
+Grid *createGrid(int height, int length, int carMaxSize)
 {
-    // int l = isWrapped ? length : length + 2 * carMaxSize;
     int l = length + 2 * carMaxSize;
     Grid *grid = (Grid *)malloc(sizeof(Grid));
     grid->height = height;

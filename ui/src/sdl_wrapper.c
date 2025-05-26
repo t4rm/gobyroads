@@ -8,7 +8,7 @@ int compareCarElements(const void *a, const void *b)
     return carB->car->y - carA->car->y;
 }
 
-int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, TTF_Font **font, int width, int height)
+int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, TTF_Fonts **fonts, int width, int height)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING))
     {
@@ -40,18 +40,19 @@ int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, TTF_Font **fon
     }
 
     if (TTF_Init() == -1)
-    {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in ttf init: %s", SDL_GetError());
-    }
 
-    *font = TTF_OpenFont("fonts/retro-pixel-thick.ttf", 20);
-    if (font == NULL)
+    (*fonts)->small = TTF_OpenFont("fonts/retro-pixel-thick.ttf", 32);
+    (*fonts)->medium = TTF_OpenFont("fonts/retro-pixel-thick.ttf", 48);
+    (*fonts)->large = TTF_OpenFont("fonts/retro-pixel-thick.ttf", 62);
+
+    if ((*fonts)->large == NULL || (*fonts)->medium == NULL || (*fonts)->small == NULL)
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in ttf opening: %s", SDL_GetError());
 
     return 0;
 }
 
-int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureCollection *textures, TTF_Font *font)
+int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureCollection *textures, TTF_Fonts *fonts)
 {
     SDL_Color const BACKGROUND_COLOR = {255, 255, 255, SDL_ALPHA_OPAQUE};
     SDL_SetRenderDrawColor(renderer, BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, BACKGROUND_COLOR.a);
@@ -91,12 +92,12 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
             SDLW_RenderCopy(renderer, t, x, y, xOffset, yOffset, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
         }
         // -------- Rondins  --------
-        SDLW_RenderCars(renderer, textures, carQueue, y, WATER);
+        SDLW_UpdateCars(renderer, textures, carQueue, y, WATER);
         // -------- Joueur --------
         if (uiGs->core->player->y == y)
             SDLW_RenderCopy(renderer, GetTexture(textures, "player"), uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
         // -------- Voitures  --------
-        SDLW_RenderCars(renderer, textures, carQueue, y, ROAD);
+        SDLW_UpdateCars(renderer, textures, carQueue, y, ROAD);
         // -------- Arbres --------x
         for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
         {
@@ -109,25 +110,14 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
     // Print score :
     char scoreChar[3];
     sprintf(scoreChar, "%d", uiGs->core->score);
-    SDLW_RenderText(CELL_SIZE *0.15, 0 - CELL_SIZE * 0.15, 30*strlen(scoreChar), 60, font, renderer, scoreChar);
+    SDLW_RenderText(CELL_SIZE *0.15, 0 - CELL_SIZE * 0.15, 30*strlen(scoreChar), 60, fonts->medium, renderer, scoreChar);
     // Print game title
     // --
     SDL_RenderPresent(renderer);
     return 0;
 }
 
-void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *renderer, char *text)
-{
-    SDL_Rect rectangleTitle = {x, y, w, h};
-
-    SDL_Color textColor = {255, 255, 255, 255};
-    SDL_Surface *surfaceText = TTF_RenderText_Solid(font, text, textColor);
-    SDL_Texture *textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
-    SDL_FreeSurface(surfaceText);
-    SDL_RenderCopy(renderer, textureText, NULL, &rectangleTitle);
-}
-
-void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType)
+void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType)
 {
     for (CarElement *carElt = queue->head; carElt != NULL; carElt = carElt->next)
     {
@@ -209,37 +199,5 @@ void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
         SDL_RendererFlip flip = (c->direction == -1 && c->type != WATER) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
         SDLW_RenderCopy(r, GetTexture(t, textureName), centerX, c->y, c->accumulator % 4, yOffset, flip, yDepth, spriteSize, xDepth);
-    }
-}
-// This work fine for dynamic sprite like Player, but this is "OVERKILL" for Static Sprites like Grass.
-// Grass don't have offsets, but we could ! They would become animated (simulating the wind for example)
-// Same for waves in Rivers
-void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y,
-                     int xOffset, int yOffset, SDL_RendererFlip flip,
-                     int yDepth, int spriteSize, int xDepth)
-{
-    SDL_Rect spriteRect = {
-        xOffset * spriteSize,
-        yOffset * spriteSize,
-        spriteSize,
-        spriteSize};
-
-    // Position logique dans le monde (coordonnées logiques de la grille)
-    int logicalX = (x - CAR_MAX_SIZE - 1) * CELL_SIZE + xDepth;
-    int logicalY = flipY(y) * CELL_SIZE - yDepth;
-
-    // Décalage pour centrer un sprite plus grand que CELL_SIZE (48)
-    int offsetX = (spriteSize - CELL_SIZE) / 2;
-    int offsetY = (spriteSize - CELL_SIZE) / 2;
-
-    SDL_Rect destRect = {
-        logicalX - offsetX,
-        logicalY - offsetY,
-        spriteSize,
-        spriteSize};
-
-    if (SDL_RenderCopyEx(r, t, &spriteRect, &destRect, 0.0, NULL, flip))
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render copy: %s", SDL_GetError());
     }
 }

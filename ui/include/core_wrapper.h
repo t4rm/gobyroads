@@ -12,11 +12,13 @@ typedef struct _UIGameState
 {
     GameState *core;
     PlayerOffset *playerOffset;
-    int running;
+    int running, intro;
 } UIGameState;
+
+typedef enum {PLAYING, LOST, WAITING} EventListeningMode;
 
 UIGameState *initUIGameState(int h, int l);
 void destroyUIGameState(UIGameState *uiGs);
-void handleEvents(UIGameState *uiGS, SDL_Event *event);
+void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode);
 
 #endif

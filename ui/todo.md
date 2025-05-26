@@ -25,5 +25,7 @@
     - Herbe (safezone) ✅
     - Arbre ✅
 - Afficher les obstacles différemment de la carte de base (contrainte de taille des véhicules/rondins) ✅
-- Ajouter le RowManager de Nils + Les écrans de GameOver/Démarrage
+- Ajouter le RowManager de Nils
+- Intégrer les différents écrans de Game Over/Introduction ✅
+- Mettre des sons (trains, collisions, plouf dans l'eau)
 - Inclure les sources des différents assets que l'on n'a pas fais
