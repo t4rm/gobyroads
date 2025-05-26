@@ -8,7 +8,7 @@ int compareCarElements(const void *a, const void *b)
     return carB->car->y - carA->car->y;
 }
 
-int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int height)
+int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, TTF_Font **font, int width, int height)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING))
     {
@@ -39,10 +39,19 @@ int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, int width, int
         return -1;
     }
 
+    if (TTF_Init() == -1)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in ttf init: %s", SDL_GetError());
+    }
+
+    *font = TTF_OpenFont("fonts/retro-pixel-thick.ttf", 20);
+    if (font == NULL)
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in ttf opening: %s", SDL_GetError());
+
     return 0;
 }
 
-int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureCollection *textures)
+int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureCollection *textures, TTF_Font *font)
 {
     SDL_Color const BACKGROUND_COLOR = {255, 255, 255, SDL_ALPHA_OPAQUE};
     SDL_SetRenderDrawColor(renderer, BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, BACKGROUND_COLOR.a);
@@ -96,8 +105,26 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
         }
     }
 
+
+    // Print score :
+    char scoreChar[3];
+    sprintf(scoreChar, "%d", uiGs->core->score);
+    SDLW_RenderText(CELL_SIZE *0.15, 0 - CELL_SIZE * 0.15, 30*strlen(scoreChar), 60, font, renderer, scoreChar);
+    // Print game title
+    // --
     SDL_RenderPresent(renderer);
     return 0;
+}
+
+void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *renderer, char *text)
+{
+    SDL_Rect rectangleTitle = {x, y, w, h};
+
+    SDL_Color textColor = {255, 255, 255, 255};
+    SDL_Surface *surfaceText = TTF_RenderText_Solid(font, text, textColor);
+    SDL_Texture *textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
+    SDL_FreeSurface(surfaceText);
+    SDL_RenderCopy(renderer, textureText, NULL, &rectangleTitle);
 }
 
 void SDLW_RenderCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType)

@@ -18,8 +18,12 @@
     - Joueur ✅
     - Voiture (Taille 1 ... 6, 6 = Long Bus) dans les deux sens (SDL_FLIP) ✅
     - Nénuphar
-    - Rondins
-    - Route
+    - Rondins ✅
+    - Route / Eau 
+        - Ajouter une sorte de séparation .png lors de bordure de zones ?
+        - Ou + simplement faire des textures différentes en fonction de si on est en bordure inférieur, supérieur, les deux ou aucunes.
     - Herbe (safezone) ✅
     - Arbre ✅
 - Afficher les obstacles différemment de la carte de base (contrainte de taille des véhicules/rondins) ✅
+- Ajouter le RowManager de Nils + Les écrans de GameOver/Démarrage
+- Inclure les sources des différents assets que l'on n'a pas fais

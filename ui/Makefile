@@ -4,7 +4,7 @@
 CC        = gcc
 CFLAGS    = -Wall -std=gnu11 -pedantic -O3 -g -fno-omit-frame-pointer \
             -Iinclude/ -I../core/include
-LDFLAGS   = -Llib -lSDL2 -lSDL2_image
+LDFLAGS   = -Llib -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # Répertoires UI
 SRC_DIR   = src

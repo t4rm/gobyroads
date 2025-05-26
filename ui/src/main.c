@@ -19,8 +19,9 @@ int main(int argc, char *argv[])
 {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
+    TTF_Font *font = NULL;
 
-    if (SDLW_Initialize(&window, &renderer, WIDTH, HEIGHT) != 0)
+    if (SDLW_Initialize(&window, &renderer, &font, WIDTH, HEIGHT) != 0)
         exit(EXIT_FAILURE);
 
     TextureCollection *textures = SDLW_InitTextures(renderer);
@@ -56,7 +57,7 @@ int main(int argc, char *argv[])
 
         // maj rendu & rendu
         updateGameState(uiGs->core);
-        SDLW_UpdateAndRender(uiGs, renderer, textures);
+        SDLW_UpdateAndRender(uiGs, renderer, textures, font);
 
         Uint64 frameEndTime = SDL_GetTicks64();
         Uint64 elapsedTime = frameEndTime - frameStartTime;
