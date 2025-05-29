@@ -1,5 +1,10 @@
 #include "sdl_wrapper.h"
 
+bool isRoadOrCar(Occupation type)
+{
+    return type == ROAD || type == CAR_LEFT || type == CAR_RIGHT;
+}
+
 int compareCarElements(const void *a, const void *b)
 {
     CarElement *carA = *(CarElement **)a;
@@ -80,6 +85,17 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
             case CAR_LEFT:
             case CAR_RIGHT:
                 t = GetTexture(textures, "road");
+                bool belowIsRoadOrCar = false;
+                bool aboveIsRoadOrCar = false;
+
+                if (y > 0)
+                    belowIsRoadOrCar = isRoadOrCar(grid->cases[y - 1][0]);
+
+                if (y + 1 < grid->height)
+                    aboveIsRoadOrCar = isRoadOrCar(grid->cases[y + 1][0]);
+
+                xOffset = !belowIsRoadOrCar ? 0 : !aboveIsRoadOrCar ? 2
+                                                                    : 1;
                 break;
             case WATER:
             case LOG:
@@ -106,11 +122,10 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
         }
     }
 
-
     // Print score :
     char scoreChar[3];
     sprintf(scoreChar, "%d", uiGs->core->score);
-    SDLW_RenderText(CELL_SIZE *0.15, 0 - CELL_SIZE * 0.15, 30*strlen(scoreChar), 60, fonts->medium, renderer, scoreChar);
+    SDLW_RenderText(CELL_SIZE * 0.15, 0 - CELL_SIZE * 0.15, 30 * strlen(scoreChar), 60, fonts->medium, renderer, scoreChar);
     // Print game title
     // --
     SDL_RenderPresent(renderer);

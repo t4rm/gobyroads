@@ -6,6 +6,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "sdl_texture_wrapper.h"
 #include "sdl_render_wrapper.h"
 #include "core_wrapper.h"
@@ -29,5 +30,6 @@ void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y, int xOffset,
 void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType);
 int compareCarElements(const void *a, const void *b);
 void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *renderer, char *text);
+bool isRoadOrCar(Occupation type);
 
 #endif
