@@ -3,6 +3,8 @@
 #include "SDL2/SDL_events.h"
 #include "gamestate.h"
 
+#define PLAYER_MOVE_COOLDOWN 10
+
 typedef struct _PlayerOffset
 {
     int x, y;
@@ -15,7 +17,12 @@ typedef struct _UIGameState
     int running, intro;
 } UIGameState;
 
-typedef enum {PLAYING, LOST, WAITING} EventListeningMode;
+typedef enum
+{
+    PLAYING,
+    LOST,
+    WAITING
+} EventListeningMode;
 
 UIGameState *initUIGameState(int h, int l);
 void destroyUIGameState(UIGameState *uiGs);

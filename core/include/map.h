@@ -9,7 +9,8 @@ typedef enum
     TREE,
     CAR_LEFT,
     CAR_RIGHT,
-    LOG
+    LOG,
+    ICE
 } Occupation;
 
 typedef struct _Grid

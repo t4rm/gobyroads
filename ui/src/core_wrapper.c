@@ -62,7 +62,7 @@ void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
             {
                 uiGs->playerOffset->x += 1;
                 uiGs->playerOffset->x %= 4;
-                uiGs->core->player->mouvementCooldown = 3;
+                uiGs->core->player->mouvementCooldown = uiGs->core->grid->cases[uiGs->core->player->y][uiGs->core->player->x] == ICE ? PLAYER_MOVE_COOLDOWN * 2 : PLAYER_MOVE_COOLDOWN;
                 uiGs->core->player->afk = 0;
             }
 
