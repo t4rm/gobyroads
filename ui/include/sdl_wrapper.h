@@ -27,7 +27,7 @@ typedef struct _TTF_Fonts
 int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, TTF_Fonts **fonts, int width, int height);
 int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureCollection *textures, TTF_Fonts *fonts);
 void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y, int xOffset, int yOffset, SDL_RendererFlip flip, int yDepth, int cellSize, int xDepth);
-void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType);
+void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType, RowManager *rm);
 int compareCarElements(const void *a, const void *b);
 void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *renderer, char *text);
 bool isRoadOrCar(Occupation type);

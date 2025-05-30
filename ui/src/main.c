@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
             // Est-ce qu'on "fire" des évènements pour les mises à jours des voitures et on migre leur "handling" en haut ? :
             updateCars(uiGs->core);
-            updateEffects(uiGs->core);
+            // updateEffects(uiGs->core);
             // Fin des possibles évents à "fire" ----
 
             // Calcul interactions (collisions)

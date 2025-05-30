@@ -108,12 +108,12 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
             SDLW_RenderCopy(renderer, t, x, y, xOffset, yOffset, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
         }
         // -------- Rondins  --------
-        SDLW_UpdateCars(renderer, textures, carQueue, y, WATER);
+        SDLW_UpdateCars(renderer, textures, carQueue, y, WATER, uiGs->core->grid->rowManagers[y]);
         // -------- Joueur --------
         if (uiGs->core->player->y == y)
             SDLW_RenderCopy(renderer, GetTexture(textures, "player"), uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
         // -------- Voitures  --------
-        SDLW_UpdateCars(renderer, textures, carQueue, y, ROAD);
+        SDLW_UpdateCars(renderer, textures, carQueue, y, ROAD, uiGs->core->grid->rowManagers[y]);
         // -------- Arbres --------x
         for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
         {
@@ -132,7 +132,7 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
     return 0;
 }
 
-void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType)
+void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType, RowManager *rm)
 {
     for (CarElement *carElt = queue->head; carElt != NULL; carElt = carElt->next)
     {
@@ -141,7 +141,7 @@ void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
             continue;
 
         const char *textureName = NULL;
-        int spriteSize = 0, yDepth = 0, xDepth = 0, yOffset = c->type == WATER ? 0 : c->accumulator % 3;
+        int spriteSize = 0, yDepth = 0, xDepth = 0, yOffset = c->type == WATER ? 0 : rm->cooldown % 3;
 
         if (c->type == WATER)
             switch (c->size)
@@ -213,6 +213,6 @@ void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
         int centerX = c->x + c->direction * (c->size - 1) / 2;
         SDL_RendererFlip flip = (c->direction == -1 && c->type != WATER) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
-        SDLW_RenderCopy(r, GetTexture(t, textureName), centerX, c->y, c->accumulator % 4, yOffset, flip, yDepth, spriteSize, xDepth);
+        SDLW_RenderCopy(r, GetTexture(t, textureName), centerX, c->y, rm->cooldown % 4, yOffset, flip, yDepth, spriteSize, xDepth);
     }
 }
