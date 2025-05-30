@@ -102,6 +102,19 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
                 t = GetTexture(textures, "water");
                 xOffset = x % 3;
                 break;
+            case ICE:
+                t = GetTexture(textures, "ice");
+                bool belowIsIce = false;
+                bool aboveIsIce = false;
+
+                if (y > 0)
+                    belowIsIce = grid->cases[y - 1][0] == ICE;
+
+                if (y + 1 < grid->height)
+                    aboveIsIce = grid->cases[y + 1][0] == ICE;
+
+                xOffset = !belowIsIce ? 0 : !aboveIsIce ? 2
+                                                        : 1;
             default:
                 break;
             }

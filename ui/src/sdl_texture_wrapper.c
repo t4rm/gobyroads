@@ -22,9 +22,12 @@ TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer)
         {"l_4", "assets/logs/4.png"},
         {"l_5", "assets/logs/5.png"},
 
-        // Player & Tree
+        // Player, tree, ice, rails, train, warning
         {"player", "assets/goblin.png"},
-        {"tree", "assets/trees/1.png"}};
+        {"ice", "assets/ice.png"},
+        {"tree", "assets/trees/1.png"}
+
+    };
 
     int textureCount = sizeof(textureData) / sizeof(TextureInfo);
 
