@@ -5,7 +5,6 @@
 // Inversez les commentaires si vous n'êtes pas sur windows.
 #include "gamestate.h"
 #include "player.h"
-#include "effect.h"
 #include "car.h"
 
 int main()
@@ -24,10 +23,11 @@ int main()
 
         // Start of the game handling logic
         updateCars(gs);
-        updateEffects(gs);
         updateGameState(gs);
         // Game is updated, map is fresh, cars progressed
         playerMove(gs);
+        updateIce(gs);
+        updateTrain(gs->grid);
         handleCollision(gs);
         // Player moved, if he collided the game stops, otherwise we scroll down when y >= 3.
         scrolling(gs);

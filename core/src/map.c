@@ -9,14 +9,29 @@ Grid *createGrid(int height, int length, int carMaxSize)
     grid->height = height;
     grid->length = l;
     grid->cases = malloc(sizeof(Occupation *) * height);
+    grid->rowManagers = malloc(sizeof(RowManager *) * height);
 
     for (int i = 0; i < height; i++)
     {
         Occupation baseTile = i == 0 ? SAFE : ROAD;
         grid->cases[i] = createRow(l, baseTile);
+        grid->rowManagers[i] = createRowManager(rand() % 2 ? 1 : -1, 45 - (rand() % 35), baseTile);
     }
 
     return grid;
+}
+
+RowManager *createRowManager(int direction, int speed, Occupation type)
+{
+    RowManager *rowManager = (RowManager *)malloc(sizeof(RowManager));
+    rowManager->direction = direction;
+    if (type == RAIL)
+        rowManager->cooldown = rand() % speed;
+    else
+        rowManager->cooldown = speed;
+    rowManager->speed = speed;
+    rowManager->type = type;
+    return rowManager;
 }
 
 Occupation *createRow(int length, Occupation type)
@@ -29,16 +44,26 @@ Occupation *createRow(int length, Occupation type)
 void destroyGrid(Grid *g)
 {
     for (int i = 0; i < g->height; i++)
-    {
         free(g->cases[i]);
-    }
     free(g);
 }
 
 void applyOccupationToRow(Occupation *row, int length, Occupation type)
 {
+    if (type == SAFE)
+        createTrees(row, length);
+    else
+        for (int i = 0; i < length; i++)
+            row[i] = type;
+}
+
+void createTrees(Occupation *row, int length)
+{
+    int difficulty = 25;
     for (int i = 0; i < length; i++)
-        row[i] = type == SAFE ? rand() % length / 3 ? SAFE : TREE : type;
+        row[i] = TREE;
+    for (int i = 0; i < difficulty; i++)
+        row[rand() % length] = SAFE;
 }
 
 void displayGrid(Grid *grid, int score, int playerX, int playerY, int carMaxSize)
@@ -84,6 +109,18 @@ void displayGrid(Grid *grid, int score, int playerX, int playerY, int carMaxSize
                     break;
                 case LOG:
                     printf("L");
+                    break;
+                case ICE:
+                    printf("I");
+                    break;
+                case RAIL:
+                    printf("R");
+                    break;
+                case WARNING:
+                    printf("!");
+                    break;
+                case TRAIN:
+                    printf("O");
                     break;
                 default:
                     printf("?");

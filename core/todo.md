@@ -24,11 +24,12 @@
 - Rework de la logique de mise à jour des effets. Buggé, freeze.  ✅
 
 # TODO :
-- Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant, à voir si c'est un bug ou non.
+- Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant, idem quand il avance dans un obstacle.
 - Gestion du score
     - Effet sonore tous les 50 de scores 
 - Ajout nénuphar
-- Ajout d'une Queue générique dont hériterait l'EffectQueue et la CarQueue.
+- De meilleurs caractères pour les nouveaux éléments de la carte.
+- Ecarts entre les voitures aléatoires en fonction de la difficulté, actuellement fixe à 5 (LOGS)/12 (CARS).
 
 ## Bonus :
 - ReadMe

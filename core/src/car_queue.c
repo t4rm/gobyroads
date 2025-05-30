@@ -107,9 +107,8 @@ void printCarQueue(CarQueue *queue)
     {
         if (cursor->car)
         {
-            printf("#%d, y : %d, x : %d, s : %d, d : %d, v : %d\n",
-                   i, cursor->car->y, cursor->car->x, cursor->car->size,
-                   cursor->car->direction, cursor->car->speed);
+            printf("#%d, y : %d, x : %d, s : %d\n",
+                   i, cursor->car->y, cursor->car->x, cursor->car->size);
         }
         cursor = cursor->next;
     }

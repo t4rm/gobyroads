@@ -10,7 +10,6 @@
 // Core game features, directly from core
 #include "gamestate.h"
 #include "player.h"
-#include "effect.h"
 #include "car.h"
 // Standard
 #include <stdio.h>

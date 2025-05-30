@@ -5,6 +5,9 @@
     - Comment faire le lien entre les cases et les dimensions réelles ? Option choisie : On calcule la taille d'une "case" du jeu virtuel (core) et le jeu réel (sdl) sera composé de case de cette taille. ✅
     - Affichage du joueur ✅
 - Afficher les obstacles différemment de la carte de base (contrainte de taille des véhicules/rondins) ✅
+- Empêcher de gagner du score en avancant dans un arbre ✅
+- Ajouter le RowManager (Nils) : Plus besoin d'EffectQueue et mouvement des voitures uniformisé ✅
+
 
 # NOT DONE :
 - Fluidité des déplacements : Pas de *sauts* de cases mais plutôt des *animations* : ❌
@@ -27,6 +30,10 @@
     - Herbe (safezone) ✅
     - Eau
     - Arbre ✅
-- Ajouter le RowManager de Nils
+    - Trains
+    - Rails
+    - Warning
+    - Glace
 - Mettre des sons (trains, collisions, plouf dans l'eau)
 - Inclure les sources des différents assets que l'on n'a pas fais
+- Gagner du score pour les 2 premières lignes
