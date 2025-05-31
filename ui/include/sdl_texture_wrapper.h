@@ -25,6 +25,15 @@ typedef struct _TextureCollection
     int count;
 } TextureCollection;
 
+typedef struct _CarConfig
+{
+    int size, colorCount;
+    char variant;
+    const char **colors;
+    const char *staticName; // Nom pour texture statique (NULL si colorée)
+    const char *staticPath; // Chemin pour texture statique (NULL si colorée)
+} CarConfig;
+
 TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer);
 SDL_Texture *GetTexture(TextureCollection *collection, const char *name);
 void SDLW_DestroyTextures(TextureCollection *collection);

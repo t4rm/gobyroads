@@ -15,12 +15,6 @@ typedef struct _Grid Grid;
 typedef struct _EffectQueue EffectQueue;
 typedef struct _CarQueue CarQueue;
 
-typedef struct _Car
-{
-  int x, y, size, direction;
-  Occupation type;
-} Car;
-
 typedef struct _GameState
 {
   Grid *grid;
@@ -45,8 +39,7 @@ typedef enum
   VOID
 } CollisionState;
 
-GameState *
-initGameState(int h, int l);
+GameState *initGameState(int h, int l);
 void playerMove(GameState *gs);
 void scrolling(GameState *gs);
 CollisionState handleCollision(GameState *gs);

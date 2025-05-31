@@ -74,7 +74,5 @@ void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y,
         optionalSpriteSize};
 
     if (SDL_RenderCopyEx(r, t, &spriteRect, &destRect, 0.0, NULL, flip))
-    {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render copy: %s", SDL_GetError());
-    }
 }

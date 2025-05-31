@@ -1,5 +1,8 @@
 #include "sdl_wrapper.h"
 
+const char *CarColorNames[COLOR_COUNT] = {
+    "black", "blue", "brown", "green", "magenta", "red", "white", "yellow"};
+
 bool isRoadOrCar(Occupation type)
 {
     return type == ROAD || type == CAR_LEFT || type == CAR_RIGHT;
@@ -150,15 +153,12 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
         }
 
         if (grid->cases[y][0] == TRAIN)
-            SDLW_RenderCopy(renderer, GetTexture(textures, "trains"), grid->length / 2, y, 0, grid->rowManagers[y]->cooldown % 5, SDL_FLIP_NONE, 18, 530, 0, 72);
+            SDLW_RenderCopy(renderer, GetTexture(textures, "trains"), grid->length / 2, y, 0, grid->rowManagers[y]->cooldown % 5, SDL_FLIP_NONE, 18, 530, 0, 72, "");
     }
 
-    // Print score :
     char scoreChar[3];
     sprintf(scoreChar, "%d", uiGs->core->score);
     SDLW_RenderText(CELL_SIZE * 0.15, 0 - CELL_SIZE * 0.15, 30 * strlen(scoreChar), 60, fonts->medium, renderer, scoreChar);
-    // Print game title
-    // --
     SDL_RenderPresent(renderer);
     return 0;
 }
@@ -171,74 +171,84 @@ void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
         if (!c || c->y != y || rm->type != desiredType)
             continue;
 
-        const char *textureName = NULL;
+        char textureName[50];
         int spriteSize = 0, yDepth = 0, xDepth = 0, yOffset = rm->type == WATER ? 0 : rm->cooldown % 3;
 
         if (rm->type == WATER)
             switch (c->size)
             {
             case 1:
-                textureName = "l_1";
+                strcpy(textureName, "l_1");
                 spriteSize = 48;
                 break;
             case 2:
-                textureName = "l_2";
+                strcpy(textureName, "l_2");
                 spriteSize = 96;
                 xDepth = c->direction * 0.5 * CELL_SIZE;
                 break;
             case 3:
-                textureName = "l_3";
+                strcpy(textureName, "l_3");
                 spriteSize = 144;
                 break;
             case 4:
-                textureName = "l_4";
+                strcpy(textureName, "l_4");
                 spriteSize = 192;
                 xDepth = c->direction * 0.5 * CELL_SIZE;
                 break;
             case 5:
-                textureName = "l_5";
+                strcpy(textureName, "l_5");
                 spriteSize = 240;
                 break;
             default:
-                textureName = NULL;
+                strcpy(textureName, "l_1");
                 break;
             }
         else
+        {
+            if (c->variant != 'c' && c->variant != 'g' && c->size != 5) // c & g are the only static variant, hardcoded but manageable. Side 5 is a static too.
+                if (c->variant == '\0')
+                    snprintf(textureName, sizeof(textureName), "car_%d_%s", c->size, CarColorNames[c->color]);
+                else
+                    snprintf(textureName, sizeof(textureName), "car_%d%c_%s", c->size, c->variant, CarColorNames[c->color]);
+
             switch (c->size)
             {
             case 1:
-                textureName = "car_1";
                 spriteSize = 100;
                 yDepth = 4;
                 break;
             case 2:
-                textureName = "car_2";
+                if (c->variant == 'c')
+                    strcpy(textureName, "taxi");
+                else if (c->variant == 'g')
+                    strcpy(textureName, "police");
                 spriteSize = 100;
                 yDepth = 8;
                 xDepth = c->direction * 0.5 * CELL_SIZE;
                 break;
             case 3:
-                textureName = "car_3";
+                if (c->variant == 'c')
+                    strcpy(textureName, "ambulance");
                 spriteSize = 140;
                 yDepth = 12;
                 break;
             case 4:
-                textureName = "car_4";
                 spriteSize = 210;
                 yDepth = 12;
                 xDepth = c->direction * 0.5 * CELL_SIZE;
                 break;
             case 5:
-                textureName = "car_5";
+                strcpy(textureName, "limo");
                 spriteSize = 230;
                 yDepth = 8;
                 break;
             default:
-                textureName = NULL;
+                textureName[0] = '\0';
                 break;
             }
+        }
 
-        if (!textureName)
+        if (textureName[0] == '\0')
             continue;
 
         int centerX = c->x + c->direction * (c->size - 1) / 2;

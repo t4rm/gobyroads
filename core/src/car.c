@@ -52,7 +52,10 @@ void addCar(GameState *gs, int y, RowManager *rowManager, int availableSize)
         if (!nextCar)
             return;
 
-        *nextCar = (Car){.x = startingX, .y = y, .size = nextSize, .direction = direction};
+        char variant = (nextSize == 1 || nextSize == 4 || nextSize == 5) ? '\0' : (nextSize == 2) ? 'a' + rand() % 7
+                                                                                                  : 'a' + rand() % 4;
+
+        *nextCar = (Car){.x = startingX, .y = y, .size = nextSize, .direction = direction, .color = (rand() % COLOR_COUNT), .variant = variant};
 
         nextCar->x = startingX + lastSize + spacing;
         if (nextCar->x < 0)
