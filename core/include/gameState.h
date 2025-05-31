@@ -38,11 +38,18 @@ typedef enum
   AWAY
 } TrainState;
 
+typedef enum
+{
+  CRASHED,
+  SPLASHED,
+  VOID
+} CollisionState;
+
 GameState *
 initGameState(int h, int l);
 void playerMove(GameState *gs);
 void scrolling(GameState *gs);
-void handleCollision(GameState *gs);
+CollisionState handleCollision(GameState *gs);
 void destroyGameState(GameState *gs);
 void updateGameState(GameState *gs);
 void handleScore(GameState *gs);

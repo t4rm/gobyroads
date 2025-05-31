@@ -90,3 +90,11 @@ void SDLW_DestroyAudio(AudioCollection *collection)
     free(collection);
     Mix_CloseAudio();
 }
+
+void SDLW_Mix_HaltAllChannelExcept(int channelToKeep)
+{
+    int totalChannels = Mix_AllocateChannels(-1);
+    for (int i = 0; i < totalChannels; i++)
+        if (i != channelToKeep && Mix_Playing(i))
+            Mix_HaltChannel(i);
+}

@@ -157,3 +157,21 @@ void SDLW_UpdateTrain(Grid *grid, AudioCollection *audio)
         break;
     }
 }
+
+void SDLW_HandleCollision(GameState *gs, AudioCollection *audio)
+{
+    CollisionState s = handleCollision(gs);
+
+    switch (s)
+    {
+    case CRASHED:
+        Mix_PlayChannel(SFX_CHANNEL, GetChunk(audio, "crash"), 0);
+        break;
+    case SPLASHED:
+        Mix_PlayChannel(SFX_CHANNEL, GetChunk(audio, "splash"), 0);
+        break;
+    case VOID:
+    default:
+        break;
+    }
+}

@@ -70,9 +70,9 @@ void scrolling(GameState *gs)
             gs->grid->rowManagers[i] = gs->grid->rowManagers[i + 1];
         }
 
-        int r = rand() % 100;                                    // 60%
-        Occupation roadType = (r < 60) ? ROAD : (r < 95) ? WATER // 35%
-                                                         : RAIL; // 5%
+        int r = rand() % 100;                                    // 50%
+        Occupation roadType = (r < 50) ? ROAD : (r < 80) ? WATER // 30%
+                                                         : RAIL; // 20%
 
         if ((rand() % 12 == 0) || (rand() % 5 == 0 && gs->grid->rowManagers[gs->grid->height - 2]->type == ICE))
             if (gs->grid->rowManagers[gs->grid->height - 6]->type != ICE &&
@@ -82,7 +82,7 @@ void scrolling(GameState *gs)
         gs->grid->cases[gs->grid->height - 1] = createRow(gs->grid->length, roadType);
 
         int newRowDirection = 1;
-        int newRowSpeed = 30; // valeur par défaut lente
+        int newRowSpeed = 30;
 
         if (roadType == WATER || roadType == ROAD)
         {
@@ -216,7 +216,7 @@ void updateIce(GameState *gs)
     }
 }
 
-void handleCollision(GameState *gs)
+CollisionState handleCollision(GameState *gs)
 {
     // Previous : We check every car and see if a car is colliding with the player.
     // New : Check directly on the map if the user is stepping on a CAR cell.
@@ -226,13 +226,21 @@ void handleCollision(GameState *gs)
     if (gs->player->x < gs->carMaxSize || gs->player->x > gs->grid->length - gs->carMaxSize + 1 || gs->player->y < 0)
     {
         gs->gameOver = true;
-        return;
+        return VOID;
     }
 
     Occupation playerOccupation = gs->grid->cases[gs->player->y][gs->player->x];
     // Colliding with an object.
-    if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == WATER || playerOccupation == TRAIN)
+    if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == TRAIN)
+    {
         gs->gameOver = true;
+        return CRASHED;
+    }
+    else if (playerOccupation == WATER)
+    {
+        gs->gameOver = true;
+        return SPLASHED;
+    }
 }
 
 void updateGameState(GameState *gs)

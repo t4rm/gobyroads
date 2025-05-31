@@ -7,6 +7,11 @@
 #include <string.h>
 #include <stdio.h>
 
+typedef enum
+{
+    SFX_CHANNEL = 1
+} CANALS;
+
 typedef struct
 {
     char *name;
@@ -33,5 +38,6 @@ AudioCollection *SDLW_InitAudio();
 Mix_Music *GetMusic(AudioCollection *collection, const char *name);
 Mix_Chunk *GetChunk(AudioCollection *collection, const char *name);
 void SDLW_DestroyAudio(AudioCollection *collection);
+void SDLW_Mix_HaltAllChannelExcept(int channelToKeep);
 
 #endif

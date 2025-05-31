@@ -31,4 +31,6 @@ UIGameState *initUIGameState(int h, int l);
 void destroyUIGameState(UIGameState *uiGs);
 void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode);
 void SDLW_UpdateTrain(Grid *grid, AudioCollection *audio);
+void SDLW_HandleCollision(GameState *gs, AudioCollection *audio);
+
 #endif

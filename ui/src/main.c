@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         }
         else if (uiGs->core->gameOver)
         {
-            Mix_HaltChannel(-1);
+            SDLW_Mix_HaltAllChannelExcept(SFX_CHANNEL);
 
             if (SDL_PollEvent(&event))
                 handleEvents(uiGs, &event, LOST);
@@ -77,8 +77,7 @@ int main(int argc, char *argv[])
             if (SDL_PollEvent(&event))
                 handleEvents(uiGs, &event, PLAYING);
 
-            handleCollision(uiGs->core);
-
+            SDLW_HandleCollision(uiGs->core, audio);
             updateCars(uiGs->core);
             SDLW_UpdateTrain(uiGs->core->grid, audio);
             updateIce(uiGs->core);
