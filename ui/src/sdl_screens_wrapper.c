@@ -43,6 +43,7 @@ void SDLW_IntroScreen(SDL_Renderer *renderer, TTF_Fonts *fonts)
     char s4[9] = "to moove";
     char s5[15] = "Press SPACEBAR";
     char s6[19] = "to start the game!";
+    char s7[22] = "and M to toggle Music";
 
     int verticalMargin = 20;
     int totalHeight = 4 * 72 + 3 * verticalMargin;
@@ -53,6 +54,7 @@ void SDLW_IntroScreen(SDL_Renderer *renderer, TTF_Fonts *fonts)
     SDLW_RenderText(WIDTH / 6, startY + 80 + 3 * verticalMargin + 72 + 24, WIDTH - 4 * CELL_SIZE, 72, fonts->medium, renderer, s4);
     SDLW_RenderText(WIDTH / 6, startY + 80 + 5 * verticalMargin + 2 * 72, WIDTH - 4 * CELL_SIZE, 72, fonts->large, renderer, s5);
     SDLW_RenderText(WIDTH / 6, startY + 80 + 6 * verticalMargin + 2 * 72 + 24, WIDTH - 4 * CELL_SIZE, 72, fonts->small, renderer, s6);
+    SDLW_RenderText(WIDTH / 6, startY + 80 + 8 * verticalMargin + 2 * 72 + 24, WIDTH - 4 * CELL_SIZE, 72, fonts->small, renderer, s7);
 
     SDL_RenderPresent(renderer);
 }

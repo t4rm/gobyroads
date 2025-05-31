@@ -57,6 +57,9 @@ void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
             case SDLK_f:
                 uiGs->running = 0;
                 break;
+            case SDLK_m:
+                uiGs->muteSound = !uiGs->muteSound;
+                break;
             }
 
             if (key)

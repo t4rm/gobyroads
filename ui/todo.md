@@ -22,7 +22,8 @@
     - Glace ✅ (Avec séparateurs en fonction de l'environnement)
 - Gagner du score pour les 2 premières lignes ✅
 - Intégrer différents skins de voiture ✅
-
+- Mettre des sons (trains, collisions, plouf dans l'eau, musique de fond) ✅
+    - M pour Mute les sons ✅
 # NOT DONE :
 - Fluidité des déplacements : Pas de *sauts* de cases mais plutôt des *animations* : ❌
     - Piste : faire des cases virtuelles de 8x8 pixels, qui seraient occupée par des sprites plus gros (32x32), ce qui implique qu'un objet n'occupe plus une seule et unique case mais 4 cases. Les déplacements se font de 8 en 8 pixels, ce qui serait beaucoup plus fluide que 32 par 32 ou 48 par 48 actuellement. 
@@ -37,7 +38,6 @@
         - Piste : Le delta permettrait de faire diminuer les *accumulateurs* des voitures qui deviendrait un accumulateur à *secondes* (actuellement *frames*)
     - En somme : Permettre la mise à jour des effets, etc, depuis SDL et non pas notre moteur (core) ✅
 
-- Mettre des sons (trains, collisions, plouf dans l'eau, musique de fond)
-    - M pour Mute les sons
+
 - Inclure les sources des différents assets que l'on n'a pas fais
 - Menu pour choisir entre CLI et UI 

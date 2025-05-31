@@ -18,6 +18,7 @@ typedef struct _UIGameState
     GameState *core;
     PlayerOffset *playerOffset;
     int running, intro;
+    bool muteSound;
 } UIGameState;
 
 typedef enum

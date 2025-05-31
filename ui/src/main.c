@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
 
     TextureCollection *textures = SDLW_InitTextures(renderer);
     AudioCollection *audio = SDLW_InitAudio();
-    Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
 
     UIGameState *uiGs = initUIGameState(ROWS, COLS);
     // Plutôt utiliser les vraies dimensions du coup.
@@ -43,6 +42,10 @@ int main(int argc, char *argv[])
     while (uiGs->running)
     {
         Uint64 frameStartTime = SDL_GetTicks64();
+        if (uiGs->muteSound)
+            Mix_VolumeMusic(0);
+        else
+            Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
 
         if (uiGs->intro)
         {
