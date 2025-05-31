@@ -37,8 +37,8 @@ int main(int argc, char *argv[])
     SDL_Event event;
     const int FPS = 12;
     const int frameTime = 1000 / FPS;
-    static bool playedGameOverMusic = false;
-    static bool playedBgMusic = false;
+    bool playedGameOverMusic = false;
+    bool playedBgMusic = false;
 
     while (uiGs->running)
     {
@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
             if (!playedGameOverMusic)
             {
                 Mix_PlayMusic(GetMusic(audio, "gameover"), 0);
+                Mix_FadeOutMusic(3000);
                 playedGameOverMusic = true;
             }
             SDLW_GameOverScreen(renderer, fonts, uiGs->core->score);
@@ -67,7 +68,7 @@ int main(int argc, char *argv[])
             playedGameOverMusic = false;
             if (!playedBgMusic)
             {
-                Mix_PlayMusic(GetMusic(audio, "bgm"), 0);
+                Mix_FadeInMusic(GetMusic(audio, "bgm"), -1, 1500);
                 playedBgMusic = true;
             }
             if (SDL_PollEvent(&event))
