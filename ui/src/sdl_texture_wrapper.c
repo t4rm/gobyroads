@@ -32,7 +32,7 @@ static const TextureInfo BASE_TEXTURES[] = {
     {"l_3", "assets/sprites/logs/3.png"},
     {"l_4", "assets/sprites/logs/4.png"},
     {"l_5", "assets/sprites/logs/5.png"},
-    {"player", "assets/sprites/goblin.png"},
+    {"player", "assets/sprites/goblin2.png"},
     {"ice", "assets/sprites/ice.png"},
     {"rail", "assets/sprites/rail.png"},
     {"trains", "assets/sprites/trains.png"},

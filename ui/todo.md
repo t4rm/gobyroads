@@ -25,6 +25,7 @@
 - Mettre des sons (trains, collisions, plouf dans l'eau, musique de fond) ✅
     - M pour Mute les sons ✅
 - Inclure les sources des différents assets que l'on n'a pas fais ✅
+- Réintégrer les logiques de gestion de jeu dans l'encapsulateur de GameState : UIGameState ✅
 
 # NOT DONE :
 - Fluidité des déplacements : Pas de *sauts* de cases mais plutôt des *animations* : ❌
@@ -34,11 +35,4 @@
 - Nénuphars
 
 # TODO :
-- Réintégrer les logiques de gestion de jeu dans l'encapsulateur de GameState : UIGameState
-    - Les cooldowns (qui ne doivent plus être en *frames* mais en réelles *secondes*) :
-        - Utilisation de SDL2 GetTicks : Permet de récupérer le temps depuis le lancement du jeu en *ms* ✅
-        - Piste : Le delta permettrait de faire diminuer les *accumulateurs* des voitures qui deviendrait un accumulateur à *secondes* (actuellement *frames*)
-    - En somme : Permettre la mise à jour des effets, etc, depuis SDL et non pas notre moteur (core) ✅
-
-
 - Menu pour choisir entre CLI et UI 
