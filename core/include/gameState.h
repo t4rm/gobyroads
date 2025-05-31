@@ -26,12 +26,9 @@ typedef struct _GameState
   Grid *grid;
   Player *player;
   CarQueue *cars;
-  int carsAmount;
-  int score;
-  int backwardMovements;
-  int nextSafeZone;
-  int carMaxSize;
+  int carsAmount, score, backwardMovements, nextSafeZone, carMaxSize, highestLineReached;
   bool gameOver;
+
 } GameState;
 
 GameState *initGameState(int h, int l);
@@ -40,7 +37,7 @@ void scrolling(GameState *gs);
 void handleCollision(GameState *gs);
 void destroyGameState(GameState *gs);
 void updateGameState(GameState *gs);
-
+void handleScore(GameState *gs);
 void updateTrain(Grid *grid);
 void updateIce(GameState *gs);
 #endif

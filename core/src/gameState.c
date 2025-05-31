@@ -15,6 +15,7 @@ GameState *initGameState(int h, int l)
     gs->backwardMovements = 0;
     gs->gameOver = false;
     gs->nextSafeZone = 3;
+    gs->highestLineReached = gs->player->y;
 
     for (int i = 0; i < gs->grid->height; i++)
     {
@@ -59,7 +60,7 @@ void scrolling(GameState *gs)
 
     if (gs->player->y == 3)
     {
-        gs->score++;
+        gs->highestLineReached = 2;
         if (gs->grid->rowManagers[0]->type != SAFE)
             removeRowCar(gs->cars, 0);
 
@@ -206,4 +207,13 @@ void updateGameState(GameState *gs)
     // printCarQueue(gs->cars); // Pour faire de la debug
     // printEffectQueue(gs->effects);
     // printf("%d, %d", gs->player->x, gs->player->y);
+}
+
+void handleScore(GameState *gs)
+{
+    if (gs->player->y > gs->highestLineReached)
+    {
+        gs->score++;
+        gs->highestLineReached = gs->player->y;
+    }
 }

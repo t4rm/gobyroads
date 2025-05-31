@@ -23,9 +23,9 @@ void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
 {
     if (mode == PLAYING)
     {
-        int hasMoved = 0;
+        bool hasMoved = false;
         int precedentX = uiGs->core->player->x, precedentY = uiGs->core->player->y;
-
+        char key;
         switch (event->type)
         {
         case SDL_QUIT:
@@ -35,54 +35,61 @@ void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
             switch (event->key.keysym.sym)
             {
             case SDLK_UP:
+            case SDLK_z:
+                key = 'z';
                 uiGs->playerOffset->y = 0;
-                uiGs->core->player->y++;
-                hasMoved = 1;
                 break;
+            case SDLK_q:
             case SDLK_LEFT:
+                key = 'q';
                 uiGs->playerOffset->y = 3;
-                uiGs->core->player->x--;
-                hasMoved = 1;
                 break;
+            case SDLK_d:
             case SDLK_RIGHT:
+                key = 'd';
                 uiGs->playerOffset->y = 1;
-                uiGs->core->player->x++;
-                hasMoved = 1;
                 break;
+            case SDLK_s:
             case SDLK_DOWN:
+                key = 's';
                 uiGs->playerOffset->y = 2;
-                uiGs->core->player->y--;
-                hasMoved = 1;
+                break;
+            case SDLK_f:
+                uiGs->running = 0;
                 break;
             }
 
-            if (hasMoved)
-            {
-                uiGs->playerOffset->x += 1;
-                uiGs->playerOffset->x %= 4;
-                if (uiGs->core->player->y >= 0)
-                {
-                    uiGs->core->player->mouvementCooldown = uiGs->core->grid->cases[uiGs->core->player->y][uiGs->core->player->x] == ICE ? PLAYER_MOVE_COOLDOWN * 2 : PLAYER_MOVE_COOLDOWN;
-                }
-                else
-                    uiGs->core->player->mouvementCooldown = PLAYER_MOVE_COOLDOWN;
-                uiGs->core->player->afk = 0;
-            }
+            if (key)
+                playerMoveKey(key, uiGs->core, &hasMoved);
 
             if (uiGs->core->player->x >= 0 && uiGs->core->player->y >= 0)
-            {
                 if (uiGs->core->grid->cases[uiGs->core->player->y][uiGs->core->player->x] == TREE)
                 {
                     uiGs->core->player->x = precedentX;
                     uiGs->core->player->y = precedentY;
                     uiGs->core->player->mouvementCooldown = 1;
                 }
+
+            if (hasMoved)
+            {
+                uiGs->playerOffset->x += 1;
+                uiGs->playerOffset->x %= 4;
+                // if (uiGs->core->player->y >= 0)
+                // uiGs->core->player->mouvementCooldown = uiGs->core->grid->cases[uiGs->core->player->y][uiGs->core->player->x] == ICE ? PLAYER_MOVE_COOLDOWN * 2 : PLAYER_MOVE_COOLDOWN;
+                // else
+                // uiGs->core->player->mouvementCooldown = PLAYER_MOVE_COOLDOWN;
+                uiGs->core->player->mouvementCooldown = 3;
+                uiGs->core->player->afk = 0;
+                uiGs->core->player->slidingCooldown = 9;
             }
+
             break;
         case SDL_KEYUP:
             uiGs->playerOffset->x = uiGs->playerOffset->x <= 1 ? 1 : 3;
             break;
         }
+        uiGs->core->player->mouvementCooldown = uiGs->core->player->mouvementCooldown <= 1 ? 0 : uiGs->core->player->mouvementCooldown - 1;
+        uiGs->core->player->afk++;
     }
     else if (mode == LOST)
         switch (event->type)

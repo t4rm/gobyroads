@@ -38,10 +38,11 @@ void SDLW_IntroScreen(SDL_Renderer *renderer, TTF_Fonts *fonts)
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in render clear: %s", SDL_GetError());
 
     char s[11] = "Goby Roads";
-    char s2[31] = "Help Goby returns to his World"; // To improve
-    char s3[17] = "Use ZQSD to move"; // its arrow keys in the game rn
-    char s4[15] = "Press SPACEBAR";
-    char s5[19] = "to start the game!";
+    char s2[31] = "Help Goby returns to his World";
+    char s3[20] = "Use ZQSD/ARROW keys";
+    char s4[9] = "to moove";
+    char s5[15] = "Press SPACEBAR";
+    char s6[19] = "to start the game!";
 
     int verticalMargin = 20;
     int totalHeight = 4 * 72 + 3 * verticalMargin;
@@ -49,8 +50,9 @@ void SDLW_IntroScreen(SDL_Renderer *renderer, TTF_Fonts *fonts)
     SDLW_RenderText(WIDTH / 4, startY, WIDTH / 2, 80, fonts->large, renderer, s);
     SDLW_RenderText(WIDTH / 6, startY + 80 + verticalMargin, WIDTH - 4 * CELL_SIZE, 72, fonts->small, renderer, s2);
     SDLW_RenderText(WIDTH / 6, startY + 80 + 2 * verticalMargin + 72, WIDTH - 4 * CELL_SIZE, 72, fonts->medium, renderer, s3);
-    SDLW_RenderText(WIDTH / 6, startY + 80 + 3 * verticalMargin + 2 * 72, WIDTH - 4 * CELL_SIZE, 72, fonts->large, renderer, s4);
-    SDLW_RenderText(WIDTH / 6, startY + 80 + 3 * verticalMargin + 2 * 72 + 24 + verticalMargin, WIDTH - 4 * CELL_SIZE, 72, fonts->small, renderer, s5);
+    SDLW_RenderText(WIDTH / 6, startY + 80 + 3 * verticalMargin + 72 + 24, WIDTH - 4 * CELL_SIZE, 72, fonts->medium, renderer, s4);
+    SDLW_RenderText(WIDTH / 6, startY + 80 + 5 * verticalMargin + 2 * 72, WIDTH - 4 * CELL_SIZE, 72, fonts->large, renderer, s5);
+    SDLW_RenderText(WIDTH / 6, startY + 80 + 6 * verticalMargin + 2 * 72 + 24, WIDTH - 4 * CELL_SIZE, 72, fonts->small, renderer, s6);
 
     SDL_RenderPresent(renderer);
 }

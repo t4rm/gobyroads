@@ -29,6 +29,7 @@ int main()
         updateIce(gs);
         updateTrain(gs->grid);
         handleCollision(gs);
+        handleScore(gs);
         // Player moved, if he collided the game stops, otherwise we scroll down when y >= 3.
         scrolling(gs);
         // End of the game handling logic.

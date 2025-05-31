@@ -22,13 +22,11 @@
     - Une fois sur un rondin, on est porté par celui-ci. Si le rondin sort de la carte, on perd.  ✅
     - Les rondins ont une vitesse plus lentes, et s'accourcissent avec le temps, leur fonctionnement est contraire aux voitures. ✅
 - Rework de la logique de mise à jour des effets. Buggé, freeze.  ✅
+- Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant, idem quand il avance dans un obstacle. ✅
 
 # TODO :
-- Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant, idem quand il avance dans un obstacle.
 - Gestion du score
     - Effet sonore tous les 50 de scores 
-- Ajout nénuphar
-- De meilleurs caractères pour les nouveaux éléments de la carte.
 - Ecarts entre les voitures aléatoires en fonction de la difficulté, actuellement fixe à 5 (LOGS)/12 (CARS).
 
 ## Bonus :

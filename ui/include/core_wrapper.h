@@ -1,6 +1,7 @@
 #ifndef CORE_WRAPPER_H
 #define CORE_WRAPPER_H
-#include "SDL2/SDL_events.h"
+#include <SDL2/SDL_events.h>
+#include <stdbool.h>
 #include "gamestate.h"
 
 #define PLAYER_MOVE_COOLDOWN 10

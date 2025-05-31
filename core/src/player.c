@@ -9,8 +9,7 @@ void playerMove(GameState *gs)
         bool hasMoved = false;
         int precedentX = gs->player->x, precedentY = gs->player->y;
 
-        if (gs->player->mouvementCooldown == 0)
-            playerMoveKey(key, gs, &hasMoved);
+        playerMoveKey(key, gs, &hasMoved);
 
         if (gs->grid->cases[gs->player->y][gs->player->x] == TREE)
         {
@@ -33,6 +32,9 @@ void playerMove(GameState *gs)
 
 void playerMoveKey(char key, GameState *gs, bool *hasMoved)
 {
+    if (key != 'f' && gs->player->mouvementCooldown > 0)
+        return;
+
     switch (key)
     {
     case 'z':
