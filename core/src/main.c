@@ -16,10 +16,9 @@ int main()
     while (!gs->gameOver)
     {
         DWORD frameStartTime = GetTickCount();
-        // struct timespec frameStartTime;
-        // clock_gettime(CLOCK_MONOTONIC, &frameStartTime); // Récupérer l'heure en nanosecondes
 
-        // if (gs->player->afk >= FPS * 4) gs->gameOver = true;
+        if (gs->player->afk >= FPS * 6)
+            gs->gameOver = true;
 
         // Start of the game handling logic
         updateCars(gs);
@@ -42,18 +41,6 @@ int main()
             DWORD sleepTime = frameTime - elapsedTime;
             Sleep(sleepTime);
         }
-
-        // struct timespec frameEndTime;
-        // clock_gettime(CLOCK_MONOTONIC, &frameEndTime);
-
-        // long long elapsedTime = (frameEndTime.tv_sec - frameStartTime.tv_sec) * 1000 +
-        //                         (frameEndTime.tv_nsec - frameStartTime.tv_nsec) / 1000000; // Temps écoulé en millisecondes
-
-        // // Si l'exécution de la frame prend moins de temps que frameTime, on fait une pause
-        // if (elapsedTime < frameTime) {
-        //     long long sleepTime = frameTime - elapsedTime;
-        //     usleep(sleepTime * 1000); // Attendre le temps nécessaire (en microsecondes)
-        // }
     }
 
     printf("\e[1;1H\e[2J");
