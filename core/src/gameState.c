@@ -70,33 +70,48 @@ void scrolling(GameState *gs)
             gs->grid->rowManagers[i] = gs->grid->rowManagers[i + 1];
         }
 
-        int r = rand() % 10;
-        Occupation roadType = (r < 3) ? ROAD : (r < 5) ? WATER
-                                                       : RAIL;
+        int r = rand() % 100;                                    // 60%
+        Occupation roadType = (r < 60) ? ROAD : (r < 95) ? WATER // 35%
+                                                         : RAIL; // 5%
 
-        // makes ice rare, 1 to 5 row long "biomes"
-        if ((rand() % 8 == 0) || (rand() % 3 == 0 && gs->grid->rowManagers[gs->grid->height - 2]->type == ICE))
-            if (gs->grid->rowManagers[gs->grid->height - 6]->type != ICE && gs->grid->rowManagers[gs->grid->height - 2]->type != SAFE)
+        if ((rand() % 12 == 0) || (rand() % 5 == 0 && gs->grid->rowManagers[gs->grid->height - 2]->type == ICE))
+            if (gs->grid->rowManagers[gs->grid->height - 6]->type != ICE &&
+                gs->grid->rowManagers[gs->grid->height - 2]->type != SAFE)
                 roadType = ICE;
 
         gs->grid->cases[gs->grid->height - 1] = createRow(gs->grid->length, roadType);
 
         int newRowDirection = 1;
-        int newRowSpeed = 30;
+        int newRowSpeed = 30; // valeur par défaut lente
+
         if (roadType == WATER || roadType == ROAD)
         {
             newRowDirection = rand() % 2 ? 1 : -1;
             if (gs->grid->rowManagers[gs->grid->height - 2]->type == WATER)
                 newRowDirection = gs->grid->rowManagers[gs->grid->height - 2]->direction * -1;
 
-            // scaling de la vitesse en fonction du score
-            int maxFrameCooldown = 30;
-            newRowSpeed = (maxFrameCooldown - 14 - gs->score / 50) < 9 ? 8 : maxFrameCooldown - (rand() % 14) - (gs->score / 50);
+            int maxSpeed = 30;
+            int minSpeed = 8;
 
-            // verifie que 2 lignes qui se suivent n'ont pas de vitesses trop proches
-            if (gs->grid->rowManagers[gs->grid->height - 1]->speed <= newRowSpeed + 5 &&
-                gs->grid->rowManagers[gs->grid->height - 1]->speed >= newRowSpeed - 5)
-                newRowSpeed = gs->grid->rowManagers[gs->grid->height - 1]->speed + 10;
+            int speedRange = maxSpeed - minSpeed;
+            int scoreEffect = gs->score / 50;
+
+            newRowSpeed = maxSpeed - scoreEffect;
+
+            if (newRowSpeed < minSpeed)
+                newRowSpeed = minSpeed;
+            if (newRowSpeed > maxSpeed)
+                newRowSpeed = maxSpeed;
+
+            int variation = rand() % 5;
+            newRowSpeed += variation;
+
+            int prevSpeed = gs->grid->rowManagers[gs->grid->height - 1]->speed;
+            if (prevSpeed <= newRowSpeed + 5 && prevSpeed >= newRowSpeed - 5)
+                newRowSpeed = prevSpeed + 6;
+
+            if (newRowSpeed > maxSpeed)
+                newRowSpeed = maxSpeed;
         }
 
         if (roadType == RAIL)
@@ -121,7 +136,7 @@ void scrolling(GameState *gs)
     }
 }
 
-void updateTrain(Grid *grid)
+TrainState updateTrain(Grid *grid)
 {
     for (int y = 0; y < grid->height; y++)
     {
@@ -130,29 +145,49 @@ void updateTrain(Grid *grid)
         if (rm->type == RAIL || rm->type == WARNING || rm->type == TRAIN)
             rm->cooldown++;
 
-        if (rm->type == RAIL && rm->cooldown >= rm->speed)
+        switch (rm->type)
         {
-            rm->type = WARNING;
-            rm->cooldown = 0;
-            rm->speed /= 4;
+        case RAIL:
+            if (rm->cooldown >= rm->speed)
+            {
+                rm->type = WARNING;
+                rm->cooldown = 0;
+                rm->speed = 2 * 60;
 
-            for (int x = 0; x < grid->length; x++)
-                if (x % 2 == 0)
-                    grid->cases[y][x] = WARNING;
-        }
-        else if (rm->type == WARNING && rm->cooldown >= rm->speed)
-        {
-            rm->type = TRAIN;
-            rm->cooldown = 0;
-            rm->speed /= 2;
-            applyOccupationToRow(grid->cases[y], grid->length, TRAIN);
-        }
-        else if (rm->type == TRAIN && rm->cooldown >= rm->speed)
-        {
-            rm->type = RAIL;
-            rm->cooldown = 0;
-            rm->speed *= 8;
-            applyOccupationToRow(grid->cases[y], grid->length, RAIL);
+                for (int x = 0; x < grid->length; x++)
+                    if (x % 2 == 0)
+                        grid->cases[y][x] = WARNING;
+
+                return HORN;
+            }
+            break;
+
+        case WARNING:
+            if (rm->cooldown >= rm->speed)
+            {
+                rm->type = TRAIN;
+                rm->cooldown = 0;
+                rm->speed = 12 * 60;
+                applyOccupationToRow(grid->cases[y], grid->length, TRAIN);
+                return PASSING;
+            }
+            break;
+
+        case TRAIN:
+            if (rm->cooldown >= rm->speed)
+            {
+                rm->type = RAIL;
+                rm->cooldown = 0;
+
+                rm->speed = 16 * 60 + rand() % (12 * 60 + 1);
+
+                applyOccupationToRow(grid->cases[y], grid->length, RAIL);
+                return AWAY;
+            }
+            break;
+
+        default:
+            break;
         }
     }
 }

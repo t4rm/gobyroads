@@ -15,7 +15,7 @@ Grid *createGrid(int height, int length, int carMaxSize)
     {
         Occupation baseTile = i == 0 ? SAFE : ROAD;
         grid->cases[i] = createRow(l, baseTile);
-        grid->rowManagers[i] = createRowManager(rand() % 2 ? 1 : -1, 45 - (rand() % 35), baseTile);
+        grid->rowManagers[i] = createRowManager(rand() % 2 ? 1 : -1, 25 + (rand() % (60 - 25 + 1)), baseTile);
     }
 
     return grid;

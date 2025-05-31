@@ -2,6 +2,8 @@
 #define CORE_WRAPPER_H
 #include <SDL2/SDL_events.h>
 #include <stdbool.h>
+#include <sdl2/SDL_mixer.h>
+#include "sdl_mixer_wrapper.h"
 #include "gamestate.h"
 
 #define PLAYER_MOVE_COOLDOWN 10
@@ -28,5 +30,5 @@ typedef enum
 UIGameState *initUIGameState(int h, int l);
 void destroyUIGameState(UIGameState *uiGs);
 void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode);
-
+void SDLW_UpdateTrain(Grid *grid, AudioCollection *audio);
 #endif

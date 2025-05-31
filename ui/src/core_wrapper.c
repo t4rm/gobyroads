@@ -139,3 +139,21 @@ void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
             }
         }
 }
+
+void SDLW_UpdateTrain(Grid *grid, AudioCollection *audio)
+{
+    TrainState s = updateTrain(grid);
+
+    switch (s)
+    {
+    case PASSING:
+        Mix_PlayChannel(-1, GetChunk(audio, "train"), 0);
+        break;
+    case HORN:
+        Mix_PlayChannel(-1, GetChunk(audio, "warning"), 0);
+        break;
+    case AWAY:
+    default:
+        break;
+    }
+}

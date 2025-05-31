@@ -31,13 +31,21 @@ typedef struct _GameState
 
 } GameState;
 
-GameState *initGameState(int h, int l);
+typedef enum
+{
+  HORN,
+  PASSING,
+  AWAY
+} TrainState;
+
+GameState *
+initGameState(int h, int l);
 void playerMove(GameState *gs);
 void scrolling(GameState *gs);
 void handleCollision(GameState *gs);
 void destroyGameState(GameState *gs);
 void updateGameState(GameState *gs);
 void handleScore(GameState *gs);
-void updateTrain(Grid *grid);
+TrainState updateTrain(Grid *grid);
 void updateIce(GameState *gs);
 #endif

@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     // Et appliquer un coefficient de réduction pour le comportement du jeu en CLI ?
     // Comment gérer le fait qu'une coordonnée est representé en 1 pixel ici.
     SDL_Event event;
-    const int FPS = 12;
+    const int FPS = 60;
     const int frameTime = 1000 / FPS;
     bool playedGameOverMusic = false;
     bool playedBgMusic = false;
@@ -52,6 +52,11 @@ int main(int argc, char *argv[])
         }
         else if (uiGs->core->gameOver)
         {
+            Mix_HaltChannel(-1);
+
+            if (SDL_PollEvent(&event))
+                handleEvents(uiGs, &event, LOST);
+
             playedBgMusic = false;
             if (!playedGameOverMusic)
             {
@@ -60,8 +65,6 @@ int main(int argc, char *argv[])
                 playedGameOverMusic = true;
             }
             SDLW_GameOverScreen(renderer, fonts, uiGs->core->score);
-            if (SDL_PollEvent(&event))
-                handleEvents(uiGs, &event, LOST);
         }
         else
         {
@@ -77,7 +80,7 @@ int main(int argc, char *argv[])
             handleCollision(uiGs->core);
 
             updateCars(uiGs->core);
-            updateTrain(uiGs->core->grid);
+            SDLW_UpdateTrain(uiGs->core->grid, audio);
             updateIce(uiGs->core);
             // Fin des possibles évents à "fire" ----
 
