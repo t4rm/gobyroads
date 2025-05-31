@@ -15,7 +15,7 @@ int compareCarElements(const void *a, const void *b)
 
 int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, TTF_Fonts **fonts, int width, int height)
 {
-    if (SDL_Init(SDL_INIT_EVERYTHING))
+    if (SDL_Init(SDL_INIT_EVERYTHING)) // Plutôt init les 4 qu'on use non ?
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in init: %s", SDL_GetError());
         return -1;
@@ -168,7 +168,7 @@ void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
     for (CarElement *carElt = queue->head; carElt != NULL; carElt = carElt->next)
     {
         Car *c = carElt->car;
-        if (!c || c->y != y || c->type != desiredType)
+        if (!c || c->y != y || rm->type != desiredType)
             continue;
 
         const char *textureName = NULL;

@@ -34,7 +34,11 @@
         - Utilisation de SDL2 GetTicks : Permet de récupérer le temps depuis le lancement du jeu en *ms* ✅
         - Piste : Le delta permettrait de faire diminuer les *accumulateurs* des voitures qui deviendrait un accumulateur à *secondes* (actuellement *frames*)
     - En somme : Permettre la mise à jour des effets, etc, depuis SDL et non pas notre moteur (core) ✅
-
-- Mettre des sons (trains, collisions, plouf dans l'eau)
+- Intégrer différents skins :
+    - Voiture
+    - Joueur
+- Mettre des sons (trains, collisions, plouf dans l'eau, musique de fond)
+    - M pour Mute les sons
 - Inclure les sources des différents assets que l'on n'a pas fais
 - Gagner du score pour les 2 premières lignes
+- Menu pour choisir entre CLI et UI

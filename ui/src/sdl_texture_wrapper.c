@@ -4,31 +4,31 @@ TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer)
 {
     TextureInfo textureData[] = {
         // Map :
-        {"grass", "assets/grass.png"},
-        {"road", "assets/road.png"},
-        {"water", "assets/water.jpg"},
+        {"grass", "assets/sprites/grass.png"},
+        {"road", "assets/sprites/road.png"},
+        {"water", "assets/sprites/water.jpg"},
 
         // Cars (ALWAYS EAST DIRECTION) :
-        {"car_1", "assets/cars/1.png"},
-        {"car_2", "assets/cars/2.png"},
-        {"car_3", "assets/cars/3.png"},
-        {"car_4", "assets/cars/4.png"},
-        {"car_5", "assets/cars/5.png"},
+        {"car_1", "assets/sprites/cars/1.png"},
+        {"car_2", "assets/sprites/cars/2.png"},
+        {"car_3", "assets/sprites/cars/3.png"},
+        {"car_4", "assets/sprites/cars/4.png"},
+        {"car_5", "assets/sprites/cars/5.png"},
 
         // Logs :
-        {"l_1", "assets/logs/1.png"},
-        {"l_2", "assets/logs/2.png"},
-        {"l_3", "assets/logs/3.png"},
-        {"l_4", "assets/logs/4.png"},
-        {"l_5", "assets/logs/5.png"},
+        {"l_1", "assets/sprites/logs/1.png"},
+        {"l_2", "assets/sprites/logs/2.png"},
+        {"l_3", "assets/sprites/logs/3.png"},
+        {"l_4", "assets/sprites/logs/4.png"},
+        {"l_5", "assets/sprites/logs/5.png"},
 
         // Player, tree, ice, rails, train, warning
-        {"player", "assets/goblin.png"},
-        {"ice", "assets/ice.png"},
-        {"rail", "assets/rail.png"},
-        {"trains", "assets/trains.png"},
-        {"warning", "assets/warning.png"},
-        {"tree", "assets/trees/1.png"}
+        {"player", "assets/sprites/goblin.png"},
+        {"ice", "assets/sprites/ice.png"},
+        {"rail", "assets/sprites/rail.png"},
+        {"trains", "assets/sprites/trains.png"},
+        {"warning", "assets/sprites/warning.png"},
+        {"tree", "assets/sprites/trees/1.png"}
 
     };
 

@@ -1,10 +1,12 @@
 #define SDL_MAIN_HANDLED
 // SDL 2
 #include "SDL2/SDL.h"
+#include <SDL2/SDL_mixer.h>
 // #include "SDL2/SDL_image.h"
 #include "sdl_wrapper.h"
 #include "sdl_texture_wrapper.h"
 #include "sdl_screens_wrapper.h"
+#include "sdl_mixer_wrapper.h"
 // Core game features, wrapped with UI Concepts
 #include "core_wrapper.h"
 // Core game features, directly from core
@@ -25,6 +27,8 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
 
     TextureCollection *textures = SDLW_InitTextures(renderer);
+    AudioCollection *audio = SDLW_InitAudio();
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
 
     UIGameState *uiGs = initUIGameState(ROWS, COLS);
     // Plutôt utiliser les vraies dimensions du coup.
@@ -33,9 +37,13 @@ int main(int argc, char *argv[])
     SDL_Event event;
     const int FPS = 12;
     const int frameTime = 1000 / FPS;
+    static bool playedGameOverMusic = false;
+    static bool playedBgMusic = false;
 
     while (uiGs->running)
     {
+        Uint64 frameStartTime = SDL_GetTicks64();
+
         if (uiGs->intro)
         {
             SDLW_IntroScreen(renderer, fonts);
@@ -44,14 +52,24 @@ int main(int argc, char *argv[])
         }
         else if (uiGs->core->gameOver)
         {
+            playedBgMusic = false;
+            if (!playedGameOverMusic)
+            {
+                Mix_PlayMusic(GetMusic(audio, "gameover"), 0);
+                playedGameOverMusic = true;
+            }
             SDLW_GameOverScreen(renderer, fonts, uiGs->core->score);
             if (SDL_PollEvent(&event))
                 handleEvents(uiGs, &event, LOST);
         }
         else
         {
-            Uint64 frameStartTime = SDL_GetTicks64();
-
+            playedGameOverMusic = false;
+            if (!playedBgMusic)
+            {
+                Mix_PlayMusic(GetMusic(audio, "bgm"), 0);
+                playedBgMusic = true;
+            }
             if (SDL_PollEvent(&event))
                 handleEvents(uiGs, &event, PLAYING);
 
@@ -60,7 +78,6 @@ int main(int argc, char *argv[])
             updateCars(uiGs->core);
             updateTrain(uiGs->core->grid);
             updateIce(uiGs->core);
-            // updateEffects(uiGs->core);
             // Fin des possibles évents à "fire" ----
 
             // Calcul interactions (collisions)
@@ -72,19 +89,20 @@ int main(int argc, char *argv[])
             // maj rendu & rendu
             updateGameState(uiGs->core);
             SDLW_UpdateAndRender(uiGs, renderer, textures, fonts);
+        }
 
-            Uint64 frameEndTime = SDL_GetTicks64();
-            Uint64 elapsedTime = frameEndTime - frameStartTime;
+        Uint64 frameEndTime = SDL_GetTicks64();
+        Uint64 elapsedTime = frameEndTime - frameStartTime;
 
-            if (elapsedTime < frameTime)
-            {
-                Uint64 sleepTime = frameTime - elapsedTime;
-                SDL_Delay(sleepTime);
-            }
+        if (elapsedTime < frameTime)
+        {
+            Uint64 sleepTime = frameTime - elapsedTime;
+            SDL_Delay(sleepTime);
         }
     }
 
     SDLW_DestroyTextures(textures);
+    SDLW_DestroyAudio(audio);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_CloseFont(fonts->large);
