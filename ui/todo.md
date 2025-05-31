@@ -36,3 +36,4 @@
 
 # TODO :
 - Menu pour choisir entre CLI et UI 
+- Effet sonore tous les 50 de scores 
