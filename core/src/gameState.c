@@ -166,7 +166,7 @@ TrainState updateTrain(Grid *grid)
             {
                 rm->type = TRAIN;
                 rm->cooldown = 0;
-                rm->speed = 12 * 60;
+                rm->speed = 8 * 60;
                 applyOccupationToRow(grid->cases[y], grid->length, TRAIN);
                 return PASSING;
             }
