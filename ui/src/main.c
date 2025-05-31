@@ -55,13 +55,16 @@ int main(int argc, char *argv[])
             if (SDL_PollEvent(&event))
                 handleEvents(uiGs, &event, PLAYING);
 
+            handleCollision(uiGs->core);
+
             // Est-ce qu'on "fire" des évènements pour les mises à jours des voitures et on migre leur "handling" en haut ? :
             updateCars(uiGs->core);
+            updateTrain(uiGs->core->grid);
+            updateIce(uiGs->core);
             // updateEffects(uiGs->core);
             // Fin des possibles évents à "fire" ----
 
             // Calcul interactions (collisions)
-            handleCollision(uiGs->core);
 
             // maj état du jeu (états mobs, joueur, score)
             // A faire ici : Calcul de vélocité pour les animations des obstacles ?

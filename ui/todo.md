@@ -7,13 +7,26 @@
 - Afficher les obstacles différemment de la carte de base (contrainte de taille des véhicules/rondins) ✅
 - Empêcher de gagner du score en avancant dans un arbre ✅
 - Ajouter le RowManager (Nils) : Plus besoin d'EffectQueue et mouvement des voitures uniformisé ✅
-
+- Générer/Créer les sprites nécessaires et aux bonnes dimensions, pour l'instant des placeholders
+    - Joueur ✅
+    - Voiture (Taille 1 ... 6, 6 = Long Bus) dans les deux sens (SDL_FLIP) ✅
+    <!-- - Nénuphar -->
+    - Rondins ✅
+    - Route ✅ (Avec séparateurs en fonction de l'environnement)
+    - Herbe (safezone) ✅
+    - Eau ✅
+    - Arbre ✅
+    - Trains ✅
+    - Rails ✅
+    - Warning ✅
+    - Glace ✅ (Avec séparateurs en fonction de l'environnement)
 
 # NOT DONE :
 - Fluidité des déplacements : Pas de *sauts* de cases mais plutôt des *animations* : ❌
     - Piste : faire des cases virtuelles de 8x8 pixels, qui seraient occupée par des sprites plus gros (32x32), ce qui implique qu'un objet n'occupe plus une seule et unique case mais 4 cases. Les déplacements se font de 8 en 8 pixels, ce qui serait beaucoup plus fluide que 32 par 32 ou 48 par 48 actuellement. 
     - Implique d'importantes modifications du cœur du jeu qui estime qu'une case = un objet.
         Conclusion : On évite, SDL2 est une surcouche graphique et ne doit pas impliquer d'aussi gros changement du cœur du jeu.
+- Nénuphars
 
 # TODO :
 - Réintégrer les logiques de gestion de jeu dans l'encapsulateur de GameState : UIGameState
@@ -21,19 +34,7 @@
         - Utilisation de SDL2 GetTicks : Permet de récupérer le temps depuis le lancement du jeu en *ms* ✅
         - Piste : Le delta permettrait de faire diminuer les *accumulateurs* des voitures qui deviendrait un accumulateur à *secondes* (actuellement *frames*)
     - En somme : Permettre la mise à jour des effets, etc, depuis SDL et non pas notre moteur (core) ✅
-- Générer/Créer les sprites nécessaires et aux bonnes dimensions, pour l'instant des placeholders
-    - Joueur ✅
-    - Voiture (Taille 1 ... 6, 6 = Long Bus) dans les deux sens (SDL_FLIP) ✅
-    - Nénuphar
-    - Rondins ✅
-    - Route ✅ (Avec séparateurs en fonction de l'environnement)
-    - Herbe (safezone) ✅
-    - Eau
-    - Arbre ✅
-    - Trains
-    - Rails
-    - Warning
-    - Glace
+
 - Mettre des sons (trains, collisions, plouf dans l'eau)
 - Inclure les sources des différents assets que l'on n'a pas fais
 - Gagner du score pour les 2 premières lignes

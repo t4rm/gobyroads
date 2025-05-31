@@ -25,6 +25,9 @@ TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer)
         // Player, tree, ice, rails, train, warning
         {"player", "assets/goblin.png"},
         {"ice", "assets/ice.png"},
+        {"rail", "assets/rail.png"},
+        {"trains", "assets/trains.png"},
+        {"warning", "assets/warning.png"},
         {"tree", "assets/trees/1.png"}
 
     };

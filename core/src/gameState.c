@@ -70,7 +70,7 @@ void scrolling(GameState *gs)
         }
 
         int r = rand() % 10;
-        Occupation roadType = (r < 5) ? ROAD : (r < 9) ? WATER
+        Occupation roadType = (r < 3) ? ROAD : (r < 5) ? WATER
                                                        : RAIL;
 
         // makes ice rare, 1 to 5 row long "biomes"
@@ -160,6 +160,9 @@ void updateIce(GameState *gs)
 {
     Player *p = gs->player;
     int y = p->y;
+
+    if (y < 0)
+        return;
 
     if (gs->grid->rowManagers[y]->type == ICE && --p->slidingCooldown <= 0)
     {

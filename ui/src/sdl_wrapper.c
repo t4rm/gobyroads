@@ -76,6 +76,9 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
         {
             switch (grid->cases[y][x])
             {
+            case TRAIN:
+            case WARNING:
+            case RAIL:
             case SAFE:
             case TREE:
                 t = GetTexture(textures, "grass");
@@ -115,24 +118,39 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
 
                 xOffset = !belowIsIce ? 0 : !aboveIsIce ? 2
                                                         : 1;
+                break;
             default:
                 break;
             }
-            SDLW_RenderCopy(renderer, t, x, y, xOffset, yOffset, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
+            SDLW_RenderCopy(renderer, t, x, y, xOffset, yOffset, SDL_FLIP_NONE, 0, CELL_SIZE, 0, 0);
         }
+
+        // Sur-couche du sol
+        for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
+        {
+            if (grid->cases[y][x] == TRAIN || grid->cases[y][x] == RAIL || grid->cases[y][x] == WARNING)
+                SDLW_RenderCopy(renderer, GetTexture(textures, "rail"), x, y, 0, 0, SDL_FLIP_NONE, 0, CELL_SIZE, 0, 0);
+        }
+
         // -------- Rondins  --------
         SDLW_UpdateCars(renderer, textures, carQueue, y, WATER, uiGs->core->grid->rowManagers[y]);
         // -------- Joueur --------
         if (uiGs->core->player->y == y)
-            SDLW_RenderCopy(renderer, GetTexture(textures, "player"), uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y, SDL_FLIP_NONE, 0, CELL_SIZE, 0);
+            SDLW_RenderCopy(renderer, GetTexture(textures, "player"), uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y, SDL_FLIP_NONE, 0, CELL_SIZE, 0, 0);
+
         // -------- Voitures  --------
         SDLW_UpdateCars(renderer, textures, carQueue, y, ROAD, uiGs->core->grid->rowManagers[y]);
-        // -------- Arbres --------x
+        // -------- Arbres & Rails & Warning--------x
         for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
         {
             if (grid->cases[y][x] == TREE)
-                SDLW_RenderCopy(renderer, GetTexture(textures, "tree"), x, y, 0, 0, SDL_FLIP_NONE, 14, 128, 0);
+                SDLW_RenderCopy(renderer, GetTexture(textures, "tree"), x, y, 0, 0, SDL_FLIP_NONE, 14, 128, 0, 0);
+            else if (grid->cases[y][x] == WARNING)
+                SDLW_RenderCopy(renderer, GetTexture(textures, "warning"), x, y, 0, 0, SDL_FLIP_NONE, 0, CELL_SIZE, 0, 0);
         }
+
+        if (grid->cases[y][0] == TRAIN)
+            SDLW_RenderCopy(renderer, GetTexture(textures, "trains"), grid->length / 2, y, 0, grid->rowManagers[y]->cooldown % 5, SDL_FLIP_NONE, 18, 530, 0, 72);
     }
 
     // Print score :
@@ -154,9 +172,9 @@ void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
             continue;
 
         const char *textureName = NULL;
-        int spriteSize = 0, yDepth = 0, xDepth = 0, yOffset = c->type == WATER ? 0 : rm->cooldown % 3;
+        int spriteSize = 0, yDepth = 0, xDepth = 0, yOffset = rm->type == WATER ? 0 : rm->cooldown % 3;
 
-        if (c->type == WATER)
+        if (rm->type == WATER)
             switch (c->size)
             {
             case 1:
@@ -224,8 +242,8 @@ void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
             continue;
 
         int centerX = c->x + c->direction * (c->size - 1) / 2;
-        SDL_RendererFlip flip = (c->direction == -1 && c->type != WATER) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+        SDL_RendererFlip flip = (c->direction == -1 && rm->type != WATER) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
-        SDLW_RenderCopy(r, GetTexture(t, textureName), centerX, c->y, rm->cooldown % 4, yOffset, flip, yDepth, spriteSize, xDepth);
+        SDLW_RenderCopy(r, GetTexture(t, textureName), centerX, c->y, rm->cooldown % 4, yOffset, flip, yDepth, spriteSize, xDepth, 0);
     }
 }

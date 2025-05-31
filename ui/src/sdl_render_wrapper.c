@@ -15,22 +15,25 @@ void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *r
     SDL_Color textColor = {255, 255, 255, 255};
 
     int textWidth, textHeight;
-    if (TTF_SizeText(font, text, &textWidth, &textHeight)) {
+    if (TTF_SizeText(font, text, &textWidth, &textHeight))
+    {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error getting text size: %s", SDL_GetError());
         return;
     }
 
-    int centerX = x + (w - textWidth) / 2; 
+    int centerX = x + (w - textWidth) / 2;
     int centerY = y + (h - textHeight) / 2;
 
     SDL_Surface *surfaceText = TTF_RenderText_Solid(font, text, textColor);
-    if (!surfaceText) {
+    if (!surfaceText)
+    {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error creating text surface: %s", SDL_GetError());
         return;
     }
 
     SDL_Texture *textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
-    if (!textureText) {
+    if (!textureText)
+    {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error creating text texture: %s", SDL_GetError());
         SDL_FreeSurface(surfaceText);
         return;
@@ -43,31 +46,32 @@ void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *r
     SDL_FreeSurface(surfaceText);
 }
 
-
 // This work fine for dynamic sprite like Player, but this is "OVERKILL" for Static Sprites like Grass.
 // Grass don't have offsets, but we could ! They would become animated (simulating the wind for example)
 // Same for waves in Rivers
 void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y,
                      int xOffset, int yOffset, SDL_RendererFlip flip,
-                     int yDepth, int spriteSize, int xDepth)
+                     int yDepth, int spriteSize, int xDepth, int optionalSpriteSize)
 {
+    optionalSpriteSize = optionalSpriteSize == 0 ? spriteSize : optionalSpriteSize;
+
     SDL_Rect spriteRect = {
         xOffset * spriteSize,
-        yOffset * spriteSize,
+        yOffset * optionalSpriteSize,
         spriteSize,
-        spriteSize};
+        optionalSpriteSize};
 
     int logicalX = (x - CAR_MAX_SIZE - 1) * CELL_SIZE + xDepth;
     int logicalY = flipY(y) * CELL_SIZE - yDepth;
 
     int offsetX = (spriteSize - CELL_SIZE) / 2;
-    int offsetY = (spriteSize - CELL_SIZE) / 2;
+    int offsetY = (optionalSpriteSize - CELL_SIZE) / 2;
 
     SDL_Rect destRect = {
         logicalX - offsetX,
         logicalY - offsetY,
         spriteSize,
-        spriteSize};
+        optionalSpriteSize};
 
     if (SDL_RenderCopyEx(r, t, &spriteRect, &destRect, 0.0, NULL, flip))
     {
