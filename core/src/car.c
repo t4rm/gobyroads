@@ -1,96 +1,71 @@
 #include "car.h"
-#include <stdlib.h>
 
-void determineMaxesValues(int score, Occupation roadType, int *maxSize, int *maxSpeed, int *minSpeed, int *maxCars)
-{
-    if (roadType == ROAD)
-    {
-        *maxSize = (score / 20 + 3 >= 6) ? 6 : score / 20 + 3;
-        *minSpeed = (6 - score / 25 < 2) ? 2 : 6 - score / 25;
-        *maxSpeed = *minSpeed + 3;
-        *maxCars = (score >= 100) ? 4 : 2 + score / 20;
-    }
-    else if (roadType == WATER)
-    {
-        *maxSize = (6 - score / 20 < 3) ? 3 : 6 - score / 20;
-        *minSpeed = (7 - score / 25 < 4) ? 4 : 7 - score / 25;
-        *maxSpeed = *minSpeed + 1;
-        *maxCars = (4 - score / 30 < 2) ? 2 : 4 - score / 30;
-    }
+// void determineMaxesValues(int score, Occupation roadType, int *maxSize, int *maxSpeed, int *minSpeed, int *maxCars)
+// {
+//     if (roadType == ROAD)
+//     {
+//         *maxSize = (score / 20 + 3 >= 5) ? 5 : score / 20 + 3;
+//         *minSpeed = (5 - score / 25 < 2) ? 2 : 5 - score / 25;
+//         *maxSpeed = *minSpeed + 3;
+//         *maxCars = (score >= 100) ? 4 : 2 + score / 20;
+//     }
+//     else if (roadType == WATER)
+//     {
+//         *maxSize = (5 - score / 20 < 3) ? 3 : 5 - score / 20;
+//         *minSpeed = (7 - score / 25 < 4) ? 4 : 7 - score / 25;
+//         *maxSpeed = *minSpeed + 1;
+//         *maxCars = (4 - score / 30 < 2) ? 2 : 4 - score / 30;
+//     }
 
-    if (maxSpeed < minSpeed)
-        maxSpeed = minSpeed;
-}
+//     if (maxSpeed < minSpeed)
+//         maxSpeed = minSpeed;
+// }
 
-void addCar(GameState *gs, int y, int forcedDirection, int availableSize, Occupation roadType)
+void addCar(GameState *gs, int y, RowManager *rowManager, int availableSize)
 {
     if (y < 0 || y >= gs->grid->height)
         return;
-    if (gs->grid->cases[y][0] == SAFE || gs->grid->cases[y][0] == TREE)
+    if (gs->grid->rowManagers[y]->type == SAFE)
         return;
 
-    Car *baseCar = (Car *)malloc(sizeof(Car));
-    if (!baseCar)
-        return;
+    int direction = rowManager->direction;
+    int startingX = 0;
 
-    int direction = forcedDirection == 0 ? (rand() % 2 ? 1 : -1) : forcedDirection;
-    int startingX = (direction == 1) ? 0 : gs->grid->length - 1;
+    int minSize = rowManager->type == WATER ? 2 : 1;
+    int maxSize = rowManager->type == WATER ? ((5 - gs->score / 20 < 3) ? 3 : 5 - gs->score / 20) : ((gs->score / 20 + 3 >= 5) ? 5 : gs->score / 20 + 3);
+    int minSpacing = 3;
+    int maxAddedSpacing = rowManager->type == WATER ? 5 : 12;
+    int lastSize = 0;
 
-    int maxSize, maxSpeed, maxCars, minSpeed;
-
-    determineMaxesValues(gs->score, roadType, &maxSize, &maxSpeed, &minSpeed, &maxCars);
-
-    int size = 1 + rand() % (maxSize < availableSize ? maxSize : availableSize);
-    int speed = minSpeed + rand() % (maxSpeed - minSpeed + 1);
-    int desiredCars = 1 + rand() % maxCars;
-    int loopTime = gs->grid->length * speed;
-
-    *baseCar = (Car){.x = startingX, .y = y, .size = size, .direction = direction, .speed = speed, .accumulator = 0, .type = roadType};
-
-    // roadType : When we have ROAD, then we know for sure that we have cars. When we have WATER, we know we have logs.
-    gs->grid->cases[y][startingX] = roadType == WATER ? LOG : direction == 1 ? CAR_RIGHT
-                                                                             : CAR_LEFT;
-    addLastCar(gs->cars, baseCar);
-
-    availableSize -= size;
-    desiredCars--;
-
-    int cumulativeCooldown = 0;
-    int lastSize = size;
-
-    while (desiredCars > 0 && availableSize > 0)
+    while (availableSize > minSize + minSpacing)
     {
-        int nextSize = 1 + rand() % (maxSize < availableSize ? maxSize : availableSize);
-        int spacing = 5 + rand() % 3;
+        int nextSize = minSize + rand() % maxSize;
+        int spacing = minSpacing + rand() % maxAddedSpacing;
 
-        int safeCooldown = (lastSize + spacing) * speed;
-        cumulativeCooldown += safeCooldown;
-
-        if (cumulativeCooldown >= loopTime)
-            break;
+        while (spacing + nextSize > availableSize)
+            if (spacing > minSpacing)
+                spacing -= 1;
+            else
+                nextSize -= 1;
 
         Car *nextCar = (Car *)malloc(sizeof(Car));
         if (!nextCar)
             return;
 
-        *nextCar = (Car){.x = startingX, .y = y, .size = nextSize, .direction = direction, .speed = speed, .accumulator = 0, .type = roadType};
+        char variant = (nextSize == 1 || nextSize == 4 || nextSize == 5) ? '\0' : (nextSize == 2) ? 'a' + rand() % 7
+                                                                                                  : 'a' + rand() % 4;
 
-        Effect *e = (Effect *)malloc(sizeof(Effect));
-        if (!e)
-        {
-            free(nextCar);
-            return;
-        }
+        *nextCar = (Car){.x = startingX, .y = y, .size = nextSize, .direction = direction, .color = (rand() % COLOR_COUNT), .variant = variant};
 
-        e->function = &addLastCar;
-        e->car = nextCar;
-        e->cooldown = cumulativeCooldown;
-
-        addLastEffect(gs->effects, e);
-
+        nextCar->x = startingX + lastSize + spacing;
+        if (nextCar->x < 0)
+            nextCar->x += gs->grid->length - 1;
+        if (nextCar->x >= gs->grid->length)
+            nextCar->x -= gs->grid->length - 1;
+        addLastCar(gs->cars, nextCar);
+        startingX += lastSize + spacing;
         lastSize = nextSize;
-        availableSize -= nextSize;
-        desiredCars--;
+        availableSize -= nextSize + spacing;
     }
 }
 
@@ -102,23 +77,13 @@ void updateCars(GameState *gs)
         Car *c = cursor->car;
         CarElement *next = cursor->next;
 
-        // The car's accumulator will climb with each frame incrementing it. Once it reaches speed, it will reset and make the car moves forward in the same frame.
-        // e.g.: A car with a speed of 10 will need 10 frames to move forward, so in 60 FPS he will move forward every 1/6 second, making him moves forward 6 times per second.
-        // Formula is : FPS/Speed.
-
-        if (c->accumulator == c->speed)
+        if (gs->grid->rowManagers[c->y]->cooldown == gs->grid->rowManagers[c->y]->speed)
         {
             for (int i = 0; i < c->size; i++) // Clear the road.
                 if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
-                    gs->grid->cases[c->y][c->x + i * c->direction] = c->type;
+                    gs->grid->cases[c->y][c->x + i * c->direction] = gs->grid->rowManagers[c->y]->type;
 
-            // Previous :
-            // This work only if there is only one log on a road of water.
-            // When there are multiple logs, they all make the player moves forward, pushing him on the water instantly.
-            // New :
-            // We can use the previous code for collision handling here :
-
-            if (c->type == WATER && gs->player->y == c->y) // If player is on water, game should stop, unless he is on a log.
+            if (gs->grid->rowManagers[c->y]->type == WATER && gs->player->y == c->y) // If player is on water, game should stop, unless he is on a log.
             {
                 int endingX = c->x + c->size * c->direction + c->direction * -1;
                 int startingX = c->x;
@@ -135,19 +100,22 @@ void updateCars(GameState *gs)
 
             int newX = c->x + c->direction;
             c->x = (newX < 0) ? gs->grid->length - 1 : (newX >= gs->grid->length ? 0 : newX);
-            c->accumulator = 0;
 
             for (int i = 0; i < c->size; i++) // Put the car at his new position
                 if (c->y >= 0 && c->y < gs->grid->height && c->x + i * c->direction >= 0 && c->x + i * c->direction < gs->grid->length)
-                    gs->grid->cases[c->y][c->x + i * c->direction] = c->type == WATER ? LOG : c->direction == 1 ? CAR_RIGHT
-                                                                                                                : CAR_LEFT;
+                    gs->grid->cases[c->y][c->x + i * c->direction] =
+                        gs->grid->rowManagers[c->y]->type == WATER ? LOG : c->direction == 1 ? CAR_RIGHT
+                                                                                             : CAR_LEFT;
         }
-        else
-        {
-            c->accumulator++;
-        }
-
         cursor = next;
+    }
+
+    for (int i = 0; i <= gs->grid->height - 1; i++)
+    {
+        if (gs->grid->rowManagers[i]->cooldown == gs->grid->rowManagers[i]->speed)
+            gs->grid->rowManagers[i]->cooldown = 0;
+        else
+            gs->grid->rowManagers[i]->cooldown += 1;
     }
 }
 

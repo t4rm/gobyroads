@@ -14,11 +14,6 @@
 - Correction du scintillement de l'écran (clignottage) ✅
 - Véhicule différencé selon leurs directions ">" et "<". ✅
 - Nettoyage des zones mémoires lors de la fin du jeu. ✅
-
-# TODO :
-- Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant, à voir si c'est un bug ou non.
-- Gestion du score
-    - Effet sonore tous les 50 de scores 
 - Plus de deque, que des queues simples. ✅
 - Séparation des logiques. ✅
 - Impossible d'aller au bord de map grid starting -1 et finishing -1, faut +1 des deux côtés. ✅
@@ -27,7 +22,11 @@
     - Une fois sur un rondin, on est porté par celui-ci. Si le rondin sort de la carte, on perd.  ✅
     - Les rondins ont une vitesse plus lentes, et s'accourcissent avec le temps, leur fonctionnement est contraire aux voitures. ✅
 - Rework de la logique de mise à jour des effets. Buggé, freeze.  ✅
-- Ajout d'une Queue générique dont hériterait l'EffectQueue et la CarQueue.
+- Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant, idem quand il avance dans un obstacle. ✅
+- Gestion du score ✅
+
+# TODO :
+- Ecarts entre les voitures aléatoires en fonction de la difficulté, actuellement fixe à 5 (LOGS)/12 (CARS).
 
 ## Bonus :
 - ReadMe

@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include "car_queue.h"
 
 CarQueue *createCarQueue(void)
@@ -17,7 +15,8 @@ void destroyCarQueue(CarQueue *queue)
     while (cursor != NULL)
     {
         CarElement *next = cursor->next;
-        if (cursor->car) free(cursor->car);
+        if (cursor->car)
+            free(cursor->car);
         free(cursor);
         cursor = next;
     }
@@ -26,24 +25,29 @@ void destroyCarQueue(CarQueue *queue)
 
 void removeFirstCar(CarQueue *queue)
 {
-    if (queue->size == 0) return;
+    if (queue->size == 0)
+        return;
 
     CarElement *tmp = queue->head;
     queue->head = tmp->next;
-    if (tmp->car) free(tmp->car);
+
+    if (queue->head != NULL)
+        queue->head->previous = NULL;
+    else
+        queue->tail = NULL;
+
+    if (tmp->car)
+        free(tmp->car);
     free(tmp);
     queue->size--;
-
-    if (queue->size == 0)
-        queue->tail = NULL;
 }
 
 void removeRowCar(CarQueue *queue, int y)
 {
-    if (queue->head == NULL) return;
+    if (queue->head == NULL)
+        return;
 
     CarElement *cursor = queue->head;
-    CarElement *prev = NULL;
 
     while (cursor != NULL)
     {
@@ -51,21 +55,20 @@ void removeRowCar(CarQueue *queue, int y)
 
         if (cursor->car && cursor->car->y == y)
         {
-            if (prev == NULL)
-                queue->head = next;
+            if (cursor->previous != NULL)
+                cursor->previous->next = cursor->next;
             else
-                prev->next = next;
+                queue->head = cursor->next;
 
-            if (cursor == queue->tail)
-                queue->tail = prev;
+            if (cursor->next != NULL)
+                cursor->next->previous = cursor->previous;
+            else
+                queue->tail = cursor->previous;
 
-            free(cursor->car);
+            if (cursor->car)
+                free(cursor->car);
             free(cursor);
             queue->size--;
-        }
-        else
-        {
-            prev = cursor;
         }
 
         cursor = next;
@@ -77,6 +80,7 @@ void addLastCar(CarQueue *queue, Car *car)
     CarElement *new_e = malloc(sizeof(CarElement));
     new_e->car = car;
     new_e->next = NULL;
+    new_e->previous = queue->tail;
 
     if (queue->tail)
         queue->tail->next = new_e;
@@ -103,12 +107,10 @@ void printCarQueue(CarQueue *queue)
     {
         if (cursor->car)
         {
-            printf("#%d, y : %d, x : %d, s : %d, d : %d, v : %d\n",
-                   i, cursor->car->y, cursor->car->x, cursor->car->size,
-                   cursor->car->direction, cursor->car->speed);
+            printf("#%d, y : %d, x : %d, s : %d\n",
+                   i, cursor->car->y, cursor->car->x, cursor->car->size);
         }
         cursor = cursor->next;
     }
     printf("]\n");
 }
-

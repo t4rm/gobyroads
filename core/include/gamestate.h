@@ -6,46 +6,46 @@
 #include <stdbool.h>
 
 #include "map.h"
-#include "effect_queue.h"
 #include "car_queue.h"
 #include "car.h"
-#include "effect.h"
+#include "player.h"
 
+typedef struct _Player Player;
 typedef struct _Grid Grid;
 typedef struct _EffectQueue EffectQueue;
 typedef struct _CarQueue CarQueue;
 
-typedef struct _Player
-{
-    int x, y, mouvementCooldown, afk;
-} Player;
-
-typedef struct _Car
-{
-  int x, y, size, direction, speed, accumulator;
-  Occupation type;
-} Car;
-
 typedef struct _GameState
 {
-    Grid *grid;
-    Player *player;
-    CarQueue *cars;
-    EffectQueue *effects;
-    int carsAmount;
-    int score;
-    int backwardMovements;
-    int nextSafeZone;
-    int carMaxSize;
-    bool gameOver;
+  Grid *grid;
+  Player *player;
+  CarQueue *cars;
+  int carsAmount, score, backwardMovements, nextSafeZone, carMaxSize, highestLineReached;
+  bool gameOver;
+
 } GameState;
 
+typedef enum
+{
+  HORN,
+  PASSING,
+  AWAY
+} TrainState;
 
-GameState *initGameState();
+typedef enum
+{
+  CRASHED,
+  SPLASHED,
+  VOID
+} CollisionState;
+
+GameState *initGameState(int h, int l);
 void playerMove(GameState *gs);
 void scrolling(GameState *gs);
-void updateGameState();
-void handleCollision(GameState *gs);
-void destroyGameState(GameState * gs);
-
+CollisionState handleCollision(GameState *gs);
+void destroyGameState(GameState *gs);
+void updateGameState(GameState *gs);
+void handleScore(GameState *gs);
+TrainState updateTrain(Grid *grid);
+void updateIce(GameState *gs);
 #endif
