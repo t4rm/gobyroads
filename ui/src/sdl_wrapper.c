@@ -231,7 +231,7 @@ void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
             case 5:
                 textureName = "car_5";
                 spriteSize = 230;
-                yDepth = 12;
+                yDepth = 8;
                 break;
             default:
                 textureName = NULL;

@@ -71,8 +71,8 @@ void scrolling(GameState *gs)
         }
 
         int r = rand() % 100;                                    // 50%
-        Occupation roadType = (r < 50) ? ROAD : (r < 80) ? WATER // 30%
-                                                         : RAIL; // 20%
+        Occupation roadType = (r < 50) ? ROAD : (r < 90) ? WATER // 40%
+                                                         : RAIL; // 10%
 
         if ((rand() % 12 == 0) || (rand() % 5 == 0 && gs->grid->rowManagers[gs->grid->height - 2]->type == ICE))
             if (gs->grid->rowManagers[gs->grid->height - 6]->type != ICE &&
@@ -93,7 +93,6 @@ void scrolling(GameState *gs)
             int maxSpeed = 30;
             int minSpeed = 8;
 
-            int speedRange = maxSpeed - minSpeed;
             int scoreEffect = gs->score / 50;
 
             newRowSpeed = maxSpeed - scoreEffect;
@@ -190,6 +189,7 @@ TrainState updateTrain(Grid *grid)
             break;
         }
     }
+    return AWAY;
 }
 
 void updateIce(GameState *gs)
@@ -241,6 +241,7 @@ CollisionState handleCollision(GameState *gs)
         gs->gameOver = true;
         return SPLASHED;
     }
+    return VOID;
 }
 
 void updateGameState(GameState *gs)
