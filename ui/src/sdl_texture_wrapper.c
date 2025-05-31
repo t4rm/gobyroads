@@ -26,7 +26,7 @@ static const CarConfig CAR_CONFIGS[] = {
 static const TextureInfo BASE_TEXTURES[] = {
     {"grass", "assets/sprites/grass.png"},
     {"road", "assets/sprites/road.png"},
-    {"water", "assets/sprites/water.jpg"},
+    {"water", "assets/sprites/water.png"},
     {"l_1", "assets/sprites/logs/1.png"},
     {"l_2", "assets/sprites/logs/2.png"},
     {"l_3", "assets/sprites/logs/3.png"},

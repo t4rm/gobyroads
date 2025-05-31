@@ -3,9 +3,34 @@
 const char *CarColorNames[COLOR_COUNT] = {
     "black", "blue", "brown", "green", "magenta", "red", "white", "yellow"};
 
-bool isRoadOrCar(Occupation type)
+int calculateVerticalOffset(Grid *grid, int x, int y, bool (*checkFunction)(Occupation))
 {
-    return type == ROAD || type == CAR_LEFT || type == CAR_RIGHT;
+    bool belowMatches = false;
+    bool aboveMatches = false;
+
+    if (y > 0)
+        belowMatches = checkFunction(grid->cases[y - 1][x]);
+
+    if (y + 1 < grid->height)
+        aboveMatches = checkFunction(grid->cases[y + 1][x]);
+
+    return !belowMatches ? 0 : !aboveMatches ? 2
+                                             : 1;
+}
+
+bool isRoadOrCar(Occupation caseType)
+{
+    return caseType == ROAD || caseType == CAR_LEFT || caseType == CAR_RIGHT;
+}
+
+bool isWaterOrLog(Occupation caseType)
+{
+    return caseType == WATER || caseType == LOG;
+}
+
+bool isIce(Occupation caseType)
+{
+    return caseType == ICE;
 }
 
 int compareCarElements(const void *a, const void *b)
@@ -91,36 +116,16 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
             case CAR_LEFT:
             case CAR_RIGHT:
                 t = GetTexture(textures, "road");
-                bool belowIsRoadOrCar = false;
-                bool aboveIsRoadOrCar = false;
-
-                if (y > 0)
-                    belowIsRoadOrCar = isRoadOrCar(grid->cases[y - 1][0]);
-
-                if (y + 1 < grid->height)
-                    aboveIsRoadOrCar = isRoadOrCar(grid->cases[y + 1][0]);
-
-                xOffset = !belowIsRoadOrCar ? 0 : !aboveIsRoadOrCar ? 2
-                                                                    : 1;
+                xOffset = calculateVerticalOffset(grid, x, y, isRoadOrCar);
                 break;
             case WATER:
             case LOG:
                 t = GetTexture(textures, "water");
-                xOffset = x % 3;
+                xOffset = calculateVerticalOffset(grid, x, y, isWaterOrLog);
                 break;
             case ICE:
                 t = GetTexture(textures, "ice");
-                bool belowIsIce = false;
-                bool aboveIsIce = false;
-
-                if (y > 0)
-                    belowIsIce = grid->cases[y - 1][0] == ICE;
-
-                if (y + 1 < grid->height)
-                    aboveIsIce = grid->cases[y + 1][0] == ICE;
-
-                xOffset = !belowIsIce ? 0 : !aboveIsIce ? 2
-                                                        : 1;
+                xOffset = calculateVerticalOffset(grid, x, y, isIce);
                 break;
             default:
                 break;
@@ -153,7 +158,7 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
         }
 
         if (grid->cases[y][0] == TRAIN)
-            SDLW_RenderCopy(renderer, GetTexture(textures, "trains"), grid->length / 2, y, 0, grid->rowManagers[y]->cooldown % 5, SDL_FLIP_NONE, 18, 530, 0, 72, "");
+            SDLW_RenderCopy(renderer, GetTexture(textures, "trains"), grid->length / 2, y, 0, grid->rowManagers[y]->cooldown % 5, SDL_FLIP_NONE, 18, 530, 0, 72);
     }
 
     char scoreChar[3];
@@ -206,11 +211,12 @@ void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
         else
         {
             if (c->variant != 'c' && c->variant != 'g' && c->size != 5) // c & g are the only static variant, hardcoded but manageable. Side 5 is a static too.
+            {
                 if (c->variant == '\0')
                     snprintf(textureName, sizeof(textureName), "car_%d_%s", c->size, CarColorNames[c->color]);
                 else
                     snprintf(textureName, sizeof(textureName), "car_%d%c_%s", c->size, c->variant, CarColorNames[c->color]);
-
+            }
             switch (c->size)
             {
             case 1:
@@ -230,11 +236,11 @@ void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int
                 if (c->variant == 'c')
                     strcpy(textureName, "ambulance");
                 spriteSize = 140;
-                yDepth = 12;
+                yDepth = 8;
                 break;
             case 4:
                 spriteSize = 210;
-                yDepth = 12;
+                yDepth = 10;
                 xDepth = c->direction * 0.5 * CELL_SIZE;
                 break;
             case 5:

@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
             if (uiGs->core->player->afk >= FPS * 6)
                 uiGs->core->gameOver = true;
 
-            // SDLW_HandleCollision(uiGs->core, audio);
+            SDLW_HandleCollision(uiGs->core, audio);
             updateCars(uiGs->core);
             SDLW_UpdateTrain(uiGs->core->grid, audio);
             updateIce(uiGs->core);

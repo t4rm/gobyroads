@@ -27,9 +27,10 @@ typedef struct _TextureCollection
 
 typedef struct _CarConfig
 {
-    int size, colorCount;
+    int size;
     char variant;
     const char **colors;
+    int colorCount;
     const char *staticName; // Nom pour texture statique (NULL si colorée)
     const char *staticPath; // Chemin pour texture statique (NULL si colorée)
 } CarConfig;
