@@ -182,13 +182,13 @@ bool isObstacle(GameState *gs, int nx, int ny, int g)
         int speed = gs->grid->rowManagers[ny]->speed;
 
         // number of frames before the player go to cell, g = numbers of cells to cross * 8 = number of frame by movement
-        int framesBeforeArriving = (g - 1) * 8;
+        int framesBeforeArriving = (g  ) * 10;
 
         // number of cells crossed by the car
         int nbCellPredicted = framesBeforeArriving / speed;
 
         // check if the cell would be occupied by a car at nbCellPredicted distance (we add a range of 2 for better results, probably due to desynchronisation of the frames, thing to upgrade)
-        if (gs->grid->cases[ny][nx - nbCellPredicted] == CAR_RIGHT || gs->grid->cases[ny][nx + nbCellPredicted] == CAR_LEFT || gs->grid->cases[ny][nx - nbCellPredicted + 1] == CAR_RIGHT || gs->grid->cases[ny][nx + nbCellPredicted - 1] == CAR_LEFT || gs->grid->cases[ny][nx - nbCellPredicted + 2] == CAR_RIGHT || gs->grid->cases[ny][nx + nbCellPredicted - 2] == CAR_LEFT || gs->grid->cases[ny][nx - nbCellPredicted - 1] == CAR_RIGHT || gs->grid->cases[ny][nx + nbCellPredicted + 1] == CAR_LEFT)
+        if (gs->grid->cases[ny][nx - nbCellPredicted] == CAR_RIGHT || gs->grid->cases[ny][nx + nbCellPredicted] == CAR_LEFT || gs->grid->cases[ny][nx - nbCellPredicted + 1] == CAR_RIGHT || gs->grid->cases[ny][nx + nbCellPredicted - 1] == CAR_LEFT ||  gs->grid->cases[ny][nx - nbCellPredicted - 1] == CAR_RIGHT || gs->grid->cases[ny][nx + nbCellPredicted + 1] == CAR_LEFT)
         {
             return true;
         }
