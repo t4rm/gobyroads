@@ -1,4 +1,5 @@
 #include "gamestate.h"
+#define AI
 
 GameState *initGameState(int h, int l)
 {
@@ -70,15 +71,23 @@ void scrolling(GameState *gs)
             gs->grid->rowManagers[i] = gs->grid->rowManagers[i + 1];
         }
 
-        int r = rand() % 100;                                    // 50%
-        Occupation roadType = (r < 50) ? ROAD : (r < 90) ? WATER // 40%
-                                                         : RAIL; // 10%
+        #ifdef AI 
+            Occupation roadType = ROAD;
+        #endif
+
+        #ifndef AI 
+            int r = rand() % 100;                                    // 50%
+            Occupation roadType = (r < 50) ? ROAD : (r < 90) ? WATER // 40%
+                                                            : RAIL; // 10%
+        
+
+        
 
         if ((rand() % 12 == 0) || (rand() % 5 == 0 && gs->grid->rowManagers[gs->grid->height - 2]->type == ICE))
             if (gs->grid->rowManagers[gs->grid->height - 6]->type != ICE &&
                 gs->grid->rowManagers[gs->grid->height - 2]->type != SAFE)
                 roadType = ICE;
-
+        #endif
         gs->grid->cases[gs->grid->height - 1] = createRow(gs->grid->length, roadType);
 
         int newRowDirection = 1;

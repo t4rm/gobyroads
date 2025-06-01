@@ -8,6 +8,7 @@
 #include "car.h"
 #include "agent_ai.h"
 #include "a_star.h"
+#define AI
 
 int main()
 {
@@ -31,11 +32,12 @@ int main()
         // Game is updated, map is fresh, cars progressed
         playerMove(gs);
 
+        // AI -------------------------
+        #ifdef AI
         if (cmpt >= pathLength)
         {
             path = getPathAI(gs, &pathLength);
             cmpt = 0;
-            printf("\n cmpt : %d", cmpt);
         }
         if (cmpt < pathLength)
         {
@@ -45,7 +47,9 @@ int main()
                 cmpt++;
             }
         }
-  
+        #endif
+        // -------------------------------
+
         playerMove(gs);
 
         updateIce(gs);
