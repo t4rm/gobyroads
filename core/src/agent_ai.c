@@ -56,22 +56,3 @@ void playerMoveAi(GameState *gs, Node *node)
     else if (player->y > node->y)
         playerMoveKey('s', gs, &moved);
 }
-
-void aiLoop(GameState *gs, int *pathLength, int *cmpt, Node ***path)
-{
-    gs->player->mouvementCooldown = gs->player->mouvementCooldown <= 1 ? 0 : gs->player->mouvementCooldown - 1;
-
-    if (*cmpt >= *pathLength)
-    {
-        *path = getPathAI(gs, &*pathLength);
-        *cmpt = 0;
-    }
-    if (*cmpt < *pathLength)
-    {
-        if (gs->player->mouvementCooldown == 0)
-        {
-            playerMoveAi(gs, (*path)[*cmpt]);
-            (*cmpt)++;
-        }
-    }
-}
