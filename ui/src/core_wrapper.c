@@ -173,7 +173,7 @@ void SDLW_HandleCollision(GameState *gs, AudioCollection *audio)
     case SPLASHED:
         Mix_PlayChannel(SFX_CHANNEL, GetChunk(audio, "splash"), 0);
         break;
-    case VOID:
+    case OUT_OF_MAP:
     default:
         break;
     }
