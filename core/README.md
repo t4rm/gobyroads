@@ -56,7 +56,8 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Utilisation</a></li>
+    <li><a href="#Utilisation">Utilisation</a></li>
+    <li><a href="#tests">Tests</a></li>
     <!-- <li><a href="#roadmap">Roadmap</a></li> -->
     <!-- <li><a href="#contributing">Contributing</a></li> -->
     <!-- <li><a href="#license">License</a></li> -->
@@ -116,12 +117,25 @@ Cette version du jeu n'a aucunes dépendances, vous pouvez donc passer directeme
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
-<!-- USAGE EXAMPLES -->
-## Usage
+<!-- Utilisation EXAMPLES -->
+## Utilisation
 
 Le jeu se joue exclusivement avec les touches ZQSD. La touche F permet de quitter le jeu.
 
 _Pour plus d'informations sur le code, référez-vous à la [Documentation](https://example.com)._
+
+## Tests
+
+Nous avons utilisé [Unity Testing](https://github.com/ThrowTheSwitch/Unity) pour mettre au point les tests unitaires de notre jeu. Ces tests s'assurent que les contraintes et la logique du jeu soient bien respectées. Unity est ici utilisé comme *"Submodule"*, c'est à dire qu'un lien a été créé vers [le répertoire Git d'Unity](https://github.com/ThrowTheSwitch/Unity), ce lien permet de garder une structure claire et concise — pas besoin de cloner manuellement le répertoire distant et de surcharger notre répertoire.
+
+1. Assurez-vous de bien être dans le répertoire core du jeu, si ce n'est pas le cas :
+   ```sh
+   cd grp1/core
+   ```
+2. Lancer les tests unitaires 
+   ```sh
+   make tests
+   ```
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
