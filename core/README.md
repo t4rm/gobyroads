@@ -21,7 +21,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://gibson.telecomnancy.univ-lorraine.fr/projets/2425/ppii-fisa/grp1/">
     <img src="../logo.png" alt="Logo" width="120" height="120">
   </a>
 
@@ -34,8 +34,6 @@
     <br />
     <a href="TODO"><strong>Explorer la doc »</strong></a>
     <br />
-    <br />
-    <a href="TODO">Voir une démo</a>
   </p>
 </div>
 
@@ -61,9 +59,9 @@
     <li><a href="#usage">Utilisation</a></li>
     <!-- <li><a href="#roadmap">Roadmap</a></li> -->
     <!-- <li><a href="#contributing">Contributing</a></li> -->
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Remerciement</a></li>
+    <!-- <li><a href="#license">License</a></li> -->
+    <!-- <li><a href="#contact">Contact</a></li> -->
+    <!-- <li><a href="#acknowledgments">Remerciement</a></li> -->
   </ol>
 </details>
 

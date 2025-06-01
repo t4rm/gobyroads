@@ -21,7 +21,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://gibson.telecomnancy.univ-lorraine.fr/projets/2425/ppii-fisa/grp1/">
     <img src="../logo.png" alt="Logo" width="120" height="120">
   </a>
 
@@ -34,8 +34,6 @@
     <br />
     <a href="TODO"><strong>Explorer la doc »</strong></a>
     <br />
-    <br />
-    <a href="TODO">Voir une démo</a>
   </p>
 </div>
 
@@ -58,12 +56,12 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Utilisation</a></li>
+    <li><a href="#utilisation">Utilisation</a></li>
     <!-- <li><a href="#roadmap">Roadmap</a></li> -->
     <!-- <li><a href="#contributing">Contributing</a></li> -->
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Remerciement</a></li>
+    <!-- <li><a href="#license">License</a></li> -->
+    <!-- <li><a href="#contact">Contact</a></li> -->
+    <li><a href="#remerciements">Remerciements</a></li>
   </ol>
 </details>
 
@@ -88,6 +86,9 @@ Après avoir réalisé la version *Core* du jeu, nous nous sommes concentré sur
 
 * [![C][C]][C-url]
 * [![SDL][SDL]][SDL-url]
+* [![SDLTTF][SDLTTF]][SDLTTF-url]
+* [![SDLIMAGE][SDLIMAGE]][SDLIMAGE-url]
+* [![SDLMIXER][SDLMIXER]][SDLMIXER-url]
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
@@ -100,7 +101,10 @@ Pour avoir une version fonctionnelle de notre jeu édition *UI*, veuillez suivre
 
 ### Prérequis
 
-Cette version du jeu nécéssite SDL2, SDL2_TTF, SDL2_Mixer et SDL2_Image.
+Cette version du jeu nécéssite SDL2, SDL2_TTF, SDL2_Mixer et SDL2_Image, les versions utilisées figurent dans la section précédente.
+- Les fichiers **"*.dll"** doivent être installés dans le dossier **"ui/bin"**.
+- Les fichiers **"*.h"** doivent être installés dans le dossier **"ui/include/SDL2"**
+- Les fichiers de librairies présents dans le dossier **"lib"** des packages SDL doivent être installés dans le dossier **"ui/lib"**, ainsi que les sous dossiers **"cmake"** et **"pkgconfig"**. Les fichiers ont pour extensions soit : **"*.pc"**, **"*.cmake"**, **"*.a"**, **"*.la"** ou encore **"*.dll.a"**.
 
 ### Installation
 
@@ -112,6 +116,8 @@ Cette version du jeu nécéssite SDL2, SDL2_TTF, SDL2_Mixer et SDL2_Image.
    ```sh
    cd grp1/ui
    ```
+3. S'assurer que SDL2, SDL2_Mixer, SDL2_TTF et SDL2_Image soient installés et aux bons endroits comme indiqué dans les <a href="#prérequis">prérequis</a>.
+
 3. Lancer le jeu grâce au Makefile 
    ```sh
    make run
@@ -120,7 +126,7 @@ Cette version du jeu nécéssite SDL2, SDL2_TTF, SDL2_Mixer et SDL2_Image.
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Utilisation
 
 Le jeu se joue à la fois avec les touches ZQSD et les touches fléchées. La touche F permet de quitter le jeu tandis que la touche M permet d'activer/désactiver la musique de fond.
 
@@ -156,5 +162,11 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [product-screenshot]: ../logo2.png
 [C]: https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white
 [C-url]: https://www.gnu.org/software/gnu-c-manual/
-[SDL]: https://img.shields.io/badge/SDL-2.30.12-blue.svg
-[SDL-url]: https://www.libsdl.org/
+[SDL-url]: https://github.com/libsdl-org/SDL
+[SDLTTF-url]: https://github.com/libsdl-org/SDL_ttf
+[SDLMIXER-url]: https://github.com/libsdl-org/SDL_mixer
+[SDLIMAGE-url]: https://github.com/libsdl-org/SDL_image
+[SDL]: https://img.shields.io/badge/SDL-2.30.12-blue.svg?style=for-the-badge
+[SDLTTF]: https://img.shields.io/badge/SDL_ttf-2.24.0-blue.svg?style=for-the-badge
+[SDLIMAGE]: https://img.shields.io/badge/SDL_image-2.8.8-blue.svg?style=for-the-badge
+[SDLMIXER]:https://img.shields.io/badge/SDL_mixer-2.8.1-blue.svg?style=for-the-badge
