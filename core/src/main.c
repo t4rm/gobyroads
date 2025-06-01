@@ -6,6 +6,9 @@
 #include "gamestate.h"
 #include "player.h"
 #include "car.h"
+#include "agent_ai.h"
+#include "a_star.h"
+#define AI
 
 int main()
 {
@@ -13,6 +16,9 @@ int main()
     GameState *gs = initGameState(15, 32 - 12);
     const int FPS = 60;
     const int frameTime = 1000 / FPS;
+    int pathLength = 0;
+    int cmpt = 0;
+    Node **path = NULL;
 
     while (!gs->gameOver)
     {
@@ -25,7 +31,27 @@ int main()
         updateCars(gs);
         updateGameState(gs);
         // Game is updated, map is fresh, cars progressed
+
+// AI -------------------------
+#ifdef AI
+        if (cmpt >= pathLength)
+        {
+            path = getPathAI(gs, &pathLength);
+            cmpt = 0;
+        }
+        if (cmpt < pathLength)
+        {
+            if (gs->player->mouvementCooldown == 0)
+            {
+                playerMoveAi(gs, path[cmpt]);
+                cmpt++;
+            }
+        }
+#else
         playerMove(gs);
+#endif
+        // -------------------------------
+
         updateIce(gs);
         updateTrain(gs->grid);
         handleCollision(gs);

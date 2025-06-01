@@ -22,7 +22,6 @@ typedef struct _GameState
   CarQueue *cars;
   int carsAmount, score, backwardMovements, nextSafeZone, carMaxSize, highestLineReached;
   bool gameOver;
-
 } GameState;
 
 typedef enum
