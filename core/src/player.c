@@ -19,7 +19,7 @@ void playerMoveKey(char key, GameState *gs, bool *hasMoved)
 {
     int precedentX = gs->player->x, precedentY = gs->player->y;
 
-    if (gs->player->mouvementCooldown > 0)
+    if (gs->player->mouvementCooldown > 0 && key != 'f')
         return;
 
     switch (key)

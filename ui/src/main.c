@@ -86,9 +86,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            if (uiGs->menuHandler->selectedOptions[OPTION_IA - 1])
-
-                playedGameOverMusic = false;
+            playedGameOverMusic = false;
             if (!playedBgMusic)
             {
                 Mix_FadeInMusic(GetMusic(audio, "bgm"), -1, 1500);
@@ -97,22 +95,36 @@ int main(int argc, char *argv[])
             if (SDL_PollEvent(&event))
                 handleEvents(uiGs, &event, PLAYING);
 
-            // AI :
-            if (uiGs->menuHandler->selectedOptions[OPTION_IA - 1])
-                aiLoop(uiGs->core, &pathLength, &cmpt, &path);
-            // -------------------------------
-
             if (uiGs->core->player->afk >= FPS * 6)
                 uiGs->core->gameOver = true;
 
-            SDLW_HandleCollision(uiGs->core, audio);
             updateCars(uiGs->core);
+            // AI :
+            if (uiGs->menuHandler->selectedOptions[OPTION_IA - 1])
+            {
+                uiGs->core->player->mouvementCooldown = uiGs->core->player->mouvementCooldown <= 1 ? 0 : uiGs->core->player->mouvementCooldown - 1;
+                uiGs->core->player->afk++;
+
+                if (cmpt >= pathLength)
+                {
+                    path = getPathAI(uiGs->core, &pathLength);
+                    cmpt = 0;
+                }
+                if (cmpt < pathLength)
+                {
+                    if (uiGs->core->player->mouvementCooldown == 0)
+                    {
+                        playerMoveAi(uiGs->core, path[cmpt]);
+                        cmpt++;
+                    }
+                }
+            }
+            // -------------------------------
             SDLW_UpdateTrain(uiGs->core->grid, audio);
             updateIce(uiGs->core);
             // Fin des possibles évents à "fire" ----
-
             // Calcul interactions (collisions)
-
+            SDLW_HandleCollision(uiGs->core, audio);
             // maj état du jeu (états mobs, joueur, score)
             handleScore(uiGs->core);
             scrolling(uiGs->core, uiGs->menuHandler->selectedOptions[OPTION_IA - 1]);

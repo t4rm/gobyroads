@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <windows.h> // Pour Sleep()
-#include <time.h>
+// #include <time.h>
 // #include <unistd.h> // Pour usleep()
 // Inversez les commentaires si vous n'êtes pas sur windows.
 #include "gamestate.h"
@@ -11,14 +11,13 @@
 
 int main()
 {
-    srand(time(NULL));
     GameState *gs = initGameState(15, 32 - 12);
     const int FPS = 60;
     const int frameTime = 1000 / FPS;
-    bool AI = true;
     int pathLength = 0;
     int cmpt = 0;
     Node **path = NULL;
+    bool AI = true;
 
     while (!gs->gameOver)
     {
@@ -27,17 +26,33 @@ int main()
         if (gs->player->afk >= FPS * 6)
             gs->gameOver = true;
 
-        // AI -------------------------
-        if (AI)
-            aiLoop(gs, &pathLength, &cmpt, &path);
-        else
-            playerMove(gs);
-        // -------------------------------
-
         // Start of the game handling logic
         updateCars(gs);
         updateGameState(gs);
         // Game is updated, map is fresh, cars progressed
+        // AI -------------------------
+        if (AI)
+        {
+            gs->player->mouvementCooldown = gs->player->mouvementCooldown <= 1 ? 0 : gs->player->mouvementCooldown - 1;
+            gs->player->afk++;
+
+            if (cmpt >= pathLength)
+            {
+                path = getPathAI(gs, &pathLength);
+                cmpt = 0;
+            }
+            if (cmpt < pathLength)
+            {
+                if (gs->player->mouvementCooldown == 0)
+                {
+                    playerMoveAi(gs, path[cmpt]);
+                    cmpt++;
+                }
+            }
+        }
+        else
+            playerMove(gs);
+        // -------------------------------
 
         updateIce(gs);
         updateTrain(gs->grid);
