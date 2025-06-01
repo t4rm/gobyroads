@@ -225,7 +225,7 @@ void testScrollingShouldTrigger(void)
 
     gs->player->y = 3;
 
-    scrolling(gs);
+    scrolling(gs, false);
 
     TEST_ASSERT_EQUAL(2, gs->player->y);
     TEST_ASSERT_EQUAL(2, gs->highestLineReached);
@@ -240,7 +240,7 @@ void testScrollingShouldNotTrigger(void)
     gs->player->y = 2;
     int initialY = gs->player->y;
 
-    scrolling(gs);
+    scrolling(gs, false);
 
     TEST_ASSERT_EQUAL(initialY, gs->player->y);
 

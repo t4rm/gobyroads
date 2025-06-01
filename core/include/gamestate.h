@@ -41,7 +41,7 @@ typedef enum
 
 GameState *initGameState(int h, int l);
 void playerMove(GameState *gs);
-void scrolling(GameState *gs);
+void scrolling(GameState *gs, bool AI);
 CollisionState handleCollision(GameState *gs);
 void destroyGameState(GameState *gs);
 void updateGameState(GameState *gs);

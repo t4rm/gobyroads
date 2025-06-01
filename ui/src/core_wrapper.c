@@ -69,7 +69,7 @@ void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
                 break;
             }
 
-            if (key)
+            if (key && !uiGs->menuHandler->selectedOptions[OPTION_IA - 1]) // We can't play if AI is playing.
                 playerMoveKey(key, uiGs->core, &hasMoved);
 
             if (uiGs->core->player->x >= 0 && uiGs->core->player->y >= 0)

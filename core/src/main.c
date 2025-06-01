@@ -8,7 +8,6 @@
 #include "car.h"
 #include "agent_ai.h"
 #include "a_star.h"
-#define AI
 
 int main()
 {
@@ -16,6 +15,7 @@ int main()
     GameState *gs = initGameState(15, 32 - 12);
     const int FPS = 60;
     const int frameTime = 1000 / FPS;
+    bool AI = true;
     int pathLength = 0;
     int cmpt = 0;
     Node **path = NULL;
@@ -27,37 +27,24 @@ int main()
         if (gs->player->afk >= FPS * 6)
             gs->gameOver = true;
 
+        // AI -------------------------
+        if (AI)
+            aiLoop(gs, &pathLength, &cmpt, &path);
+        else
+            playerMove(gs);
+        // -------------------------------
+
         // Start of the game handling logic
         updateCars(gs);
         updateGameState(gs);
         // Game is updated, map is fresh, cars progressed
-
-// AI -------------------------
-#ifdef AI
-        if (cmpt >= pathLength)
-        {
-            path = getPathAI(gs, &pathLength);
-            cmpt = 0;
-        }
-        if (cmpt < pathLength)
-        {
-            if (gs->player->mouvementCooldown == 0)
-            {
-                playerMoveAi(gs, path[cmpt]);
-                cmpt++;
-            }
-        }
-#else
-        playerMove(gs);
-#endif
-        // -------------------------------
 
         updateIce(gs);
         updateTrain(gs->grid);
         handleCollision(gs);
         handleScore(gs);
         // Player moved, if he collided the game stops, otherwise we scroll down when y >= 3.
-        scrolling(gs);
+        scrolling(gs, AI);
         // End of the game handling logic.
 
         DWORD frameEndTime = GetTickCount();
