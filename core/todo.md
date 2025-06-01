@@ -24,10 +24,12 @@
 - Rework de la logique de mise à jour des effets. Buggé, freeze.  ✅
 - Le score final vaut 1 de + que le vrai score si le joueur meurt en avançant, idem quand il avance dans un obstacle. ✅
 - Gestion du score ✅
+- ReadMe ✅
 
 # TODO :
 - Ecarts entre les voitures aléatoires en fonction de la difficulté, actuellement fixe à 5 (LOGS)/12 (CARS).
+- Refactoriser les tests unitaires :
+    - Utiliser exclusivement la fonction playermove ? A voir si c'est une bonne idée.
 
 ## Bonus :
-- ReadMe
-- Documentation au propre
+- Documentation au propre (et l'inclure dans le readme)

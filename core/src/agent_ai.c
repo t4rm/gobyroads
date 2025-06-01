@@ -3,14 +3,13 @@
 #include "a_star.h"
 #include <stdio.h>
 
-
 /* Get the path given by A* for the AI
  * gs : pointer to the gamestate
  * pathLength : pointer to the length of the path that will be modified
  * return : the path as an ordered list of nodes or NULL if no path found
  */
-Node **getPathAI(GameState *gs, int *pathLength) {
-
+Node **getPathAI(GameState *gs, int *pathLength)
+{
     *pathLength = 0;
 
     int acc = 0;
@@ -20,20 +19,22 @@ Node **getPathAI(GameState *gs, int *pathLength) {
 
     Node **path = NULL;
 
-    // while we dont find a path we try with i row before but not less than 3 
-    while (*pathLength == 0 && acc < gs->grid->height-3) {
+    // while we dont find a path we try with i row before but not less than 3
+    while (*pathLength == 0 && acc < gs->grid->height - 3)
+    {
         int targetY = endY - acc;
 
-        if (targetY >= 0) {
+        if (targetY >= 0)
+        {
             path = aStar(gs, gs->player->x, gs->player->y, endX, targetY, pathLength);
         }
 
         acc++;
     }
-    
-    if(*pathLength > 0){
+
+    if (*pathLength > 0)
         return path;
-    }
+
     return NULL;
 }
 
@@ -46,21 +47,31 @@ void playerMoveAi(GameState *gs, Node *node)
     Player *player = gs->player;
     bool moved = false;
 
-    if (player->x > node->x )
-    {
+    if (player->x > node->x)
         playerMoveKey('q', gs, &moved);
-    }
     else if (player->x < node->x)
-    {
         playerMoveKey('d', gs, &moved);
-    }
     else if (player->y < node->y)
-    {
         playerMoveKey('z', gs, &moved);
-    }
     else if (player->y > node->y)
-    {
         playerMoveKey('s', gs, &moved);
-    }
+}
 
+void aiLoop(GameState *gs, int *pathLength, int *cmpt, Node ***path)
+{
+    gs->player->mouvementCooldown = gs->player->mouvementCooldown <= 1 ? 0 : gs->player->mouvementCooldown - 1;
+
+    if (*cmpt >= *pathLength)
+    {
+        *path = getPathAI(gs, &*pathLength);
+        *cmpt = 0;
+    }
+    if (*cmpt < *pathLength)
+    {
+        if (gs->player->mouvementCooldown == 0)
+        {
+            playerMoveAi(gs, (*path)[*cmpt]);
+            (*cmpt)++;
+        }
+    }
 }

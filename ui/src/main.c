@@ -13,6 +13,9 @@
 #include "gamestate.h"
 #include "player.h"
 #include "car.h"
+// AI features, directly from core
+#include "agent_ai.h"
+#include "a_star.h"
 // Standard
 #include <stdio.h>
 #include <math.h>
@@ -22,6 +25,11 @@ int main(int argc, char *argv[])
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     TTF_Fonts *fonts = (TTF_Fonts *)malloc(sizeof(TTF_Fonts));
+    // For AI :
+    int pathLength = 0;
+    int cmpt = 0;
+    Node **path = NULL;
+    // ----
 
     if (SDLW_Initialize(&window, &renderer, &fonts, WIDTH, HEIGHT) != 0)
         exit(EXIT_FAILURE);
@@ -47,7 +55,13 @@ int main(int argc, char *argv[])
         else
             Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
 
-        if (uiGs->intro)
+        if (uiGs->menu)
+        {
+            SDLW_MenuScreen(renderer, fonts, uiGs->menuHandler);
+            if (SDL_PollEvent(&event))
+                handleEvents(uiGs, &event, MENU);
+        }
+        else if (uiGs->intro)
         {
             SDLW_IntroScreen(renderer, fonts);
             if (SDL_PollEvent(&event))
@@ -55,6 +69,7 @@ int main(int argc, char *argv[])
         }
         else if (uiGs->core->gameOver)
         {
+            SDL_ShowWindow(window);
             SDLW_Mix_HaltAllChannelExcept(SFX_CHANNEL);
 
             if (SDL_PollEvent(&event))
@@ -71,7 +86,9 @@ int main(int argc, char *argv[])
         }
         else
         {
-            playedGameOverMusic = false;
+            if (uiGs->menuHandler->selectedOptions[OPTION_IA - 1])
+
+                playedGameOverMusic = false;
             if (!playedBgMusic)
             {
                 Mix_FadeInMusic(GetMusic(audio, "bgm"), -1, 1500);
@@ -79,6 +96,11 @@ int main(int argc, char *argv[])
             }
             if (SDL_PollEvent(&event))
                 handleEvents(uiGs, &event, PLAYING);
+
+            // AI :
+            if (uiGs->menuHandler->selectedOptions[OPTION_IA - 1])
+                aiLoop(uiGs->core, &pathLength, &cmpt, &path);
+            // -------------------------------
 
             if (uiGs->core->player->afk >= FPS * 6)
                 uiGs->core->gameOver = true;
@@ -93,11 +115,21 @@ int main(int argc, char *argv[])
 
             // maj état du jeu (états mobs, joueur, score)
             handleScore(uiGs->core);
-            scrolling(uiGs->core);
+            scrolling(uiGs->core, uiGs->menuHandler->selectedOptions[OPTION_IA - 1]);
 
             // maj rendu & rendu
-            updateGameState(uiGs->core);
-            SDLW_UpdateAndRender(uiGs, renderer, textures, fonts);
+            if (uiGs->menuHandler->selectedOptions[OPTION_CORE - 1]) // Core checked
+            {
+                updateGameState(uiGs->core); // Display the grid
+                if (!uiGs->menuHandler->selectedOptions[OPTION_IA - 1])
+                    playerMove(uiGs->core); // Listen to terminal keys only if not in AI mode
+
+                if (!uiGs->menuHandler->selectedOptions[OPTION_UI - 1]) // No UI
+                    SDL_HideWindow(window);
+            }
+
+            if (uiGs->menuHandler->selectedOptions[OPTION_UI - 1]) // UI checked
+                SDLW_UpdateAndRender(uiGs, renderer, textures, fonts);
         }
 
         Uint64 frameEndTime = SDL_GetTicks64();
@@ -117,6 +149,7 @@ int main(int argc, char *argv[])
     TTF_CloseFont(fonts->large);
     TTF_CloseFont(fonts->medium);
     TTF_CloseFont(fonts->small);
+    TTF_CloseFont(fonts->monospaced);
     free(fonts);
 
     return 0;

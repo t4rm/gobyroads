@@ -1,5 +1,4 @@
 #include "gamestate.h"
-#define AI
 
 GameState *initGameState(int h, int l)
 {
@@ -56,7 +55,7 @@ void destroyGameState(GameState *gs)
     free(gs);
 }
 
-void scrolling(GameState *gs)
+void scrolling(GameState *gs, bool AI)
 {
 
     if (gs->player->y == 3)
@@ -70,24 +69,23 @@ void scrolling(GameState *gs)
             gs->grid->cases[i] = gs->grid->cases[i + 1];
             gs->grid->rowManagers[i] = gs->grid->rowManagers[i + 1];
         }
+        Occupation roadType;
+        if (AI)
+        {
+            roadType = ROAD;
+        }
+        else
+        {
+            int r = rand() % 100;                         // 50%
+            roadType = (r < 50) ? ROAD : (r < 90) ? WATER // 40%
+                                                  : RAIL; // 10%
 
-        #ifdef AI 
-            Occupation roadType = ROAD;
-        #endif
+            if ((rand() % 12 == 0) || (rand() % 5 == 0 && gs->grid->rowManagers[gs->grid->height - 2]->type == ICE))
+                if (gs->grid->rowManagers[gs->grid->height - 6]->type != ICE &&
+                    gs->grid->rowManagers[gs->grid->height - 2]->type != SAFE)
+                    roadType = ICE;
+        }
 
-        #ifndef AI 
-            int r = rand() % 100;                                    // 50%
-            Occupation roadType = (r < 50) ? ROAD : (r < 90) ? WATER // 40%
-                                                            : RAIL; // 10%
-        
-
-        
-
-        if ((rand() % 12 == 0) || (rand() % 5 == 0 && gs->grid->rowManagers[gs->grid->height - 2]->type == ICE))
-            if (gs->grid->rowManagers[gs->grid->height - 6]->type != ICE &&
-                gs->grid->rowManagers[gs->grid->height - 2]->type != SAFE)
-                roadType = ICE;
-        #endif
         gs->grid->cases[gs->grid->height - 1] = createRow(gs->grid->length, roadType);
 
         int newRowDirection = 1;
@@ -239,6 +237,7 @@ CollisionState handleCollision(GameState *gs)
     }
 
     Occupation playerOccupation = gs->grid->cases[gs->player->y][gs->player->x];
+
     // Colliding with an object.
     if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == TRAIN)
     {
@@ -250,7 +249,7 @@ CollisionState handleCollision(GameState *gs)
         gs->gameOver = true;
         return SPLASHED;
     }
-    return OUT_OF_MAP;
+    return NONE;
 }
 
 void updateGameState(GameState *gs)

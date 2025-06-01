@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <windows.h> // Pour Sleep()
-// #include <time.h>   // Pour clock_gettime()
+#include <time.h>
 // #include <unistd.h> // Pour usleep()
 // Inversez les commentaires si vous n'êtes pas sur windows.
 #include "gamestate.h"
@@ -8,13 +8,14 @@
 #include "car.h"
 #include "agent_ai.h"
 #include "a_star.h"
-#define AI
 
 int main()
 {
+    srand(time(NULL));
     GameState *gs = initGameState(15, 32 - 12);
     const int FPS = 60;
     const int frameTime = 1000 / FPS;
+    bool AI = true;
     int pathLength = 0;
     int cmpt = 0;
     Node **path = NULL;
@@ -26,38 +27,24 @@ int main()
         if (gs->player->afk >= FPS * 6)
             gs->gameOver = true;
 
+        // AI -------------------------
+        if (AI)
+            aiLoop(gs, &pathLength, &cmpt, &path);
+        else
+            playerMove(gs);
+        // -------------------------------
+
         // Start of the game handling logic
         updateCars(gs);
         updateGameState(gs);
         // Game is updated, map is fresh, cars progressed
-        playerMove(gs);
-
-        // AI -------------------------
-        #ifdef AI
-        if (cmpt >= pathLength)
-        {
-            path = getPathAI(gs, &pathLength);
-            cmpt = 0;
-        }
-        if (cmpt < pathLength)
-        {
-            if (gs->player->mouvementCooldown == 0)
-            {
-                playerMoveAi(gs, path[cmpt]);
-                cmpt++;
-            }
-        }
-        #endif
-        // -------------------------------
-
-        playerMove(gs);
 
         updateIce(gs);
         updateTrain(gs->grid);
         handleCollision(gs);
         handleScore(gs);
         // Player moved, if he collided the game stops, otherwise we scroll down when y >= 3.
-        scrolling(gs);
+        scrolling(gs, AI);
         // End of the game handling logic.
 
         DWORD frameEndTime = GetTickCount();

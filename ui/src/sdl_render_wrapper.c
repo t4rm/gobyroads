@@ -10,9 +10,11 @@
 //     SDL_RenderCopy(renderer, textureText, NULL, &rectangleTitle);
 // }
 
-void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *renderer, char *text)
+void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *renderer, char *text, SDLW_COLORS color)
 {
     SDL_Color textColor = {255, 255, 255, 255};
+    if (color == GREEN)
+        textColor = (SDL_Color){62, 167, 66, 255};
 
     int textWidth, textHeight;
     if (TTF_SizeText(font, text, &textWidth, &textHeight))
