@@ -230,6 +230,7 @@ CollisionState handleCollision(GameState *gs)
     }
 
     Occupation playerOccupation = gs->grid->cases[gs->player->y][gs->player->x];
+
     // Colliding with an object.
     if (playerOccupation == CAR_LEFT || playerOccupation == CAR_RIGHT || playerOccupation == TRAIN)
     {
@@ -241,7 +242,7 @@ CollisionState handleCollision(GameState *gs)
         gs->gameOver = true;
         return SPLASHED;
     }
-    return OUT_OF_MAP;
+    return NONE;
 }
 
 void updateGameState(GameState *gs)

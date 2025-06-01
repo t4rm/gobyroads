@@ -25,7 +25,7 @@ void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
     {
         bool hasMoved = false;
         int precedentX = uiGs->core->player->x, precedentY = uiGs->core->player->y;
-        char key;
+        char key = 0; // Correction: initialiser key à 0
         switch (event->type)
         {
         case SDL_QUIT:

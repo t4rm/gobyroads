@@ -10,13 +10,13 @@ LDFLAGS   = -Llib -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 SRC_DIR   = src
 OBJ_DIR   = obj
 BIN_DIR   = bin
-TEST_DIR  = tests
+# TEST_DIR  = tests
 
 # Répertoires Core
 CORE_DIR       = ../core
 CORE_SRC_DIR   = $(CORE_DIR)/src
 CORE_OBJ_DIR   = $(CORE_DIR)/obj
-CORE_TEST_DIR  = $(CORE_DIR)/tests
+# CORE_TEST_DIR  = $(CORE_DIR)/tests
 
 # Fichiers UI
 SRC_FILES      = $(wildcard $(SRC_DIR)/*.c)
@@ -60,14 +60,15 @@ debug: main
 	gdb $(BIN_DIR)/main.exe
 
 # Construction des tests UI si besoin
-test: $(OBJ_NO_MAIN) $(OBJ_DIR)/test_main.o $(CORE_OBJ_FILES) | $(BIN_DIR)
-	$(CC) -o $(BIN_DIR)/test.exe \
-	    $(OBJ_NO_MAIN) $(OBJ_DIR)/test_main.o $(CORE_OBJ_FILES) $(LDFLAGS)
-	$(BIN_DIR)/test.exe
+# test: $(OBJ_NO_MAIN) $(OBJ_DIR)/test_main.o $(CORE_OBJ_FILES) | $(BIN_DIR)
+# 	$(CC) -o $(BIN_DIR)/test.exe \
+# 	    $(OBJ_NO_MAIN) $(OBJ_DIR)/test_main.o $(CORE_OBJ_FILES) $(LDFLAGS)
+# 	$(BIN_DIR)/test.exe
+# Finalement, on ne test que core, étant donné que la logique dans core est réutilisé ici ça revient aussi à tester SDL2. On ne teste pas l'affichage.
 
-$(OBJ_DIR)/test_main.o: $(TEST_DIR)/test_main.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+# $(OBJ_DIR)/test_main.o: $(TEST_DIR)/test_main.c | $(OBJ_DIR)
+	# $(CC) $(CFLAGS) -c $< -o $@
 
 # Nettoyage
 clean:
-	rm -f $(OBJ_DIR)/*.o $(CORE_OBJ_DIR)/*.o $(BIN_DIR)/main.exe $(BIN_DIR)/test.exe
+	rm -f $(OBJ_DIR)/*.o $(CORE_OBJ_DIR)/*.o $(BIN_DIR)/main.exe

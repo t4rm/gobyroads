@@ -164,6 +164,16 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
     char scoreChar[3];
     sprintf(scoreChar, "%d", uiGs->core->score);
     SDLW_RenderText(CELL_SIZE * 0.15, 0 - CELL_SIZE * 0.15, 30 * strlen(scoreChar), 60, fonts->medium, renderer, scoreChar);
+
+    SDL_Texture *t = NULL;
+
+    if (uiGs->muteSound)
+        t = GetTexture(textures, "speaker-m");
+    else
+        t = GetTexture(textures, "speaker-u");
+
+    SDLW_RenderCopy(renderer, t, COLS + CAR_MAX_SIZE, ROWS - 1, 0, 0, SDL_FLIP_NONE, 0, CELL_SIZE, 0, 0);
+
     SDL_RenderPresent(renderer);
     return 0;
 }

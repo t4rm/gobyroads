@@ -36,7 +36,8 @@ typedef enum
 {
   CRASHED,
   SPLASHED,
-  OUT_OF_MAP
+  OUT_OF_MAP,
+  NONE
 } CollisionState;
 
 GameState *initGameState(int h, int l);

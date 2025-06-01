@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <windows.h> // Pour Sleep()
-// #include <time.h>   // Pour clock_gettime()
+#include <time.h>
 // #include <unistd.h> // Pour usleep()
 // Inversez les commentaires si vous n'êtes pas sur windows.
 #include "gamestate.h"
@@ -9,6 +9,7 @@
 
 int main()
 {
+    srand(time(NULL));
     GameState *gs = initGameState(15, 32 - 12);
     const int FPS = 60;
     const int frameTime = 1000 / FPS;

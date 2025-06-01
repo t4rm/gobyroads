@@ -7,31 +7,17 @@ void playerMove(GameState *gs)
     {
         char key = _getch();
         bool hasMoved = false;
-        int precedentX = gs->player->x, precedentY = gs->player->y;
 
         playerMoveKey(key, gs, &hasMoved);
-
-        if (gs->grid->cases[gs->player->y][gs->player->x] == TREE)
-        {
-            gs->player->x = precedentX;
-            gs->player->y = precedentY;
-            gs->player->mouvementCooldown = 1;
-        }
-
-        if (hasMoved)
-        {
-            gs->player->mouvementCooldown = 3;
-            gs->player->afk = 0;
-            gs->player->slidingCooldown = 36;
-        }
     }
-
     gs->player->mouvementCooldown = gs->player->mouvementCooldown <= 1 ? 0 : gs->player->mouvementCooldown - 1;
     gs->player->afk++;
 }
 
 void playerMoveKey(char key, GameState *gs, bool *hasMoved)
 {
+    int precedentX = gs->player->x, precedentY = gs->player->y;
+
     if (key != 'f' && gs->player->mouvementCooldown > 0)
         return;
 
@@ -74,5 +60,19 @@ void playerMoveKey(char key, GameState *gs, bool *hasMoved)
     case 'f':
         gs->gameOver = true;
         break;
+    }
+
+    if (gs->grid->cases[gs->player->y][gs->player->x] == TREE)
+    {
+        gs->player->x = precedentX;
+        gs->player->y = precedentY;
+        gs->player->mouvementCooldown = 1;
+    }
+
+    if (*hasMoved)
+    {
+        gs->player->mouvementCooldown = 3;
+        gs->player->afk = 0;
+        gs->player->slidingCooldown = 36;
     }
 }
