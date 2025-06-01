@@ -78,8 +78,9 @@ int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, TTF_Fonts **fo
     (*fonts)->small = TTF_OpenFont("fonts/retro-pixel-thick.ttf", 32);
     (*fonts)->medium = TTF_OpenFont("fonts/retro-pixel-thick.ttf", 48);
     (*fonts)->large = TTF_OpenFont("fonts/retro-pixel-thick.ttf", 62);
+    (*fonts)->monospaced = TTF_OpenFont("fonts/public-pixel.ttf", 48);
 
-    if ((*fonts)->large == NULL || (*fonts)->medium == NULL || (*fonts)->small == NULL)
+    if ((*fonts)->large == NULL || (*fonts)->medium == NULL || (*fonts)->small == NULL || (*fonts)->monospaced == NULL)
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error in ttf opening: %s", SDL_GetError());
 
     return 0;
@@ -163,7 +164,7 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
 
     char scoreChar[3];
     sprintf(scoreChar, "%d", uiGs->core->score);
-    SDLW_RenderText(CELL_SIZE * 0.15, 0 - CELL_SIZE * 0.15, 30 * strlen(scoreChar), 60, fonts->medium, renderer, scoreChar);
+    SDLW_RenderText(CELL_SIZE * 0.15, 0 - CELL_SIZE * 0.15, 30 * strlen(scoreChar), 60, fonts->medium, renderer, scoreChar, WHITE);
 
     SDL_Texture *t = NULL;
 

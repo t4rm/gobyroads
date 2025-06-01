@@ -26,6 +26,7 @@
     - M pour Mute les sons ✅
 - Inclure les sources des différents assets que l'on n'a pas fais ✅
 - Réintégrer les logiques de gestion de jeu dans l'encapsulateur de GameState : UIGameState ✅
+- Menu pour choisir quoi activer : CLI, UI, IA. On peut tout activer. ✅
 
 # NOT DONE :
 - Fluidité des déplacements : Pas de *sauts* de cases mais plutôt des *animations* : ❌
@@ -35,5 +36,4 @@
 - Nénuphars
 
 # TODO :
-- Menu pour choisir entre CLI et UI 
-- Effet sonore tous les 50 de scores 
+- Enlever les rondins de taille 6

@@ -47,7 +47,13 @@ int main(int argc, char *argv[])
         else
             Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
 
-        if (uiGs->intro)
+        if (uiGs->menu)
+        {
+            SDLW_MenuScreen(renderer, fonts, uiGs->menuHandler);
+            if (SDL_PollEvent(&event))
+                handleEvents(uiGs, &event, MENU);
+        }
+        else if (uiGs->intro)
         {
             SDLW_IntroScreen(renderer, fonts);
             if (SDL_PollEvent(&event))
@@ -55,6 +61,7 @@ int main(int argc, char *argv[])
         }
         else if (uiGs->core->gameOver)
         {
+            SDL_ShowWindow(window);
             SDLW_Mix_HaltAllChannelExcept(SFX_CHANNEL);
 
             if (SDL_PollEvent(&event))
@@ -96,8 +103,17 @@ int main(int argc, char *argv[])
             scrolling(uiGs->core);
 
             // maj rendu & rendu
-            updateGameState(uiGs->core);
-            SDLW_UpdateAndRender(uiGs, renderer, textures, fonts);
+            if (uiGs->menuHandler->selectedOptions[OPTION_CORE - 1]) // Core checked
+            {
+                updateGameState(uiGs->core); // Display the grid
+                playerMove(uiGs->core);      // Listen to terminal keys
+
+                if (!uiGs->menuHandler->selectedOptions[OPTION_UI - 1]) // No UI
+                    SDL_HideWindow(window);
+            }
+
+            if (uiGs->menuHandler->selectedOptions[OPTION_UI - 1]) // UI checked
+                SDLW_UpdateAndRender(uiGs, renderer, textures, fonts);
         }
 
         Uint64 frameEndTime = SDL_GetTicks64();
@@ -117,6 +133,7 @@ int main(int argc, char *argv[])
     TTF_CloseFont(fonts->large);
     TTF_CloseFont(fonts->medium);
     TTF_CloseFont(fonts->small);
+    TTF_CloseFont(fonts->monospaced);
     free(fonts);
 
     return 0;

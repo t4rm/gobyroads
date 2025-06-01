@@ -13,20 +13,36 @@ typedef struct _PlayerOffset
     int x, y;
 } PlayerOffset;
 
-typedef struct _UIGameState
+typedef enum
 {
-    GameState *core;
-    PlayerOffset *playerOffset;
-    int running, intro;
-    bool muteSound;
-} UIGameState;
+    OPTION_NONE,
+    OPTION_CORE,
+    OPTION_UI,
+    OPTION_IA
+} MenuOption;
+
+typedef struct _MenuHandler
+{
+    int selectedOptions[3]; // The options ticked with a #.
+    MenuOption highligtedOption;
+} MenuHandler;
 
 typedef enum
 {
     PLAYING,
     LOST,
-    WAITING
+    WAITING,
+    MENU
 } EventListeningMode;
+
+typedef struct _UIGameState
+{
+    GameState *core;
+    PlayerOffset *playerOffset;
+    MenuHandler *menuHandler;
+    int running, intro, menu;
+    bool muteSound;
+} UIGameState;
 
 UIGameState *initUIGameState(int h, int l);
 void destroyUIGameState(UIGameState *uiGs);

@@ -9,6 +9,13 @@ UIGameState *initUIGameState(int h, int l)
     uiGs->playerOffset->y = 0;
     uiGs->running = 1;
     uiGs->intro = 1;
+    uiGs->menu = 1;
+    uiGs->menuHandler = (MenuHandler *)malloc(sizeof(MenuHandler));
+    for (int i = 0; i < 3; i++)
+        uiGs->menuHandler->selectedOptions[i] = 0;
+
+    uiGs->menuHandler->highligtedOption = OPTION_NONE;
+
     return uiGs;
 }
 
@@ -117,6 +124,47 @@ void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
                 // Est-ce utile de vérifier ici
                 uiGs->running = 1;
                 uiGs->intro = 0;
+                uiGs->menu = 0;
+                break;
+            }
+        }
+    else if (mode == MENU)
+        switch (event->type)
+        {
+        case SDL_QUIT:
+            uiGs->running = 0;
+            break;
+        case SDL_KEYDOWN:
+            switch (event->key.keysym.sym)
+            {
+            case SDLK_UP:
+                if (uiGs->menuHandler->highligtedOption == OPTION_NONE)
+                    uiGs->menuHandler->highligtedOption = OPTION_IA;
+                else
+                {
+                    uiGs->menuHandler->highligtedOption--;
+                    if (uiGs->menuHandler->highligtedOption < OPTION_CORE)
+                        uiGs->menuHandler->highligtedOption = OPTION_IA;
+                }
+                break;
+            case SDLK_DOWN:
+                uiGs->menuHandler->highligtedOption++;
+                if (uiGs->menuHandler->highligtedOption > OPTION_IA)
+                    uiGs->menuHandler->highligtedOption = OPTION_CORE;
+
+                break;
+            case SDLK_KP_ENTER:
+                if (uiGs->menuHandler->highligtedOption == OPTION_NONE)
+                    break;
+                uiGs->menuHandler->selectedOptions[uiGs->menuHandler->highligtedOption - 1] = !uiGs->menuHandler->selectedOptions[uiGs->menuHandler->highligtedOption - 1];
+                break;
+            case SDLK_SPACE:
+                if (uiGs->menuHandler->selectedOptions[0] == 0 && uiGs->menuHandler->selectedOptions[1] == 0)
+                    break; // We can't start a game without UI or CORE selected, at least one of them.
+                uiGs->menu = 0;
+                break;
+            case SDLK_f:
+                uiGs->running = 0;
                 break;
             }
         }
