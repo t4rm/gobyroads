@@ -226,7 +226,7 @@ CollisionState handleCollision(GameState *gs)
     if (gs->player->x < gs->carMaxSize || gs->player->x > gs->grid->length - gs->carMaxSize + 1 || gs->player->y < 0)
     {
         gs->gameOver = true;
-        return VOID;
+        return OUT_OF_MAP;
     }
 
     Occupation playerOccupation = gs->grid->cases[gs->player->y][gs->player->x];
@@ -241,7 +241,7 @@ CollisionState handleCollision(GameState *gs)
         gs->gameOver = true;
         return SPLASHED;
     }
-    return VOID;
+    return OUT_OF_MAP;
 }
 
 void updateGameState(GameState *gs)
