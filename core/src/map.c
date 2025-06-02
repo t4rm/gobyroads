@@ -61,6 +61,11 @@ void destroyGrid(Grid *g)
     free(g);
 }
 
+/* apply an Occupation to a row
+ * row : the row to edit
+ * length : the length of this row
+ * type : the Occupation to apply
+ */
 void applyOccupationToRow(Occupation *row, int length, Occupation type)
 {
     if (type == SAFE)
@@ -70,6 +75,9 @@ void applyOccupationToRow(Occupation *row, int length, Occupation type)
             row[i] = type;
 }
 
+/* create trees in a random way on a Row
+ * row, length: the row and its length
+ */
 void createTrees(Occupation *row, int length)
 {
     int difficulty = 25;
@@ -79,6 +87,12 @@ void createTrees(Occupation *row, int length)
         row[rand() % length] = SAFE;
 }
 
+/* rewrite the grid to display it 
+ * grid: a pointer to the grid
+ * score: the score to show
+ * playerX, playerY: the coordinates of the player
+ * carMaxSize: the length of a margin
+ */
 void displayGrid(Grid *grid, int score, int playerX, int playerY, int carMaxSize)
 {
     printf("\033[1;1H");

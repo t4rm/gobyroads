@@ -38,9 +38,6 @@ int main(int argc, char *argv[])
     AudioCollection *audio = SDLW_InitAudio();
 
     UIGameState *uiGs = initUIGameState(ROWS, COLS);
-    // Plutôt utiliser les vraies dimensions du coup.
-    // Et appliquer un coefficient de réduction pour le comportement du jeu en CLI ?
-    // Comment gérer le fait qu'une coordonnée est representé en 1 pixel ici.
     SDL_Event event;
     const int FPS = 60;
     const int frameTime = 1000 / FPS;
@@ -122,14 +119,14 @@ int main(int argc, char *argv[])
             // -------------------------------
             SDLW_UpdateTrain(uiGs->core->grid, audio);
             updateIce(uiGs->core);
-            // Fin des possibles évents à "fire" ----
-            // Calcul interactions (collisions)
+            // End of the possible events to "fire" ----
+            // Calcul of the interactions (collisions)
             SDLW_HandleCollision(uiGs->core, audio);
-            // maj état du jeu (états mobs, joueur, score)
+            // Update of the GameState (mobs, player, score)
             handleScore(uiGs->core);
             scrolling(uiGs->core, uiGs->menuHandler->selectedOptions[OPTION_IA - 1]);
 
-            // maj rendu & rendu
+            // Update of the render and rendering
             if (uiGs->menuHandler->selectedOptions[OPTION_CORE - 1]) // Core checked
             {
                 updateGameState(uiGs->core); // Display the grid
@@ -145,7 +142,7 @@ int main(int argc, char *argv[])
         }
 
         Uint64 frameEndTime = SDL_GetTicks64();
-        Uint64 elapsedTime = frameEndTime - frameStartTime;
+        Uint64 elapsedTime = frameEndTime - frameStartTime; // Like in core, we compare the startTime with the endTime of our frame and sleep if it doesn't reach the desired time.
 
         if (elapsedTime < frameTime)
         {
@@ -154,6 +151,7 @@ int main(int argc, char *argv[])
         }
     }
 
+    // Free all the allocated memory.
     SDLW_DestroyTextures(textures);
     SDLW_DestroyAudio(audio);
     SDL_DestroyRenderer(renderer);
@@ -163,6 +161,7 @@ int main(int argc, char *argv[])
     TTF_CloseFont(fonts->small);
     TTF_CloseFont(fonts->monospaced);
     free(fonts);
+    destroyUIGameState(uiGs);
 
     return 0;
 }

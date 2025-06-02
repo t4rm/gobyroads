@@ -1,5 +1,8 @@
 #include "core_wrapper.h"
 
+/* Initialize a UIGameState that encapsulate the core GameState
+ * h, l: the size of the viewable grid
+ */
 UIGameState *initUIGameState(int h, int l)
 {
     UIGameState *uiGs = malloc(sizeof(UIGameState));
@@ -19,13 +22,22 @@ UIGameState *initUIGameState(int h, int l)
     return uiGs;
 }
 
+/* free a UIGameState and all his childrens
+ * uiGs: a pointer to the UIGameState
+ */
 void destroyUIGameState(UIGameState *uiGs)
 {
     destroyGameState(uiGs->core);
     free(uiGs->playerOffset);
+    free(uiGs->menuHandler);
     free(uiGs);
 }
 
+/* Handle SDL_Events depending on the context
+ * uiGs: a pointer to the UIGameState
+ * event: the listened event
+ * mode: the context, indacting if we are playing/in the menu/in the introduction screen/in the gameover screen.
+ */
 void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
 {
     if (mode == PLAYING)
@@ -191,6 +203,10 @@ void handleEvents(UIGameState *uiGs, SDL_Event *event, EventListeningMode mode)
         }
 }
 
+/* Encapsulate the core UpdateTrain function and play music depending on the TrainState
+ * grid: a pointer to the game's grid
+ * audio: a pointer to the AudioCollection
+ */
 void SDLW_UpdateTrain(Grid *grid, AudioCollection *audio)
 {
     TrainState s = updateTrain(grid);
@@ -209,6 +225,10 @@ void SDLW_UpdateTrain(Grid *grid, AudioCollection *audio)
     }
 }
 
+/* encapsulate the collision handling and play a chunk depending on the collision.
+ * gs: a pointer to the core GameState
+ * audio: a pointer to the AudioCollection
+ */
 void SDLW_HandleCollision(GameState *gs, AudioCollection *audio)
 {
     CollisionState s = handleCollision(gs);

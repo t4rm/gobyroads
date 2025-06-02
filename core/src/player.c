@@ -1,6 +1,9 @@
 #include <conio.h>
 #include "player.h"
 
+/* listen to a pressed key and simultaneously update the mouvementCooldown 
+ * gs: a pointer to the GameState
+ */
 void playerMove(GameState *gs)
 {
     if (_kbhit())
@@ -15,6 +18,11 @@ void playerMove(GameState *gs)
     gs->player->afk++;
 }
 
+/* handle a pressed key and makes the player moves if the key is in [ZQSD].
+ * gs: a pointer to the GameState
+ * key: the char of the pressed key
+ * hasMoved: a pointer to a boolean that indicates if the player moved.
+ */
 void playerMoveKey(char key, GameState *gs, bool *hasMoved)
 {
     int precedentX = gs->player->x, precedentY = gs->player->y;
