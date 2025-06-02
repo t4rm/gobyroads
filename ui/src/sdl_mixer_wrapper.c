@@ -16,6 +16,7 @@ static AudioInfo chunkData[] = {
     {"crash", "assets/audio/sfx/crash.mp3"},
     {"warning", "assets/audio/sfx/warning.mp3"}};
 
+/* Initialise an audioCollection that store the Chunks and the Musics */
 AudioCollection *SDLW_InitAudio()
 {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
@@ -54,7 +55,10 @@ AudioCollection *SDLW_InitAudio()
 
     return collection;
 }
-
+/* Get the Music from the AudioCollection with its name
+ * collection: the AudioCollection to search in
+ * name: the name of the file to find
+ */
 Mix_Music *GetMusic(AudioCollection *collection, const char *name)
 {
     for (int i = 0; i < collection->musicCount; i++)
@@ -63,6 +67,10 @@ Mix_Music *GetMusic(AudioCollection *collection, const char *name)
     return NULL;
 }
 
+/* Get the Chunk from the AudioCollection with its name
+ * collection: the AudioCollection to search in
+ * name: the name of the file to find
+ */
 Mix_Chunk *GetChunk(AudioCollection *collection, const char *name)
 {
     for (int i = 0; i < collection->chunkCount; i++)
@@ -71,6 +79,9 @@ Mix_Chunk *GetChunk(AudioCollection *collection, const char *name)
     return NULL;
 }
 
+/* Free an AudioCollection and the files stored inside (chunks and musics) then close the audio in SDL.
+ * collection: the AudioCollection to free
+ */
 void SDLW_DestroyAudio(AudioCollection *collection)
 {
     for (int i = 0; i < collection->musicCount; i++)
@@ -91,6 +102,9 @@ void SDLW_DestroyAudio(AudioCollection *collection)
     Mix_CloseAudio();
 }
 
+/* Interrupts all sound effects channels except a certain channel
+ * channelToKeep: the id of the channel we don't want to stop
+ */
 void SDLW_Mix_HaltAllChannelExcept(int channelToKeep)
 {
     int totalChannels = Mix_AllocateChannels(-1);

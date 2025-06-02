@@ -1,7 +1,8 @@
 #include "sdl_texture_wrapper.h"
 
-static const char *CAR_COLORS[] = {"black", "blue", "brown", "green", "magenta", "red", "white", "yellow"}; // Possibilité de fusionner avec le tableau dans sdl_wrapper.c
+static const char *CAR_COLORS[] = {"black", "blue", "brown", "green", "magenta", "red", "white", "yellow"}; // Possibility of merging with the array in sdl_wrapper.c
 
+// Dynamic texture
 static const CarConfig CAR_CONFIGS[] = {
     {1, '\0', CAR_COLORS, 8, NULL, NULL},
 
@@ -22,7 +23,7 @@ static const CarConfig CAR_CONFIGS[] = {
     {5, '\0', NULL, 0, "limo", "assets/sprites/cars/5/white.png"},
 };
 
-// Textures de base (statiques)
+// Base textures (static)
 static const TextureInfo BASE_TEXTURES[] = {
     {"grass", "assets/sprites/grass.png"},
     {"road", "assets/sprites/road.png"},
@@ -41,6 +42,7 @@ static const TextureInfo BASE_TEXTURES[] = {
     {"warning", "assets/sprites/warning.png"},
     {"tree", "assets/sprites/trees/1.png"}};
 
+/* Get the amount of texture in total by adding the base one to the dynamic ones */
 static int calculateTotalTextureCount()
 {
     int baseCount = sizeof(BASE_TEXTURES) / sizeof(BASE_TEXTURES[0]);
@@ -55,7 +57,13 @@ static int calculateTotalTextureCount()
 
     return baseCount + carTextureCount;
 }
-
+/* Generate the name of a texture based on its config
+ * config: the config of the car texture
+ * color: a string indicating the color to use
+ * name: a pointer to the name of the texture
+ * nameSize: the max size of this name.
+ * Usage of size_t : "size_t can store the maximum size of a theoretically possible object of any type", it is used by default by our EDI.
+ */
 static void generateCarTextureName(const CarConfig *config, const char *color, char *name, size_t nameSize)
 {
     if (config->variant == '\0')
@@ -64,6 +72,12 @@ static void generateCarTextureName(const CarConfig *config, const char *color, c
         snprintf(name, nameSize, "car_%d%c_%s", config->size, config->variant, color);
 }
 
+/* Generate the path of a texture based on its config
+ * config: the config of the car texture
+ * color: a string indicating the color to use
+ * path: a pointer to the path of the texture
+ * pathSize: the max size of this path.
+ */
 static void generateCarTexturePath(const CarConfig *config, const char *color, char *path, size_t pathSize)
 {
     if (config->variant == '\0')
@@ -72,6 +86,11 @@ static void generateCarTexturePath(const CarConfig *config, const char *color, c
         snprintf(path, pathSize, "assets/sprites/cars/%d/%c/%s.png", config->size, config->variant, color);
 }
 
+/* Add the base textures (static) to the TextureCollection
+ * collection: a pointer to the collection
+ * renderer: a pointer to the renderer
+ * currentIndex: a pointer to the current index
+ */
 static void addBaseTextures(TextureCollection *collection, SDL_Renderer *renderer, int *currentIndex)
 {
     int baseCount = sizeof(BASE_TEXTURES) / sizeof(BASE_TEXTURES[0]);
@@ -83,7 +102,11 @@ static void addBaseTextures(TextureCollection *collection, SDL_Renderer *rendere
         (*currentIndex)++;
     }
 }
-
+/* Add the car texture to the TextureCollection
+ * collection: a pointer to the collection
+ * renderer: a pointer to the renderer
+ * currentIndex: a pointer to the currentIndex
+ */
 static void addCarTextures(TextureCollection *collection, SDL_Renderer *renderer, int *currentIndex)
 {
     int carConfigCount = sizeof(CAR_CONFIGS) / sizeof(CAR_CONFIGS[0]);
@@ -96,14 +119,14 @@ static void addCarTextures(TextureCollection *collection, SDL_Renderer *renderer
 
         if (config->staticName != NULL)
         {
-            // Textures statiques (Taxi, Police, Ambulance)
+            // Static texture from CarConfig (Taxi, Police, Ambulance)
             collection->textures[*currentIndex].name = strdup(config->staticName);
             collection->textures[*currentIndex].texture = SDLW_MakeTexture((char *)config->staticPath, renderer);
-            (*currentIndex)++;
+            (*currentIndex)++; // We can add them in the Base textures and remove this code.
         }
         else
         {
-            // Textures colorées
+            // Colored textures
             for (int j = 0; j < config->colorCount; j++)
             {
                 generateCarTextureName(config, config->colors[j], textureName, sizeof(textureName));
@@ -117,6 +140,10 @@ static void addCarTextures(TextureCollection *collection, SDL_Renderer *renderer
     }
 }
 
+/* Initialize the TextureCollection with empty values, then fill it with the base textures and the car textures
+ * renderer: a pointer to the renderer
+ * returns the TextureCollection
+ */
 TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer)
 {
     int totalCount = calculateTotalTextureCount();
@@ -132,6 +159,11 @@ TextureCollection *SDLW_InitTextures(SDL_Renderer *renderer)
     return collection;
 }
 
+/* Get a Texture from the TextureCollection with its name
+ * collection: a pointer to the TextureCollection
+ * name: a string of the name of the texture
+ returns the SDL_Texture
+ */
 SDL_Texture *GetTexture(TextureCollection *collection, const char *name)
 {
     for (int i = 0; i < collection->count; i++)
@@ -140,6 +172,9 @@ SDL_Texture *GetTexture(TextureCollection *collection, const char *name)
     return NULL;
 }
 
+/* Free a TextureCollection
+ * collection: a pointer to the TextureCollection
+ */
 void SDLW_DestroyTextures(TextureCollection *collection)
 {
     for (int i = 0; i < collection->count; i++)
@@ -151,6 +186,10 @@ void SDLW_DestroyTextures(TextureCollection *collection)
     free(collection);
 }
 
+/* Wrap the creation of a Texture in a function
+ * spriteName: the name of the sprite we want to load
+ * renderer: a pointer to the renderer
+ */
 SDL_Texture *SDLW_MakeTexture(char *spriteName, SDL_Renderer *renderer)
 {
     SDL_Surface *spriteSurface = IMG_Load(spriteName);

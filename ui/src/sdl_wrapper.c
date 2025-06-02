@@ -1,8 +1,11 @@
 #include "sdl_wrapper.h"
 
+// We can merge this array with the one in sdl_texture_wrapper.c
 const char *CarColorNames[COLOR_COUNT] = {
     "black", "blue", "brown", "green", "magenta", "red", "white", "yellow"};
 
+/* 
+ */
 int calculateVerticalOffset(Grid *grid, int x, int y, bool (*checkFunction)(Occupation))
 {
     bool belowMatches = false;

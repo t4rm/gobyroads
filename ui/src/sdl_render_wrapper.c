@@ -10,6 +10,14 @@
 //     SDL_RenderCopy(renderer, textureText, NULL, &rectangleTitle);
 // }
 
+/* A wrapper function to Render a Text
+ * x, y: the coordinates of the text
+ * w, h: the size of the text
+ * font: the font to use
+ * renderer: a pointer to the renderer
+ * text: the string to print
+ * color: an enumeration of colors that are converted from ENUM to RGBA (hardcoded)
+ */
 void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *renderer, char *text, SDLW_COLORS color)
 {
     SDL_Color textColor = {255, 255, 255, 255};
@@ -48,9 +56,15 @@ void SDLW_RenderText(int x, int y, int w, int h, TTF_Font *font, SDL_Renderer *r
     SDL_FreeSurface(surfaceText);
 }
 
-// This work fine for dynamic sprite like Player, but this is "OVERKILL" for Static Sprites like Grass.
-// Grass don't have offsets, but we could ! They would become animated (simulating the wind for example)
-// Same for waves in Rivers
+/* A wrapper function for the RenderCopy of SDL
+ * r: a pointer to the renderer
+ * t: a pointer to the texture
+ * x, y: the coordinates indicating where to print the texture
+ * xOffset, yOffset: the offsets to get the right sprite from the spritesheet
+ * flip: the flip to apply on the texture (used to transform a east looking car to a west looking car)
+ * yDepth: edit the y coordinate, creating a fake depth in our isometric view
+ * optionalSpriteSize: used when the spritesheet is not in perfect square but rectangles, this is the length of the height of a sprite in a spritesheet
+ */
 void SDLW_RenderCopy(SDL_Renderer *r, SDL_Texture *t, int x, int y,
                      int xOffset, int yOffset, SDL_RendererFlip flip,
                      int yDepth, int spriteSize, int xDepth, int optionalSpriteSize)

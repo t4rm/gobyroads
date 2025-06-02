@@ -1,5 +1,10 @@
 #include "sdl_screens_wrapper.h"
 
+/* Print a GameOver screen
+ * renderer: a pointer to the renderer
+ * fonts: a pointer to the collection of fonts
+ * score: the score to display
+ */
 void SDLW_GameOverScreen(SDL_Renderer *renderer, TTF_Fonts *fonts, int score)
 {
     SDL_Color const BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0, .a = SDL_ALPHA_OPAQUE};
@@ -27,6 +32,10 @@ void SDLW_GameOverScreen(SDL_Renderer *renderer, TTF_Fonts *fonts, int score)
     SDL_RenderPresent(renderer);
 }
 
+/* Print an introduction screen
+ * renderer: a pointer to the renderer
+ * fonts: a pointer to the collection of fonts
+ */
 void SDLW_IntroScreen(SDL_Renderer *renderer, TTF_Fonts *fonts)
 {
     SDL_Color const BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0, .a = SDL_ALPHA_OPAQUE};
@@ -59,6 +68,11 @@ void SDLW_IntroScreen(SDL_Renderer *renderer, TTF_Fonts *fonts)
     SDL_RenderPresent(renderer);
 }
 
+/* Print a Menu Screen
+ * renderer: a pointer to the renderer
+ * fonts: a pointer to the collection of fonts
+ * menuHandler: the state of the Menu
+ */
 void SDLW_MenuScreen(SDL_Renderer *renderer, TTF_Fonts *fonts, MenuHandler *menuHandler)
 {
     SDL_Color const BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0, .a = SDL_ALPHA_OPAQUE};
