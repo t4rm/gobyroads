@@ -1,5 +1,8 @@
 #include "car_queue.h"
 
+/* Create a simple linked list : our carQueue
+ * return : the pointer to this queue.
+ */
 CarQueue *createCarQueue(void)
 {
     CarQueue *queue = malloc(sizeof(CarQueue));
@@ -9,6 +12,7 @@ CarQueue *createCarQueue(void)
     return queue;
 }
 
+/* Destroy a carQueue by freeing it and its cars. */
 void destroyCarQueue(CarQueue *queue)
 {
     CarElement *cursor = queue->head;
@@ -23,6 +27,9 @@ void destroyCarQueue(CarQueue *queue)
     free(queue);
 }
 
+/* remove the first node of our linked list, resulting to a removal of the first car.
+ * queue: pointer to the queue
+ */
 void removeFirstCar(CarQueue *queue)
 {
     if (queue->size == 0)
@@ -42,6 +49,10 @@ void removeFirstCar(CarQueue *queue)
     queue->size--;
 }
 
+/* remove a row of cars determined by their y's axis.
+ * queue: pointer to the queue
+ * y: the y axis to eliminate
+ */
 void removeRowCar(CarQueue *queue, int y)
 {
     if (queue->head == NULL)
@@ -74,7 +85,10 @@ void removeRowCar(CarQueue *queue, int y)
         cursor = next;
     }
 }
-
+/* add a car to the end of our carQueue
+ * queue: pointer to the queue
+ * car: pointer to the car to add
+ */
 void addLastCar(CarQueue *queue, Car *car)
 {
     CarElement *new_e = malloc(sizeof(CarElement));
@@ -91,6 +105,9 @@ void addLastCar(CarQueue *queue, Car *car)
     queue->size++;
 }
 
+/* print a carQueue, often used in debug
+ * queue: pointer to the queue
+ */
 void printCarQueue(CarQueue *queue)
 {
     if (queue->size == 0)

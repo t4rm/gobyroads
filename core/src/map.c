@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include "map.h"
 
+/* Create a virtual grid, the viewable grid is the virtual grid but with margins.
+ * height, length being the dimensions of the grid
+ * carMaxSize, the length of a margin which should be able to host any car, therefore being able to host the biggest car possible.
+ */
 Grid *createGrid(int height, int length, int carMaxSize)
 {
     int l = length + 2 * carMaxSize;
@@ -20,7 +24,10 @@ Grid *createGrid(int height, int length, int carMaxSize)
 
     return grid;
 }
-
+/* create a RowManager
+ * direction, speed and type being the parameters of the new Row
+ * type can be ROAD/WATER/RAILS
+ */
 RowManager *createRowManager(int direction, int speed, Occupation type)
 {
     RowManager *rowManager = (RowManager *)malloc(sizeof(RowManager));
@@ -34,6 +41,9 @@ RowManager *createRowManager(int direction, int speed, Occupation type)
     return rowManager;
 }
 
+/* create a grid Row
+ * length and type being the properties of this row
+ */
 Occupation *createRow(int length, Occupation type)
 {
     Occupation *row = (Occupation *)malloc(length * sizeof(Occupation));
@@ -41,6 +51,9 @@ Occupation *createRow(int length, Occupation type)
     return row;
 }
 
+/* free a grid and its rows
+ * g: pointer to the grid
+ */
 void destroyGrid(Grid *g)
 {
     for (int i = 0; i < g->height; i++)

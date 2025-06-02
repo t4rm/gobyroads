@@ -21,6 +21,12 @@
 //         maxSpeed = minSpeed;
 // }
 
+/* create a car based on the rowManager that will host it, calculate the speed and size depending on the score.
+ * gs: pointer to the gamestate
+ * rowManager: pointer to the rowManager hosting the car
+ * availableSize: the size left in a row to prevent car from overlapping
+ * y : the y axis of the rowManager and the car
+ */
 void addCar(GameState *gs, int y, RowManager *rowManager, int availableSize)
 {
     if (y < 0 || y >= gs->grid->height)
@@ -31,13 +37,14 @@ void addCar(GameState *gs, int y, RowManager *rowManager, int availableSize)
     int direction = rowManager->direction;
     int startingX = 0;
 
+    // determinate the values depending on the score
     int minSize = rowManager->type == WATER ? 2 : 1;
     int maxSize = rowManager->type == WATER ? ((5 - gs->score / 20 < 3) ? 3 : 5 - gs->score / 20) : ((gs->score / 20 + 3 >= 5) ? 5 : gs->score / 20 + 3);
     int minSpacing = 3;
     int maxAddedSpacing = rowManager->type == WATER ? 5 : 12;
     int lastSize = 0;
 
-    while (availableSize > minSize + minSpacing)
+    while (availableSize > minSize + minSpacing) // we add cars until we have no space left
     {
         int nextSize = minSize + rand() % maxSize;
         int spacing = minSpacing + rand() % maxAddedSpacing;
@@ -69,6 +76,10 @@ void addCar(GameState *gs, int y, RowManager *rowManager, int availableSize)
     }
 }
 
+/* makes the car moves forward (depending on their direction it can be east or west), also check if a player is on a log to make him move forward too.
+ * it cleans the grid state and redraw it.
+ * gs: pointer to the gamestate
+ */
 void updateCars(GameState *gs)
 {
     CarElement *cursor = gs->cars->head;
@@ -119,6 +130,9 @@ void updateCars(GameState *gs)
     }
 }
 
+/* makes the car y's decrement
+ * gs: pointer to the gamestate
+ */
 void decrementCarsOnY(GameState *gs)
 {
     CarElement *cursor = gs->cars->head;

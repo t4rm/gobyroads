@@ -2,7 +2,7 @@
 #include <windows.h> // Pour Sleep()
 // #include <time.h>
 // #include <unistd.h> // Pour usleep()
-// Inversez les commentaires si vous n'êtes pas sur windows.
+// Reverse the comments if you aren't on Windows.
 #include "gamestate.h"
 #include "player.h"
 #include "car.h"
@@ -21,7 +21,7 @@ int main()
 
     while (!gs->gameOver)
     {
-        DWORD frameStartTime = GetTickCount();
+        DWORD frameStartTime = GetTickCount(); // Get the current time.
 
         if (gs->player->afk >= FPS * 6)
             gs->gameOver = true;
@@ -62,6 +62,7 @@ int main()
         scrolling(gs, AI);
         // End of the game handling logic.
 
+        // We compare the time at the start and the end of the frame, if the elapsedTime is inferior to the desired frameTime we wait until it is reached.
         DWORD frameEndTime = GetTickCount();
         DWORD elapsedTime = frameEndTime - frameStartTime;
 
@@ -78,7 +79,7 @@ int main()
         printf("\n\nPerdu, score final: %d\n", gs->score);
 
     destroyGameState(gs);
-    printf("\e[?25h"); // Afficher le curseur
+    printf("\e[?25h"); // Show back the cursor
 
     return 0;
 }

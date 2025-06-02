@@ -1,5 +1,8 @@
 #include "gamestate.h"
 
+/* initialize a gamestate with default values
+ * h, l: the height and length of the viewable grid
+ */
 GameState *initGameState(int h, int l)
 {
     GameState *gs = (GameState *)malloc(sizeof(GameState));
@@ -39,14 +42,17 @@ GameState *initGameState(int h, int l)
         }
     }
 
-    gs->grid->cases[gs->player->y][gs->player->x] = SAFE; // On spawn sur une safe zone, pas un arbre.
+    gs->grid->cases[gs->player->y][gs->player->x] = SAFE; // We spawn on a safezone, not a Tree.
 
-    printf("\e[1;1H\e[2J"); // Nettoyage de l'écran
-    printf("\e[?25l");      // Cacher le curseur
+    printf("\e[1;1H\e[2J"); // Clear the screen
+    printf("\e[?25l");      // Hide the cursor
 
     return gs;
 }
 
+/* free the GameState and its childrens
+ * gs: pointer to the GameState
+ */
 void destroyGameState(GameState *gs)
 {
     destroyCarQueue(gs->cars);
@@ -55,6 +61,10 @@ void destroyGameState(GameState *gs)
     free(gs);
 }
 
+/* makes the grid scroll down (by 1) and create a new row dynamically, therefore creating an infinite loop for the player
+ * gs: pointer to the gamestate
+ * AI: a boolean indicating if the AI is playing or not.
+ */
 void scrolling(GameState *gs, bool AI)
 {
 
@@ -142,6 +152,9 @@ void scrolling(GameState *gs, bool AI)
     }
 }
 
+/* Makes a Train goes from the RAIL state to the WARNING state to the PASSING (TRAIN) state.
+ * grid: a pointer to the grid of the game.
+ */
 TrainState updateTrain(Grid *grid)
 {
     for (int y = 0; y < grid->height; y++)
@@ -199,6 +212,9 @@ TrainState updateTrain(Grid *grid)
     return AWAY;
 }
 
+/* makes the player slide when stepping on Ice
+ * gs: pointer to the gamestate
+ */
 void updateIce(GameState *gs)
 {
     Player *p = gs->player;
@@ -211,18 +227,21 @@ void updateIce(GameState *gs)
     {
         bool moved = false;
         if (p->lastMoove == 1)
-            playerMoveKey('z', gs, &moved); // haut
+            playerMoveKey('z', gs, &moved); // up
         else if (p->lastMoove == -1)
-            playerMoveKey('s', gs, &moved); // bas
+            playerMoveKey('s', gs, &moved); // down
         else if (p->lastMoove == 2)
-            playerMoveKey('q', gs, &moved); // gauche
+            playerMoveKey('q', gs, &moved); // left
         else if (p->lastMoove == -2)
-            playerMoveKey('d', gs, &moved); // droite
+            playerMoveKey('d', gs, &moved); // right
 
         p->slidingCooldown = 36;
     }
 }
 
+/* end the game (defeat) if the player is colliding with an obstacle/the void/water.
+ * gs: pointer to the gamestate
+ */
 CollisionState handleCollision(GameState *gs)
 {
     // Previous : We check every car and see if a car is colliding with the player.
@@ -252,6 +271,9 @@ CollisionState handleCollision(GameState *gs)
     return NONE;
 }
 
+/* print the GameState grid
+ * gs: pointer to the gamestate
+ */
 void updateGameState(GameState *gs)
 {
     displayGrid(gs->grid, gs->score, gs->player->x, gs->player->y, gs->carMaxSize);
@@ -261,6 +283,9 @@ void updateGameState(GameState *gs)
     // printf("%d, %d", gs->player->x, gs->player->y);
 }
 
+/* increment the score when the player reach a new line
+ * gs: pointer to the gamestate
+ */
 void handleScore(GameState *gs)
 {
     if (gs->player->y > gs->highestLineReached)
