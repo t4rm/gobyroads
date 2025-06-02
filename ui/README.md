@@ -32,7 +32,7 @@
     Goby Roads - UI est la surcouche graphique de notre jeu. Elle reprend la version core directement depuis son répertoire et l'encapsule pour offrir un jeu aussi fidèle que possible à notre version initiale.
     <br />
     <br />
-    <a href="TODO"><strong>Explorer la doc »</strong></a>
+    <a href="../docs/Documentation PP2I.pdf"><strong>Explorer la doc »</strong></a>
     <br />
   </p>
 </div>

@@ -32,7 +32,7 @@
     Goby Roads - Core est la version terminale de notre jeu, elle réimplémente la logique du jeu Crossy Roads en C.
     <br />
     <br />
-    <a href="TODO"><strong>Explorer la doc »</strong></a>
+    <a href="../docs/Documentation PP2I.pdf"><strong>Explorer la doc »</strong></a>
     <br />
   </p>
 </div>
