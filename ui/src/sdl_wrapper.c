@@ -4,7 +4,11 @@
 const char *CarColorNames[COLOR_COUNT] = {
     "black", "blue", "brown", "green", "magenta", "red", "white", "yellow"};
 
-/* 
+/* For our dynamic textures like road and ice we need to check (with a checkFunction) the row below and above.
+ * grid : a pointer to the Grid
+ * x, y: the coordinates of our case
+ * checkFunction: a pointer to the checkFunction that accepts an Occupation and returns a boolean
+ * return : the vertical offset of the texture ranging from 0 to 2 included (defined by our textures, hardcoded)
  */
 int calculateVerticalOffset(Grid *grid, int x, int y, bool (*checkFunction)(Occupation))
 {
@@ -21,6 +25,7 @@ int calculateVerticalOffset(Grid *grid, int x, int y, bool (*checkFunction)(Occu
                                              : 1;
 }
 
+/* Utilitary function to determine whether a case is a Road/Car, a Water/Log or Ice */
 bool isRoadOrCar(Occupation caseType)
 {
     return caseType == ROAD || caseType == CAR_LEFT || caseType == CAR_RIGHT;
@@ -35,7 +40,9 @@ bool isIce(Occupation caseType)
 {
     return caseType == ICE;
 }
+/* ---- */
 
+/* Utilitary function to compare 2 cars (a, b) and check if carB's y is higher than carA's y : decreasing order */
 int compareCarElements(const void *a, const void *b)
 {
     CarElement *carA = *(CarElement **)a;
@@ -44,6 +51,12 @@ int compareCarElements(const void *a, const void *b)
     return carB->car->y - carA->car->y;
 }
 
+/* Initiliaze our SDL with a wrapper function
+ * window : a pointer to the pointer of window
+ * renderer : a pointer to the pointer of renderer
+ * fonts : a pointer to the pointer of fonts
+ * width, height : the size of the window 
+ */
 int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, TTF_Fonts **fonts, int width, int height)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING)) // Plutôt init les 4 qu'on use non ?
@@ -89,6 +102,12 @@ int SDLW_Initialize(SDL_Window **window, SDL_Renderer **renderer, TTF_Fonts **fo
     return 0;
 }
 
+/* Update the render and render it
+ * uiGs : a pointer to the UIGameState
+ * renderer : a pointer to the renderer
+ * textures : a pointer to the TextureCollection
+ * fonts : a pointer to the TTF_Fonts
+ */
 int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureCollection *textures, TTF_Fonts *fonts)
 {
     SDL_Color const BACKGROUND_COLOR = {255, 255, 255, SDL_ALPHA_OPAQUE};
@@ -103,7 +122,7 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
     {
         SDL_Texture *t = NULL;
         int xOffset = 0, yOffset = 0;
-        // -------- Sol --------
+        // -------- Ground --------
         for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
         {
             switch (grid->cases[y][x])
@@ -137,22 +156,22 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
             SDLW_RenderCopy(renderer, t, x, y, xOffset, yOffset, SDL_FLIP_NONE, 0, CELL_SIZE, 0, 0);
         }
 
-        // Sur-couche du sol
+        // Overlapping layer of the ground
         for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
         {
             if (grid->cases[y][x] == TRAIN || grid->cases[y][x] == RAIL || grid->cases[y][x] == WARNING)
                 SDLW_RenderCopy(renderer, GetTexture(textures, "rail"), x, y, 0, 0, SDL_FLIP_NONE, 0, CELL_SIZE, 0, 0);
         }
 
-        // -------- Rondins  --------
+        // -------- Logs  --------
         SDLW_UpdateCars(renderer, textures, carQueue, y, WATER, uiGs->core->grid->rowManagers[y]);
-        // -------- Joueur --------
+        // -------- Player --------
         if (uiGs->core->player->y == y)
             SDLW_RenderCopy(renderer, GetTexture(textures, "player"), uiGs->core->player->x, uiGs->core->player->y, uiGs->playerOffset->x, uiGs->playerOffset->y, SDL_FLIP_NONE, 0, CELL_SIZE, 0, 0);
 
-        // -------- Voitures  --------
+        // -------- Cars  --------
         SDLW_UpdateCars(renderer, textures, carQueue, y, ROAD, uiGs->core->grid->rowManagers[y]);
-        // -------- Arbres & Rails & Warning--------x
+        // -------- Trees & Rails & Warning--------x
         for (int x = carMaxSize; x < grid->length - carMaxSize + 1; x++)
         {
             if (grid->cases[y][x] == TREE)
@@ -182,6 +201,14 @@ int SDLW_UpdateAndRender(UIGameState *uiGs, SDL_Renderer *renderer, TextureColle
     return 0;
 }
 
+/* Update the rendering of cars
+ * r: a pointer to the renderer
+ * t: a pointer to the TextureCollection
+ * queue: a pointer to the CarQueue
+ * y : the y axis of the cars to render
+ * desiredType : the type of Occupation we want for the rowManager
+ * rm: a pointer to the rowManager
+ */
 void SDLW_UpdateCars(SDL_Renderer *r, TextureCollection *t, CarQueue *queue, int y, Occupation desiredType, RowManager *rm)
 {
     for (CarElement *carElt = queue->head; carElt != NULL; carElt = carElt->next)
